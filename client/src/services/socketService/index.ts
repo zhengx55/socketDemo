@@ -5,10 +5,10 @@ class SocketService {
   public connect(url: string): Promise<Socket<any, any>> {
     return new Promise((resolve, reject) => {
       this.socket = io(url);
-
       if (!this.socket) {
         return reject();
       }
+      // handle for connection
       this.socket.on("connect", () => {
         resolve(this.socket as Socket);
       });

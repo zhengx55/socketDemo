@@ -31,10 +31,10 @@ const Cell = styled.div<ICellProps>`
   justify-content: center;
   border-radius: 20px;
   cursor: pointer;
-  border-top: ${({ borderTop }) => borderTop && "3px solid #8e44ad"};
-  border-left: ${({ borderLeft }) => borderLeft && "3px solid #8e44ad"};
-  border-bottom: ${({ borderBottom }) => borderBottom && "3px solid #8e44ad"};
-  border-right: ${({ borderRight }) => borderRight && "3px solid #8e44ad"};
+  border-top: ${({ borderTop }) => borderTop && "3px solid #fff"};
+  border-left: ${({ borderLeft }) => borderLeft && "3px solid #fff"};
+  border-bottom: ${({ borderBottom }) => borderBottom && "3px solid #fff"};
+  border-right: ${({ borderRight }) => borderRight && "3px solid #fff"};
   transition: all 270ms ease-in-out;
 
   &:hover {
@@ -54,7 +54,7 @@ const PlayStopper = styled.div`
 
 const X = styled.span`
   font-size: 100px;
-  color: #8e44ad;
+  color: #fff;
   &::after {
     content: "X";
   }
@@ -62,7 +62,7 @@ const X = styled.span`
 
 const O = styled.span`
   font-size: 100px;
-  color: #8e44ad;
+  color: #fff;
   &::after {
     content: "O";
   }

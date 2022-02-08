@@ -50,7 +50,7 @@ export function JoinRoom(props: IJoinRoomProps) {
 
   useEffect(() => {
     return () => {
-      console.log(socketService.socket);
+      socketService?.socket?.removeAllListeners();
     };
   }, []);
 
@@ -77,7 +77,6 @@ export function JoinRoom(props: IJoinRoomProps) {
   return (
     <form onSubmit={joinRoom}>
       <JoinRoomContainer>
-        <h4>Enter Room Idto Join the Game</h4>
         <RoomIdInput
           placeholder="Room id..."
           value={roomName}
