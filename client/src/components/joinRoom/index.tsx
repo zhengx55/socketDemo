@@ -5,9 +5,8 @@ import socketService from "../../services/socketService";
 import gameService from "../../services/gameService";
 
 interface IJoinRoomProps {}
-const JoinRoomContainer = styled.div`
+export const JoinRoomContainer = styled.div`
   width: 100%;
-  height: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -15,7 +14,7 @@ const JoinRoomContainer = styled.div`
   margin-top: 2em;
 `;
 
-const RoomIdInput = styled.input`
+export const RoomIdInput = styled.input`
   height: 30px;
   width: 20em;
   font-size: 17px;
@@ -25,7 +24,7 @@ const RoomIdInput = styled.input`
   padding: 0 10px;
 `;
 
-const JoinButton = styled.button`
+export const JoinButton = styled.button`
   outline: none;
   background-color: #8e44ad;
   color: #fff;

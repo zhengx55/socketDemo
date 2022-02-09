@@ -6,13 +6,11 @@ import {
   MessageBody,
   OnMessage,
   SocketIO,
-  EmitOnSuccess,
-  EmitOnFail,
-  SkipEmitOnEmptyResult,
 } from "socket-controllers";
 import axios from "axios";
 import { Socket, Server } from "socket.io";
 import { setupInterceptorsTo } from "../Interceptors.ts";
+let players = [];
 
 @SocketController()
 export class MessageController {
@@ -31,12 +29,23 @@ export class MessageController {
         })
       );
       const res = await myAxios.post("/login", {
-        data: { coon_id: data.connection_id },
+        data: { coon_id: data.connection_id, user_id: data.user_id },
       });
-      if (res.status === 200) {
-        socket.emit("login_status", { status: "success" });
+      var flag = players.some(function (value) {
+        return value === data.user_id;
+      });
+      if (flag) {
+        socket.emit("login_status", {
+          status: "already logged",
+          id: data.user_id,
+        });
       } else {
-        socket.emit("login_status", { status: "error" });
+        if (res.status === 200) {
+          socket.emit("login_status", { status: "success", id: data.user_id });
+          players.push(data.user_id);
+        } else {
+          socket.emit("login_status", { status: "error", id: data.user_id });
+        }
       }
     });
   }
