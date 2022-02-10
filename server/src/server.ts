@@ -81,38 +81,29 @@ function onListening() {
   var addr = server.address();
   var bind = typeof addr === "string" ? "pipe " + addr : "port " + addr.port;
   debug("Listening on " + bind);
+  runRedis();
   console.log("Server Running on Port: ", port);
 }
 
+export const client = createClient({
+  socket: {
+    port: 6379,
+    host: process.env.REDIS_HOST,
+    connectTimeout: 1000,
+  },
+  password: process.env.REDIS_PASSWORD,
+});
+
 const runRedis = async () => {
-  const pubClient = createClient({
-    socket: {
-      port: 6379,
-      host: process.env.REDIS_HOST,
-      connectTimeout: 1000,
-    },
-    password: process.env.REDIS_PASSWORD,
-  });
-  const subClient = pubClient.duplicate();
-
-  pubClient.on("error", (error: Error) => console.error(error));
-  subClient.on("error", (error: Error) => console.error(error));
-
-  pubClient.on("connect", () =>
-    console.log("pubClient connected and starting initiator")
+  client.on("error", (error: Error) => console.error(error));
+  client.on("connect", () =>
+    console.log("Redis client connected and starting initiator")
   );
-  pubClient.on("ready", () => console.log("pubClient is ready"));
-  subClient.on("connect", () =>
-    console.log("subClient connected and starting initiator")
-  );
-  subClient.on("ready", () => console.log("subClient is ready"));
-  (async () => {
-    await pubClient.connect();
-    await subClient.connect();
-
-    subClient.subscribe("matchMsg", (message: string) => {
-      console.log(message);
-    });
-  })();
+  client.on("ready", () => console.log("Redis client is ready"));
+  const pubClient = client.duplicate();
+  await client.connect();
+  await pubClient.connect();
+  setInterval(() => {
+    pubClient.publish("some-key", "data");
+  }, 1000);
 };
-runRedis();

@@ -10,6 +10,8 @@ import {
 import axios from "axios";
 import { Socket, Server } from "socket.io";
 import { setupInterceptorsTo } from "../Interceptors.ts";
+import { client } from "../../server";
+
 let players = [];
 
 @SocketController()
@@ -47,34 +49,16 @@ export class MessageController {
           socket.emit("login_status", { status: "error", id: data.user_id });
         }
       }
+
+      // Redis subscriber return info of matching information
+      client.subscribe("matchMsg", (message: string) => {
+        console.log(JSON.stringify(message));
+      });
     });
   }
 
   @OnDisconnect()
   public onDisconnection(@ConnectedSocket() socket: Socket) {
     console.log("Socket disconnected:", socket.id);
-  }
-
-  @OnMessage("test")
-  public async save(
-    @ConnectedSocket() socket: any,
-    @MessageBody() message: any
-  ) {
-    if (message.message === "req for attack command") {
-      const myAxios = setupInterceptorsTo(
-        axios.create({
-          baseURL: "https://api.publicapis.org",
-          timeout: 5000,
-        })
-      );
-      myAxios
-        .get("/entries")
-        .then((response) => {
-          socket.emit("message_saved", response.data.count);
-        })
-        .catch((error) => {
-          socket.emit("message_error", error);
-        });
-    }
   }
 }

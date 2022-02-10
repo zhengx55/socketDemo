@@ -43,18 +43,4 @@ export class RoomController {
         .emit("start_game", { start: false, symbol: "o" });
     }
   }
-
-  @OnMessage("game_init")
-  public async gameInit(
-    @SocketIO() io: Server,
-    @ConnectedSocket() socket: Socket,
-    @MessageBody() message: any,
-    @SocketRooms() rooms: any
-  ) {
-    const socketRooms = Array.from(rooms.values()).filter(
-      (r) => r !== socket.id
-    );
-    socket.emit("game_init", { role: "attacker" });
-    socket.to(message.roomId).emit("game_init", { role: "defender" });
-  }
 }
