@@ -53,6 +53,7 @@ function App() {
   const [isGameStarted, setGameStarted] = useState(false);
   const [isLogin, setIsLogin] = useState("");
   const [isMatching, setIsMatching] = useState(false);
+  const [isMatch, setIsMatch] = useState(false);
   const [userConnection, setUserConnection] = useState("0");
   const [userId, setUserId] = useState("0");
 
@@ -103,15 +104,17 @@ function App() {
   const matchGame = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsMatching(true);
-    // const socket = socketService.socket;
     if (isLogin && socketService.socket) {
       const match = await gameService.matchGame(
         socketService.socket,
         userConnection,
         userId
       );
-      if (match) {
+      if (match.room) {
         setIsMatching(false);
+        setIsMatch(true);
+      } else {
+        console.error(match.error);
       }
     }
   };
@@ -135,7 +138,7 @@ function App() {
   return (
     <GameContext.Provider value={gameContextValue}>
       <AppContainer>
-        <WelcomeText>Tic-Tac-Toe</WelcomeText>
+        <WelcomeText>WS PlayGround</WelcomeText>
         <MainContainer>
           <LoginText>{isLogin}</LoginText>
           {!isLogin && (
@@ -154,18 +157,12 @@ function App() {
           )}
           {isLogin.includes("successfully") && (
             <form onSubmit={matchGame}>
-              <JoinRoomContainer>
-                <RoomIdInput
-                  placeholder="User id ..."
-                  value={userId}
-                  onChange={onChangeHandler}
-                />
-                <JoinButton type="submit" disabled={isMatching}>
-                  {isMatching ? "Matching..." : "Match"}
-                </JoinButton>
-              </JoinRoomContainer>
+              <JoinButton type="submit" disabled={isMatching}>
+                {isMatching ? "Matching..." : "Match"}
+              </JoinButton>
             </form>
           )}
+          {isMatch && null}
           {/* {!isInRoom && <JoinRoom />} */}
           {isInRoom && <Game />}
         </MainContainer>

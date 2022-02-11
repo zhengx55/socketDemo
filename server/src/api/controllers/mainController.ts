@@ -3,8 +3,6 @@ import {
   SocketController,
   ConnectedSocket,
   OnDisconnect,
-  MessageBody,
-  OnMessage,
   SocketIO,
 } from "socket-controllers";
 import axios from "axios";
@@ -22,6 +20,7 @@ export class MessageController {
     @SocketIO() io: Server
   ) {
     console.log("Socket connected:", socket.id);
+
     // listening for incoming event
     socket.on("request_login", async (data: any) => {
       const myAxios = setupInterceptorsTo(
@@ -36,6 +35,7 @@ export class MessageController {
       var flag = players.some(function (value) {
         return value === data.user_id;
       });
+      console.log(players);
       if (flag) {
         socket.emit("login_status", {
           status: "already logged",
@@ -49,11 +49,6 @@ export class MessageController {
           socket.emit("login_status", { status: "error", id: data.user_id });
         }
       }
-
-      // Redis subscriber return info of matching information
-      client.subscribe("matchMsg", (message: string) => {
-        console.log(JSON.stringify(message));
-      });
     });
   }
 

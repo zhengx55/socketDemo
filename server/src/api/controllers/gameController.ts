@@ -7,6 +7,7 @@ import {
   SocketIO,
 } from "socket-controllers";
 import { Socket, Server } from "socket.io";
+import { client } from "../../server";
 import { setupInterceptorsTo } from "../Interceptors.ts";
 
 @SocketController()
@@ -31,13 +32,15 @@ export class GameController {
         timeout: 5000,
       })
     );
-    const res = await myAxios.post("/matching", {
+    const res: any = await myAxios.post("/matching", {
       data: { coon_id: message.connection_id, user_id: message.user_id },
     });
-    if (res.status === 200) {
-      socket.emit("match_status");
+    if (res.data.code === "200") {
+      client.subscribe("some-key", (msg: any) => {
+        socket.emit("match_info", { room: "105", type: "pve" });
+      });
     } else {
-      socket.emit("match_error", res.status);
+      socket.emit("match_error", { error: res.data.msg });
     }
   }
 

@@ -14,13 +14,13 @@ class GameService {
     socket: Socket,
     userConnection: string,
     userId: string
-  ): Promise<boolean> {
+  ): Promise<any> {
     return new Promise((rs, rj) => {
       socket?.emit("match_room", {
         connection_id: userConnection,
         user_id: userId,
       });
-      socket.on("match_status", () => rs(true));
+      socket.on("match_info", (res) => rs(res));
       socket.on("match_error", ({ error }) => rj(error));
     });
   }

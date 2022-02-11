@@ -23,18 +23,8 @@ export class RoomController {
     const socketRooms = Array.from(socket.rooms.values()).filter(
       (r) => r !== socket.id
     );
-    // limit connection numbers under 2 for a room
-    if (
-      socketRooms.length > 0 ||
-      (connectedSockets && connectedSockets.size === 2)
-    ) {
-      socket.emit("room_join_error", {
-        error: "Room is full!",
-      });
-    } else {
-      await socket.join(message.roomId);
-      socket.emit("room_joined", { message: "Room entered successfully" });
-    }
+    await socket.join(message.roomId);
+    socket.emit("room_joined", { message: "Room entered successfully" });
     if (io.sockets.adapter.rooms.get(message.roomId).size === 2) {
       // console.log(io.sockets.adapter.rooms.get(message.roomId));
       socket.emit("start_game", { start: true, symbol: "x" });

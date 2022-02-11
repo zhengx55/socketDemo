@@ -103,7 +103,8 @@ const runRedis = async () => {
   const pubClient = client.duplicate();
   await client.connect();
   await pubClient.connect();
+  // Redis subscriber return info of matching information
   setInterval(() => {
     pubClient.publish("some-key", "data");
-  }, 1000);
+  }, 10000);
 };
