@@ -8,9 +8,7 @@ import {
 import axios from "axios";
 import { Socket, Server } from "socket.io";
 import { setupInterceptorsTo } from "../Interceptors.ts";
-import { client } from "../../server";
-
-let players = [];
+import { addUser, removeUser } from "../../utils/user";
 
 @SocketController()
 export class MessageController {
@@ -29,31 +27,39 @@ export class MessageController {
           timeout: 5000,
         })
       );
-      const res = await myAxios.post("/login", {
-        data: { coon_id: data.connection_id, user_id: data.user_id },
-      });
-      var flag = players.some(function (value) {
-        return value === data.user_id;
-      });
-      console.log(players);
-      if (flag) {
+      try {
+        const res = await myAxios.post("/login", {
+          data: { coon_id: data.connection_id, user_id: data.user_id },
+        });
+        const user = addUser({ socket_id: socket.id, user_id: data.user_id });
+        if (user) {
+          if (res.status === 200) {
+            socket.emit("login_status", {
+              status: "success",
+              id: data.user_id,
+            });
+            io.emit("broadcast", {
+              message: `user ${data.user_id} has successfully logged into the game lobby`,
+            });
+          }
+        } else {
+          socket.emit("login_status", {
+            status: "user has already logged in",
+            id: data.user_id,
+          });
+        }
+      } catch (error) {
         socket.emit("login_status", {
-          status: "already logged",
+          status: "network error occured",
           id: data.user_id,
         });
-      } else {
-        if (res.status === 200) {
-          socket.emit("login_status", { status: "success", id: data.user_id });
-          players.push(data.user_id);
-        } else {
-          socket.emit("login_status", { status: "error", id: data.user_id });
-        }
       }
     });
   }
 
   @OnDisconnect()
   public onDisconnection(@ConnectedSocket() socket: Socket) {
+    removeUser(socket.id);
     console.log("Socket disconnected:", socket.id);
   }
 }

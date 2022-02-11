@@ -20,7 +20,9 @@ export class GameController {
     const gameRoom = socketRooms && socketRooms[0];
     return gameRoom;
   }
-  // 当用户成功登录后 开始请求匹配接口 并返回给前端
+
+  // User successfully Logined in
+  // Match started, redis subscribe for room info
   @OnMessage("match_room")
   public async matchRoom(
     @ConnectedSocket() socket: Socket,
@@ -37,9 +39,12 @@ export class GameController {
     });
     if (res.data.code === "200") {
       client.subscribe("some-key", (msg: any) => {
-        socket.emit("match_info", { room: "105", type: "pve" });
+        socket.emit("match_info", JSON.parse(msg));
       });
     } else {
+      client.subscribe("some-key", (msg: any) => {
+        socket.emit("match_info", JSON.parse(msg));
+      });
       socket.emit("match_error", { error: res.data.msg });
     }
   }
@@ -62,5 +67,14 @@ export class GameController {
   ) {
     const gameRoom = this.getSocketGameRoom(socket);
     socket.to(gameRoom).emit("on_game_win", message);
+  }
+
+  @OnMessage("game_lost")
+  public async gameLost(
+    @ConnectedSocket() socket: Socket,
+    @MessageBody() message: any
+  ) {
+    const gameRoom = this.getSocketGameRoom(socket);
+    socket.to(gameRoom).emit("on_game_lost", message);
   }
 }

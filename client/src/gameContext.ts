@@ -3,8 +3,8 @@ import React from "react";
 export interface IGameContextProps {
   isInRoom: boolean;
   setInRoom: (inRoom: boolean) => void;
-  playerSymbol: "x" | "o";
-  setPlayerSymbol: (symbol: "x" | "o") => void;
+  playerInfo: null | any;
+  setPlayerInfo: ({}) => void;
   isPlayerTurn: boolean;
   setPlayerTurn: (turn: boolean) => void;
   isGameStarted: boolean;
@@ -16,8 +16,8 @@ export interface IGameContextProps {
 const defaultState: IGameContextProps = {
   isInRoom: false,
   setInRoom: () => {},
-  playerSymbol: "x",
-  setPlayerSymbol: () => {},
+  playerInfo: {},
+  setPlayerInfo: () => {},
   isPlayerTurn: false,
   setPlayerTurn: () => {},
   isGameStarted: false,

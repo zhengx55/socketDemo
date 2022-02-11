@@ -3,12 +3,10 @@ import styled from "styled-components";
 import socketService from "./services/socketService";
 import {
   JoinButton,
-  JoinRoom,
   JoinRoomContainer,
   RoomIdInput,
 } from "./components/joinRoom";
 import GameContext, { IGameContextProps } from "./gameContext";
-import { Game } from "./components/Game";
 import gameService from "./services/gameService";
 
 const AppContainer = styled.div`
@@ -43,15 +41,22 @@ const MainContainer = styled.div`
   flex-direction: column;
   align-items: center;
   row-gap: 12rem;
-  justify-content: center;
+`;
+
+const InfoTypo = styled.p`
+  margin: 0;
+  font-size: 1.5rem;
+  background: -webkit-linear-gradient(#eee, #8e44ad);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
 `;
 
 function App() {
   const [isInRoom, setInRoom] = useState(false);
-  const [playerSymbol, setPlayerSymbol] = useState<"x" | "o">("x");
+  const [playerInfo, setPlayerInfo] = useState<any>(null);
   const [isPlayerTurn, setPlayerTurn] = useState(false);
   const [isGameStarted, setGameStarted] = useState(false);
-  const [isLogin, setIsLogin] = useState("");
+  const [isLogin, setIsLogin] = useState(false);
   const [isMatching, setIsMatching] = useState(false);
   const [isMatch, setIsMatch] = useState(false);
   const [userConnection, setUserConnection] = useState("0");
@@ -92,11 +97,12 @@ function App() {
     });
     socketService.socket?.on("login_status", (res) => {
       if (res.status === "success") {
-        setIsLogin(`Logged in successfully Id ${res.id}`);
-      } else if (res.status.includes("already")) {
-        setIsLogin(`You are already logged in ${res.id}`);
+        setIsLogin(true);
+        socketService.socket?.on("broadcast", (res) => {
+          console.log(res.message);
+        });
       } else {
-        setIsLogin("Loggin fail");
+        setIsLogin(false);
       }
     });
   };
@@ -110,11 +116,16 @@ function App() {
         userConnection,
         userId
       );
-      if (match.room) {
+      if (!match.room) {
         setIsMatching(false);
         setIsMatch(true);
+        socketService.socket?.on("match_info", (msg) => {
+          console.log(msg.data);
+          if (msg.data.playerList[userId])
+            setPlayerInfo(msg.data.playerList[userId]);
+        });
       } else {
-        console.error(match.error);
+        console.error(isMatch);
       }
     }
   };
@@ -126,8 +137,8 @@ function App() {
   const gameContextValue: IGameContextProps = {
     isInRoom,
     setInRoom,
-    playerSymbol,
-    setPlayerSymbol,
+    playerInfo,
+    setPlayerInfo,
     isPlayerTurn,
     setPlayerTurn,
     isGameStarted,
@@ -155,16 +166,53 @@ function App() {
               </JoinRoomContainer>
             </form>
           )}
-          {isLogin.includes("successfully") && (
-            <form onSubmit={matchGame}>
-              <JoinButton type="submit" disabled={isMatching}>
-                {isMatching ? "Matching..." : "Match"}
-              </JoinButton>
-            </form>
-          )}
-          {isMatch && null}
-          {/* {!isInRoom && <JoinRoom />} */}
-          {isInRoom && <Game />}
+          {isLogin ? (
+            isMatch ? (
+              <>
+                <LoginText>Match Info Ready</LoginText>
+                {playerInfo && (
+                  <div style={{ width: "15%" }}>
+                    <div
+                      style={{
+                        display: "flex",
+                        justifyContent: "space-between",
+                        width: "100%",
+                      }}
+                    >
+                      <InfoTypo>HP:</InfoTypo>
+                      <InfoTypo>{playerInfo.hp}</InfoTypo>
+                    </div>
+                    <div
+                      style={{
+                        display: "flex",
+                        justifyContent: "space-between",
+                        width: "100%",
+                      }}
+                    >
+                      <InfoTypo>Attack:</InfoTypo>
+                      <InfoTypo>{playerInfo.attack}</InfoTypo>
+                    </div>
+                    <div
+                      style={{
+                        display: "flex",
+                        justifyContent: "space-between",
+                        width: "100%",
+                      }}
+                    >
+                      <InfoTypo>Armor:</InfoTypo>
+                      <InfoTypo>{playerInfo.armor}</InfoTypo>
+                    </div>
+                  </div>
+                )}
+              </>
+            ) : (
+              <form onSubmit={matchGame}>
+                <JoinButton type="submit" disabled={isMatching}>
+                  {isMatching ? "Matching..." : "Match"}
+                </JoinButton>
+              </form>
+            )
+          ) : null}
         </MainContainer>
       </AppContainer>
     </GameContext.Provider>

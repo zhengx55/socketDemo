@@ -6,6 +6,36 @@ import * as http from "http";
 import socketServer from "./socket";
 import { createClient } from "redis";
 import "dotenv/config";
+
+const mockData = {
+  data: {
+    playerList: {
+      "1": {
+        user_id: 1,
+        hp: 1000,
+        attack: 200,
+        armor: 300,
+        type: "1",
+      },
+      "2": {
+        user_id: 2,
+        hp: 1100,
+        attack: 150,
+        armor: 250,
+        type: "2",
+      },
+    },
+    room_now_current_user: "1",
+    room_type: "pve",
+    room_status: 1,
+    room_battle_logs: [],
+    room_battle_reward: [],
+    room_start_time: 1644472402,
+    room_end_time: 0,
+    command: "attack",
+    button: [4, 3, 2, 1, 1, 1, 4, 4, 4, 4],
+  },
+};
 /**
  * Get port from environment and store in Express.
  */
@@ -105,6 +135,6 @@ const runRedis = async () => {
   await pubClient.connect();
   // Redis subscriber return info of matching information
   setInterval(() => {
-    pubClient.publish("some-key", "data");
+    pubClient.publish("some-key", JSON.stringify(mockData));
   }, 10000);
 };
