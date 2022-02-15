@@ -84,6 +84,12 @@ function App() {
     };
   }, []);
 
+  useEffect(() => {
+    socketService.socket?.on("start_game", (msg) => {
+      console.log(msg);
+    });
+  });
+
   const loginGame = async (e: React.FormEvent) => {
     e.preventDefault();
     let random = "";
@@ -151,6 +157,20 @@ function App() {
     setUserId(e.target.value);
   };
 
+  const enterGameHandler = async () => {
+    if (socketService.socket) {
+      try {
+        const ready = await gameService.onStartGame(
+          socketService.socket,
+          GameInfo.room
+        );
+        console.log(ready);
+      } catch (error) {
+        console.error(error);
+      }
+    }
+  };
+
   const gameContextValue: IGameContextProps = {
     playerInfo,
     setPlayerInfo,
@@ -185,7 +205,7 @@ function App() {
             isMatch ? (
               <>
                 <LoginText>Match Info Ready</LoginText>
-                <JoinButton>Enter Game</JoinButton>
+                <JoinButton onClick={enterGameHandler}>Enter Game</JoinButton>
                 {playerInfo && (
                   <div
                     style={{

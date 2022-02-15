@@ -6,6 +6,7 @@ import {
   SocketIO,
   MessageBody,
   OnMessage,
+  EmitOnSuccess,
 } from "socket-controllers";
 import axios from "axios";
 import { Socket, Server } from "socket.io";
@@ -23,6 +24,7 @@ export class MessageController {
   }
 
   @OnMessage("request_login")
+  @EmitOnSuccess("Login Request received")
   public async Login(
     @ConnectedSocket() socket: Socket,
     @MessageBody() data: any,

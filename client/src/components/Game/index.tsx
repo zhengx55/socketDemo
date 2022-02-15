@@ -170,13 +170,13 @@ export function Game() {
   };
 
   const handleGameStart = () => {
-    if (socketService.socket)
-      gameService.onStartGame(socketService.socket, (options) => {
-        setGameStarted(true);
-        setPlayerSymbol(options.symbol);
-        if (options.start) setPlayerTurn(true);
-        else setPlayerTurn(false);
-      });
+    // if (socketService.socket)
+    //   gameService.onStartGame(socketService.socket, (options) => {
+    //     setGameStarted(true);
+    //     setPlayerSymbol(options.symbol);
+    //     if (options.start) setPlayerTurn(true);
+    //     else setPlayerTurn(false);
+    //   });
   };
 
   const handleGameWin = () => {

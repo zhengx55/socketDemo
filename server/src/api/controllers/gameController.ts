@@ -4,7 +4,6 @@ import {
   MessageBody,
   OnMessage,
   SocketController,
-  SocketIO,
 } from "socket-controllers";
 import { Socket, Server } from "socket.io";
 import { client } from "../../server";
@@ -67,14 +66,5 @@ export class GameController {
   ) {
     const gameRoom = this.getSocketGameRoom(socket);
     socket.to(gameRoom).emit("on_game_win", message);
-  }
-
-  @OnMessage("game_lost")
-  public async gameLost(
-    @ConnectedSocket() socket: Socket,
-    @MessageBody() message: any
-  ) {
-    const gameRoom = this.getSocketGameRoom(socket);
-    socket.to(gameRoom).emit("on_game_lost", message);
   }
 }

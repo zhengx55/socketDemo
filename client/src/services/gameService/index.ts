@@ -10,6 +10,19 @@ class GameService {
     });
   }
 
+  public async onStartGame(
+    socket: Socket,
+    roomId: string
+    // listener: (options: IStartGame) => void
+  ): Promise<any> {
+    return new Promise((rs, rj) => {
+      socket.emit("game_start", { roomId });
+      socket.on("start_game", (msg) => rs(msg));
+      socket.on("pendings_game", ({ msg }) => rj(msg));
+    });
+    // socket.on("start_game", listener);
+  }
+
   public async matchGame(
     socket: Socket,
     userConnection: string,
@@ -34,13 +47,6 @@ class GameService {
     listener: (matrix: IPlayMatrix) => void
   ) {
     socket.on("on_game_update", ({ matrix }) => listener(matrix));
-  }
-
-  public async onStartGame(
-    socket: Socket,
-    listener: (options: IStartGame) => void
-  ) {
-    socket.on("start_game", listener);
   }
 
   public async gameWin(socket: Socket, message: string) {
