@@ -50,8 +50,8 @@ export class GameController {
   }
 
   @OnMessage("update_game")
-  // 匹配成功后，双方进入游戏房间
-  // 游戏开始后更新通信...
+  // Matched success
+  // room communciation
   public async updateGame(
     @ConnectedSocket() socket: Socket,
     @MessageBody() message: any

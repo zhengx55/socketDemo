@@ -45,9 +45,9 @@ export class MessageController {
             status: "success",
             id: data.user_id,
           });
-          io.emit("broadcast", {
-            message: `user ${data.user_id} has successfully logged into the game lobby`,
-          });
+          // io.emit("broadcast", {
+          //   message: `user ${data.user_id} has successfully logged into the game lobby`,
+          // });
         }
       } else {
         socket.emit("login_status", {

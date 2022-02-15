@@ -9,22 +9,22 @@ import "dotenv/config";
 
 const mockData = {
   data: {
-    playerList: {
-      "1": {
-        user_id: 1,
+    playerList: [
+      {
+        user_id: "1",
         hp: 1000,
         attack: 200,
         armor: 300,
         type: "1",
       },
-      "2": {
-        user_id: 2,
+      {
+        user_id: "2",
         hp: 1100,
         attack: 150,
         armor: 250,
         type: "2",
       },
-    },
+    ],
     room_id: "1000",
     room_now_current_user: "1",
     room_type: "pve",

@@ -53,7 +53,7 @@ const InfoTypo = styled.p`
 
 function App() {
   const [playerInfo, setPlayerInfo] = useState<any>(null);
-  const [GameInfo, setGameInfo] = useState<any>({ room: "" });
+  const [GameInfo, setGameInfo] = useState<any>({ room: "", component: {} });
   const [isPlayerTurn, setPlayerTurn] = useState(false);
   const [isGameStarted, setGameStarted] = useState(false);
   const [isLogin, setIsLogin] = useState(false);
@@ -98,9 +98,9 @@ function App() {
     socketService.socket?.on("login_status", (res) => {
       if (res.status === "success") {
         setIsLogin(true);
-        socketService.socket?.on("broadcast", (res) => {
-          console.log(res.message);
-        });
+        // socketService.socket?.on("broadcast", (res) => {
+        //   console.log(res.message);
+        // });
       } else {
         setIsLogin(false);
       }
@@ -122,9 +122,19 @@ function App() {
         socketService.socket?.once("match_info", (msg) => {
           console.log(msg.data);
           // if message contains user's data, enter the specific room id
-          if (msg.data.playerList[userId]) {
-            setPlayerInfo(msg.data.playerList[userId]);
-            setGameInfo((prev: any) => ({ ...prev, room: msg.data.room_id }));
+          if (msg.data.playerList.length > 0) {
+            const user = msg.data.playerList.find(
+              (player: any) => player.user_id === userId
+            );
+            const component = msg.data.playerList.find(
+              (player: { user_id: string }) => player.user_id !== userId
+            );
+            setPlayerInfo(user);
+            setGameInfo((prev: any) => ({
+              ...prev,
+              room: msg.data.room_id,
+              component: component,
+            }));
           }
           socketService.socket?.emit("enter_room", msg.data.room_id);
           socketService.socket?.on("room_joined", (res) => {
@@ -175,37 +185,81 @@ function App() {
             isMatch ? (
               <>
                 <LoginText>Match Info Ready</LoginText>
+                <JoinButton>Enter Game</JoinButton>
                 {playerInfo && (
-                  <div style={{ width: "15%" }}>
-                    <div
-                      style={{
-                        display: "flex",
-                        justifyContent: "space-between",
-                        width: "100%",
-                      }}
-                    >
-                      <InfoTypo>HP:</InfoTypo>
-                      <InfoTypo>{playerInfo.hp}</InfoTypo>
+                  <div
+                    style={{
+                      display: "flex",
+                      width: "50%",
+                      height: "100%",
+                      justifyContent: "space-between",
+                    }}
+                  >
+                    <div style={{ width: "25%" }}>
+                      <InfoTypo>Your Info: </InfoTypo>
+                      <div
+                        style={{
+                          display: "flex",
+                          justifyContent: "space-between",
+                          width: "100%",
+                        }}
+                      >
+                        <InfoTypo>HP:</InfoTypo>
+                        <InfoTypo>{playerInfo.hp}</InfoTypo>
+                      </div>
+                      <div
+                        style={{
+                          display: "flex",
+                          justifyContent: "space-between",
+                          width: "100%",
+                        }}
+                      >
+                        <InfoTypo>Attack:</InfoTypo>
+                        <InfoTypo>{playerInfo.attack}</InfoTypo>
+                      </div>
+                      <div
+                        style={{
+                          display: "flex",
+                          justifyContent: "space-between",
+                          width: "100%",
+                        }}
+                      >
+                        <InfoTypo>Armor:</InfoTypo>
+                        <InfoTypo>{playerInfo.armor}</InfoTypo>
+                      </div>
                     </div>
-                    <div
-                      style={{
-                        display: "flex",
-                        justifyContent: "space-between",
-                        width: "100%",
-                      }}
-                    >
-                      <InfoTypo>Attack:</InfoTypo>
-                      <InfoTypo>{playerInfo.attack}</InfoTypo>
-                    </div>
-                    <div
-                      style={{
-                        display: "flex",
-                        justifyContent: "space-between",
-                        width: "100%",
-                      }}
-                    >
-                      <InfoTypo>Armor:</InfoTypo>
-                      <InfoTypo>{playerInfo.armor}</InfoTypo>
+                    <div style={{ width: "35%" }}>
+                      <InfoTypo>Component Info: </InfoTypo>
+                      <div
+                        style={{
+                          display: "flex",
+                          justifyContent: "space-between",
+                          width: "100%",
+                        }}
+                      >
+                        <InfoTypo>HP:</InfoTypo>
+                        <InfoTypo>{GameInfo.component.hp}</InfoTypo>
+                      </div>
+                      <div
+                        style={{
+                          display: "flex",
+                          justifyContent: "space-between",
+                          width: "100%",
+                        }}
+                      >
+                        <InfoTypo>Attack:</InfoTypo>
+                        <InfoTypo>{GameInfo.component.attack}</InfoTypo>
+                      </div>
+                      <div
+                        style={{
+                          display: "flex",
+                          justifyContent: "space-between",
+                          width: "100%",
+                        }}
+                      >
+                        <InfoTypo>Armor:</InfoTypo>
+                        <InfoTypo>{GameInfo.component.armor}</InfoTypo>
+                      </div>
                     </div>
                   </div>
                 )}
