@@ -52,8 +52,8 @@ const InfoTypo = styled.p`
 `;
 
 function App() {
-  const [isInRoom, setInRoom] = useState(false);
   const [playerInfo, setPlayerInfo] = useState<any>(null);
+  const [GameInfo, setGameInfo] = useState<any>({ room: "" });
   const [isPlayerTurn, setPlayerTurn] = useState(false);
   const [isGameStarted, setGameStarted] = useState(false);
   const [isLogin, setIsLogin] = useState(false);
@@ -119,10 +119,17 @@ function App() {
       if (!match.room) {
         setIsMatching(false);
         setIsMatch(true);
-        socketService.socket?.on("match_info", (msg) => {
+        socketService.socket?.once("match_info", (msg) => {
           console.log(msg.data);
-          if (msg.data.playerList[userId])
+          // if message contains user's data, enter the specific room id
+          if (msg.data.playerList[userId]) {
             setPlayerInfo(msg.data.playerList[userId]);
+            setGameInfo((prev: any) => ({ ...prev, room: msg.data.room_id }));
+          }
+          socketService.socket?.emit("enter_room", msg.data.room_id);
+          socketService.socket?.on("room_joined", (res) => {
+            console.log(res.message);
+          });
         });
       } else {
         console.error(isMatch);
@@ -135,8 +142,6 @@ function App() {
   };
 
   const gameContextValue: IGameContextProps = {
-    isInRoom,
-    setInRoom,
     playerInfo,
     setPlayerInfo,
     isPlayerTurn,

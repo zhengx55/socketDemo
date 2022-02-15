@@ -25,6 +25,7 @@ const mockData = {
         type: "2",
       },
     },
+    room_id: "1000",
     room_now_current_user: "1",
     room_type: "pve",
     room_status: 1,
@@ -136,5 +137,5 @@ const runRedis = async () => {
   // Redis subscriber return info of matching information
   setInterval(() => {
     pubClient.publish("some-key", JSON.stringify(mockData));
-  }, 10000);
+  }, 1000);
 };

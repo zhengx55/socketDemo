@@ -45,7 +45,7 @@ export class GameController {
       client.subscribe("some-key", (msg: any) => {
         socket.emit("match_info", JSON.parse(msg));
       });
-      socket.emit("match_error", { error: res.data.msg });
+      // socket.emit("match_error", { error: res.data.msg });
     }
   }
 

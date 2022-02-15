@@ -11,7 +11,6 @@ const users: User[] = [];
  */
 export const addUser = (user: User): boolean => {
   const { user_id } = user;
-  console.log(users);
   const existing = users.find((user: User) => {
     return user.user_id === user_id;
   });
