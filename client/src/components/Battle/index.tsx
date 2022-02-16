@@ -29,6 +29,7 @@ const InfoTypo = styled.p`
 function Battle() {
   const [role, setRole] = useState<string>("");
   const [isPlayerTurn, setIsPlayerTurn] = useState<boolean>(false);
+  const { userConnection } = useContext(gameContext);
 
   useEffect(() => {
     if (socketService.socket)

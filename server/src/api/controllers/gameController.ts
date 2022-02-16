@@ -78,6 +78,28 @@ export class GameController {
     @ConnectedSocket() socket: Socket,
     @MessageBody() message: any
   ) {
+    const myAxios = setupInterceptorsTo(
+      axios.create({
+        baseURL: "https://dao.oin.finance/index/game",
+        timeout: 5000,
+      })
+    );
+    const res = await myAxios.post("/battle", {
+      data: {
+        conn_id: message.connection_id,
+        room_id: message.room_id,
+        user_id: message.user_id,
+        battle_type: message.battle_type,
+        command: message.command,
+        number: "10",
+        button: message.button,
+      },
+    });
+    if (res.status === 200) {
+      socket.emit("game_update", res.data);
+    } else {
+      socket.emit("game_updaate_error", { error: "some error occured" });
+    }
     const gameRoom = this.getSocketGameRoom(socket);
     socket.to(gameRoom).emit("on_game_update", message);
   }

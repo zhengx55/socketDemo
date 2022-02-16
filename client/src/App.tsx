@@ -4,6 +4,7 @@ import socketService from "./services/socketService";
 import GameContext, { IGameContextProps } from "./gameContext";
 import gameService from "./services/gameService";
 import Battle from "./components/Battle";
+import CryptoJS, { enc } from "crypto-js";
 
 const AppContainer = styled.div`
   width: 100%;
@@ -166,6 +167,8 @@ function App() {
             setGameInfo((prev: any) => ({
               ...prev,
               room: msg.data.room_id,
+              type: msg.data.room_type,
+              current_user: msg.data.room_now_current_user,
               component: component,
             }));
           }
@@ -203,10 +206,6 @@ function App() {
   const gameContextValue: IGameContextProps = {
     playerInfo,
     setPlayerInfo,
-    isPlayerTurn,
-    setPlayerTurn,
-    isGameStarted,
-    setGameStarted,
     userConnection,
     setUserConnection,
   };
