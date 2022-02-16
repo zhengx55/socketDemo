@@ -57,14 +57,10 @@ export class GameController {
   ) {
     if (io.sockets.adapter.rooms.get(message.roomId).size === 2) {
       socket.emit("start_game", {
-        start: true,
-        role: "attacker",
-        command: [1, 3, 45, 21, 2, 3],
+        status: "success",
       });
       socket.to(message.roomId).emit("start_game", {
-        start: false,
-        room: "defender",
-        command: [4, 2, 13, 21, 31, 2],
+        status: "success",
       });
     } else if (io.sockets.adapter.rooms.get(message.roomId).size < 2) {
       socket.emit("pendings_game", { msg: "waiting for you component..." });
@@ -96,9 +92,10 @@ export class GameController {
       },
     });
     if (res.status === 200) {
-      socket.emit("game_update", res.data);
+      socket.emit("game_update_success", res.data);
+      socket.to(message.room_id).emit("game_update", res.data);
     } else {
-      socket.emit("game_updaate_error", { error: "some error occured" });
+      socket.emit("game_update_error", { error: "some error occured" });
     }
     const gameRoom = this.getSocketGameRoom(socket);
     socket.to(gameRoom).emit("on_game_update", message);

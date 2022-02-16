@@ -1,5 +1,4 @@
 import { Socket } from "socket.io-client";
-import { IPlayMatrix, IStartGame } from "../../components/Game";
 
 class GameService {
   public async joinGameRoom(socket: Socket, roomId: string): Promise<boolean> {
@@ -38,23 +37,23 @@ class GameService {
     });
   }
 
-  public async updateGame(socket: Socket, gameMatrix: IPlayMatrix) {
-    socket.emit("update_game", { matrix: gameMatrix });
-  }
-
-  public async onGameUpdate(
+  public async gameUpdate(
     socket: Socket,
-    listener: (matrix: IPlayMatrix) => void
-  ) {
-    socket.on("on_game_update", ({ matrix }) => listener(matrix));
-  }
-
-  public async gameWin(socket: Socket, message: string) {
-    socket.emit("game_win", { message });
-  }
-
-  public async onGameWin(socket: Socket, listener: (message: string) => void) {
-    socket.on("on_game_win", ({ message }) => listener(message));
+    userConnection: string,
+    data: any
+  ): Promise<any> {
+    return new Promise((rs, rj) => {
+      socket?.emit("update_game", {
+        connection_id: userConnection,
+        room_id: data.room_id,
+        user_id: data.user_id,
+        battle_type: data.battle_type,
+        command: data.command,
+        button: data.button,
+      });
+      socket.on("game_update_success", (res) => rs(res));
+      socket.on("game_update_error", ({ error }) => rj(error));
+    });
   }
 }
 

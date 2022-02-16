@@ -34,7 +34,7 @@ const mockData = {
     room_start_time: 1644472402,
     room_end_time: 0,
     command: "attack",
-    button: [4, 3, 2, 1, 1, 1, 4, 4, 4, 4],
+    button: "JGUGHyzO3dmHYW5eD51JeN7HLR48NFeaO072s5BPSgM=",
   },
 };
 /**

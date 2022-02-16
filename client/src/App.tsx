@@ -4,7 +4,6 @@ import socketService from "./services/socketService";
 import GameContext, { IGameContextProps } from "./gameContext";
 import gameService from "./services/gameService";
 import Battle from "./components/Battle";
-import CryptoJS, { enc } from "crypto-js";
 
 const AppContainer = styled.div`
   width: 100%;
@@ -88,7 +87,6 @@ const InfoTypo = styled.p`
 function App() {
   const [playerInfo, setPlayerInfo] = useState<any>(null);
   const [GameInfo, setGameInfo] = useState<any>({ room: "", component: {} });
-  const [isPlayerTurn, setPlayerTurn] = useState(false);
   const [isGameStarted, setGameStarted] = useState(false);
   const [isLogin, setIsLogin] = useState(false);
   const [isMatching, setIsMatching] = useState(false);
@@ -117,6 +115,16 @@ function App() {
       disconnectSocket();
     };
   }, []);
+
+  useEffect(() => {
+    if (socketService.socket) {
+      socketService.socket?.off("start_game").on("start_game", (msg) => {
+        if (msg.status === "success") {
+          setGameStarted(true);
+        }
+      });
+    }
+  });
 
   const loginGame = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -170,6 +178,8 @@ function App() {
               type: msg.data.room_type,
               current_user: msg.data.room_now_current_user,
               component: component,
+              button: msg.data.button,
+              command_type: msg.data.command,
             }));
           }
           socketService.socket?.emit("enter_room", msg.data.room_id);
@@ -194,8 +204,7 @@ function App() {
           socketService.socket,
           GameInfo.room
         );
-        setGameStarted(true);
-        console.log(ready);
+        if (ready.status === "success") setGameStarted(true);
       } catch (error) {
         console.error(error);
         setGameStarted(false);
@@ -208,6 +217,8 @@ function App() {
     setPlayerInfo,
     userConnection,
     setUserConnection,
+    GameInfo,
+    setGameInfo,
   };
   return (
     <GameContext.Provider value={gameContextValue}>
