@@ -29,23 +29,37 @@ const InfoTypo = styled.p`
 `;
 
 function Battle() {
-  const { playerInfo, userConnection, GameInfo, setGameInfo } =
+  const { playerInfo, setPlayerInfo, userConnection, GameInfo, setGameInfo } =
     useContext(gameContext);
 
   useEffect(() => {
     console.log("GameInfo:", GameInfo);
     console.log("playerInfo:", playerInfo);
     if (socketService.socket) {
-      socketService.socket?.off("update_game").on("update_game", (msg) => {
-        setGameInfo((prev: any) => ({
-          ...prev,
-          room: msg.data.room_id,
-          type: msg.data.room_type,
-          current_user: msg.data.room_now_current_user,
-          button: msg.data.button,
-          command_type: msg.data.command,
-        }));
-      });
+      socketService.socket
+        ?.off("game_update_success")
+        .on("game_update_success", (msg) => {
+          let user, component: any;
+          if (Object.keys(msg.data.playerList).length > 0) {
+            for (const player in msg.data.playerList) {
+              if (msg.data.playerList[player].user_id === playerInfo.user_id) {
+                user = msg.data.playerList[player];
+              } else {
+                component = msg.data.playerList[player];
+              }
+            }
+          }
+          setPlayerInfo(user);
+          setGameInfo((prev: any) => ({
+            ...prev,
+            room: msg.data.room_id,
+            type: msg.data.room_type,
+            component: component,
+            current_user: msg.data.room_now_current_user,
+            button: msg.data.button,
+            command_type: msg.data.command,
+          }));
+        });
       socketService.socket
         ?.off("game_update_error")
         .on("game_update_error", (msg) => {
@@ -68,7 +82,28 @@ function Battle() {
             button: GameInfo.button,
           }
         );
-        setGameInfo(newInfo);
+        let user, component: any;
+        if (Object.keys(newInfo.data.playerList).length > 0) {
+          for (const player in newInfo.data.playerList) {
+            if (
+              newInfo.data.playerList[player].user_id === playerInfo.user_id
+            ) {
+              user = newInfo.data.playerList[player];
+            } else {
+              component = newInfo.data.playerList[player];
+            }
+          }
+        }
+        setPlayerInfo(user);
+        setGameInfo((prev: any) => ({
+          ...prev,
+          room: newInfo.data.room_id,
+          type: newInfo.data.room_type,
+          component: component,
+          current_user: newInfo.data.room_now_current_user,
+          button: newInfo.data.button,
+          command_type: newInfo.data.command,
+        }));
       } catch (error) {
         console.error(error);
       }

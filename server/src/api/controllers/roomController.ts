@@ -3,9 +3,8 @@ import {
   MessageBody,
   OnMessage,
   SocketController,
-  SocketIO,
 } from "socket-controllers";
-import { Socket, Server } from "socket.io";
+import { Socket } from "socket.io";
 @SocketController()
 export class RoomController {
   @OnMessage("enter_room")

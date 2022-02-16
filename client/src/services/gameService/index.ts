@@ -51,8 +51,12 @@ class GameService {
         command: data.command,
         button: data.button,
       });
-      socket.on("game_update_success", (res) => rs(res));
-      socket.on("game_update_error", ({ error }) => rj(error));
+      socket
+        .off("game_update_success")
+        .on("game_update_success", (res) => rs(res));
+      socket
+        .off("game_update_error")
+        .on("game_update_error", ({ error }) => rj(error));
     });
   }
 }

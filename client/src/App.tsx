@@ -164,13 +164,15 @@ function App() {
         socketService.socket?.once("match_info", (msg) => {
           console.log(msg.data);
           // if message contains user's data, enter the specific room id
-          if (msg.data.playerList.length > 0) {
-            const user = msg.data.playerList.find(
-              (player: { user_id: string }) => player.user_id === userId
-            );
-            const component = msg.data.playerList.find(
-              (player: { user_id: string }) => player.user_id !== userId
-            );
+          let user, component: any;
+          if (Object.keys(msg.data.playerList).length > 0) {
+            for (const player in msg.data.playerList) {
+              if (msg.data.playerList[player].user_id === userId) {
+                user = msg.data.playerList[player];
+              } else {
+                component = msg.data.playerList[player];
+              }
+            }
             setPlayerInfo(user);
             setGameInfo((prev: any) => ({
               ...prev,

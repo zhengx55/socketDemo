@@ -93,12 +93,10 @@ export class GameController {
     });
     if (res.status === 200) {
       socket.emit("game_update_success", res.data);
-      socket.to(message.room_id).emit("game_update", res.data);
+      socket.to(message.room_id).emit("game_update_success", res.data);
     } else {
       socket.emit("game_update_error", { error: "some error occured" });
     }
-    const gameRoom = this.getSocketGameRoom(socket);
-    socket.to(gameRoom).emit("on_game_update", message);
   }
 
   @OnMessage("game_win")
