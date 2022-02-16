@@ -81,14 +81,8 @@ export function Game() {
     [null, null, null],
   ]);
 
-  const {
-    playerSymbol,
-    setPlayerSymbol,
-    setPlayerTurn,
-    isPlayerTurn,
-    setGameStarted,
-    isGameStarted,
-  } = useContext(gameContext);
+  const { setPlayerTurn, isPlayerTurn, setGameStarted, isGameStarted } =
+    useContext(gameContext);
 
   const checkGameState = (matrix: IPlayMatrix) => {
     for (let i = 0; i < matrix.length; i++) {

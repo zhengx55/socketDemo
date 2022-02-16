@@ -5,6 +5,8 @@ export interface IGameContextProps {
   setPlayerInfo: ({}) => void;
   isPlayerTurn: boolean;
   setPlayerTurn: (turn: boolean) => void;
+  PlayerRole: string;
+  setPlayerRole: (role: string) => void;
   isGameStarted: boolean;
   setGameStarted: (started: boolean) => void;
   userConnection: string;
@@ -16,6 +18,8 @@ const defaultState: IGameContextProps = {
   setPlayerInfo: () => {},
   isPlayerTurn: false,
   setPlayerTurn: () => {},
+  PlayerRole: "",
+  setPlayerRole: () => {},
   isGameStarted: false,
   setGameStarted: () => {},
   userConnection: "0",

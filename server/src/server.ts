@@ -137,5 +137,5 @@ const runRedis = async () => {
   // Redis subscriber return info of matching information
   setInterval(() => {
     pubClient.publish("some-key", JSON.stringify(mockData));
-  }, 1000);
+  }, 10000);
 };

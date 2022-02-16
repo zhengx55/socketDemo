@@ -1,13 +1,9 @@
 import { ChangeEvent, useEffect, useState } from "react";
 import styled from "styled-components";
 import socketService from "./services/socketService";
-import {
-  JoinButton,
-  JoinRoomContainer,
-  RoomIdInput,
-} from "./components/joinRoom";
 import GameContext, { IGameContextProps } from "./gameContext";
 import gameService from "./services/gameService";
+import Battle from "./components/Battle";
 
 const AppContainer = styled.div`
   width: 100%;
@@ -16,6 +12,25 @@ const AppContainer = styled.div`
   flex-direction: column;
   align-items: center;
   padding: 1em;
+`;
+
+export const JoinRoomContainer = styled.div`
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin-top: 2em;
+`;
+
+export const RoomIdInput = styled.input`
+  height: 30px;
+  width: 20em;
+  font-size: 17px;
+  outline: none;
+  border: 1px solid #8e44ad;
+  border-radius: 3px;
+  padding: 0 10px;
 `;
 
 const WelcomeText = styled.h1`
@@ -41,6 +56,24 @@ const MainContainer = styled.div`
   flex-direction: column;
   align-items: center;
   row-gap: 12rem;
+`;
+
+export const JoinButton = styled.button`
+  outline: none;
+  background-color: #8e44ad;
+  color: #fff;
+  font-size: 17px;
+  border: 2px solid transparent;
+  border-radius: 5px;
+  padding: 4px 18px;
+  transition: all 230ms ease-in-out;
+  margin-top: 1em;
+  cursor: pointer;
+  &:hover {
+    background-color: transparent;
+    border: 2px solid #8e44ad;
+    color: #8e44ad;
+  }
 `;
 
 const InfoTypo = styled.p`
@@ -84,12 +117,6 @@ function App() {
     };
   }, []);
 
-  useEffect(() => {
-    socketService.socket?.on("start_game", (msg) => {
-      console.log(msg);
-    });
-  });
-
   const loginGame = async (e: React.FormEvent) => {
     e.preventDefault();
     let random = "";
@@ -130,7 +157,7 @@ function App() {
           // if message contains user's data, enter the specific room id
           if (msg.data.playerList.length > 0) {
             const user = msg.data.playerList.find(
-              (player: any) => player.user_id === userId
+              (player: { user_id: string }) => player.user_id === userId
             );
             const component = msg.data.playerList.find(
               (player: { user_id: string }) => player.user_id !== userId
@@ -164,9 +191,11 @@ function App() {
           socketService.socket,
           GameInfo.room
         );
+        setGameStarted(true);
         console.log(ready);
       } catch (error) {
         console.error(error);
+        setGameStarted(false);
       }
     }
   };
@@ -203,87 +232,91 @@ function App() {
           )}
           {isLogin ? (
             isMatch ? (
-              <>
-                <LoginText>Match Info Ready</LoginText>
-                <JoinButton onClick={enterGameHandler}>Enter Game</JoinButton>
-                {playerInfo && (
-                  <div
-                    style={{
-                      display: "flex",
-                      width: "50%",
-                      height: "100%",
-                      justifyContent: "space-between",
-                    }}
-                  >
-                    <div style={{ width: "25%" }}>
-                      <InfoTypo>Your Info: </InfoTypo>
-                      <div
-                        style={{
-                          display: "flex",
-                          justifyContent: "space-between",
-                          width: "100%",
-                        }}
-                      >
-                        <InfoTypo>HP:</InfoTypo>
-                        <InfoTypo>{playerInfo.hp}</InfoTypo>
+              isGameStarted ? (
+                <Battle />
+              ) : (
+                <>
+                  <LoginText>Match Info Ready</LoginText>
+                  <JoinButton onClick={enterGameHandler}>Enter Game</JoinButton>
+                  {playerInfo && (
+                    <div
+                      style={{
+                        display: "flex",
+                        width: "50%",
+                        height: "100%",
+                        justifyContent: "space-between",
+                      }}
+                    >
+                      <div style={{ width: "25%" }}>
+                        <InfoTypo>Your Info: </InfoTypo>
+                        <div
+                          style={{
+                            display: "flex",
+                            justifyContent: "space-between",
+                            width: "100%",
+                          }}
+                        >
+                          <InfoTypo>HP:</InfoTypo>
+                          <InfoTypo>{playerInfo.hp}</InfoTypo>
+                        </div>
+                        <div
+                          style={{
+                            display: "flex",
+                            justifyContent: "space-between",
+                            width: "100%",
+                          }}
+                        >
+                          <InfoTypo>Attack:</InfoTypo>
+                          <InfoTypo>{playerInfo.attack}</InfoTypo>
+                        </div>
+                        <div
+                          style={{
+                            display: "flex",
+                            justifyContent: "space-between",
+                            width: "100%",
+                          }}
+                        >
+                          <InfoTypo>Armor:</InfoTypo>
+                          <InfoTypo>{playerInfo.armor}</InfoTypo>
+                        </div>
                       </div>
-                      <div
-                        style={{
-                          display: "flex",
-                          justifyContent: "space-between",
-                          width: "100%",
-                        }}
-                      >
-                        <InfoTypo>Attack:</InfoTypo>
-                        <InfoTypo>{playerInfo.attack}</InfoTypo>
-                      </div>
-                      <div
-                        style={{
-                          display: "flex",
-                          justifyContent: "space-between",
-                          width: "100%",
-                        }}
-                      >
-                        <InfoTypo>Armor:</InfoTypo>
-                        <InfoTypo>{playerInfo.armor}</InfoTypo>
+                      <div style={{ width: "35%" }}>
+                        <InfoTypo>Component Info: </InfoTypo>
+                        <div
+                          style={{
+                            display: "flex",
+                            justifyContent: "space-between",
+                            width: "100%",
+                          }}
+                        >
+                          <InfoTypo>HP:</InfoTypo>
+                          <InfoTypo>{GameInfo.component.hp}</InfoTypo>
+                        </div>
+                        <div
+                          style={{
+                            display: "flex",
+                            justifyContent: "space-between",
+                            width: "100%",
+                          }}
+                        >
+                          <InfoTypo>Attack:</InfoTypo>
+                          <InfoTypo>{GameInfo.component.attack}</InfoTypo>
+                        </div>
+                        <div
+                          style={{
+                            display: "flex",
+                            justifyContent: "space-between",
+                            width: "100%",
+                          }}
+                        >
+                          <InfoTypo>Armor:</InfoTypo>
+                          <InfoTypo>{GameInfo.component.armor}</InfoTypo>
+                        </div>
                       </div>
                     </div>
-                    <div style={{ width: "35%" }}>
-                      <InfoTypo>Component Info: </InfoTypo>
-                      <div
-                        style={{
-                          display: "flex",
-                          justifyContent: "space-between",
-                          width: "100%",
-                        }}
-                      >
-                        <InfoTypo>HP:</InfoTypo>
-                        <InfoTypo>{GameInfo.component.hp}</InfoTypo>
-                      </div>
-                      <div
-                        style={{
-                          display: "flex",
-                          justifyContent: "space-between",
-                          width: "100%",
-                        }}
-                      >
-                        <InfoTypo>Attack:</InfoTypo>
-                        <InfoTypo>{GameInfo.component.attack}</InfoTypo>
-                      </div>
-                      <div
-                        style={{
-                          display: "flex",
-                          justifyContent: "space-between",
-                          width: "100%",
-                        }}
-                      >
-                        <InfoTypo>Armor:</InfoTypo>
-                        <InfoTypo>{GameInfo.component.armor}</InfoTypo>
-                      </div>
-                    </div>
-                  </div>
-                )}
-              </>
+                  )}
+                </>
+              )
             ) : (
               <form onSubmit={matchGame}>
                 <JoinButton type="submit" disabled={isMatching}>
