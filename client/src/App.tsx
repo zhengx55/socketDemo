@@ -4,6 +4,7 @@ import socketService from "./services/socketService";
 import GameContext, { IGameContextProps } from "./gameContext";
 import gameService from "./services/gameService";
 import Battle from "./components/Battle";
+import Knight from "./components/Hero";
 
 const AppContainer = styled.div`
   width: 100%;
@@ -224,7 +225,7 @@ function App() {
   };
   return (
     <GameContext.Provider value={gameContextValue}>
-      <AppContainer>
+      {/* <AppContainer>
         <WelcomeText>WS PlayGround</WelcomeText>
         <MainContainer>
           <LoginText>{isLogin}</LoginText>
@@ -338,6 +339,9 @@ function App() {
             )
           ) : null}
         </MainContainer>
+      </AppContainer> */}
+      <AppContainer>
+        <Knight />
       </AppContainer>
     </GameContext.Provider>
   );

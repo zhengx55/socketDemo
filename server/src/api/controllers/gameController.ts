@@ -81,7 +81,7 @@ export class GameController {
       })
     );
     let random = "";
-    for (let i = 0; i < 2; i++) {
+    for (let i = 0; i < 3; i++) {
       random += Math.floor(Math.random() * 9 + 1);
     }
     const res = await myAxios.post("/battle", {
