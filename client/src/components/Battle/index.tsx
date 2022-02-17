@@ -42,7 +42,10 @@ function Battle() {
           let user, component: any;
           if (Object.keys(msg.data.playerList).length > 0) {
             for (const player in msg.data.playerList) {
-              if (msg.data.playerList[player].user_id === playerInfo.user_id) {
+              if (
+                msg.data.playerList[player].user_id ===
+                Number(playerInfo.user_id)
+              ) {
                 user = msg.data.playerList[player];
               } else {
                 component = msg.data.playerList[player];
@@ -83,27 +86,30 @@ function Battle() {
           }
         );
         let user, component: any;
-        if (Object.keys(newInfo.data.playerList).length > 0) {
-          for (const player in newInfo.data.playerList) {
-            if (
-              newInfo.data.playerList[player].user_id === playerInfo.user_id
-            ) {
-              user = newInfo.data.playerList[player];
-            } else {
-              component = newInfo.data.playerList[player];
+        if (newInfo.code === "200") {
+          if (Object.keys(newInfo.data.playerList).length > 0) {
+            for (const player in newInfo.data.playerList) {
+              if (
+                newInfo.data.playerList[player].user_id ===
+                Number(playerInfo.user_id)
+              ) {
+                user = newInfo.data.playerList[player];
+              } else {
+                component = newInfo.data.playerList[player];
+              }
             }
           }
+          setPlayerInfo(user);
+          setGameInfo((prev: any) => ({
+            ...prev,
+            room: newInfo.data.room_id,
+            type: newInfo.data.room_type,
+            component: component,
+            current_user: newInfo.data.room_now_current_user,
+            button: newInfo.data.button,
+            command_type: newInfo.data.command,
+          }));
         }
-        setPlayerInfo(user);
-        setGameInfo((prev: any) => ({
-          ...prev,
-          room: newInfo.data.room_id,
-          type: newInfo.data.room_type,
-          component: component,
-          current_user: newInfo.data.room_now_current_user,
-          button: newInfo.data.button,
-          command_type: newInfo.data.command,
-        }));
       } catch (error) {
         console.error(error);
       }

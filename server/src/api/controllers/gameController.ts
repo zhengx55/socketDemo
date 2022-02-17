@@ -80,14 +80,20 @@ export class GameController {
         timeout: 5000,
       })
     );
+    let random = "";
+    for (let i = 0; i < 2; i++) {
+      random += Math.floor(Math.random() * 9 + 1);
+    }
     const res = await myAxios.post("/battle", {
+      // use random number for testing
       data: {
-        conn_id: message.connection_id,
+        // conn_id: message.connection_id,
+        coon_id: 5851,
         room_id: message.room_id,
         user_id: message.user_id,
-        battle_type: message.battle_type,
+        room_type: message.battle_type,
         command: message.command,
-        number: "10",
+        number: random,
         button: message.button,
       },
     });

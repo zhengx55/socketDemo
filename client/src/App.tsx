@@ -167,7 +167,7 @@ function App() {
           let user, component: any;
           if (Object.keys(msg.data.playerList).length > 0) {
             for (const player in msg.data.playerList) {
-              if (msg.data.playerList[player].user_id === userId) {
+              if (msg.data.playerList[player].user_id === Number(userId)) {
                 user = msg.data.playerList[player];
               } else {
                 component = msg.data.playerList[player];
