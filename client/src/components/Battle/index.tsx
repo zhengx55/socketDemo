@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from "react";
 import styled from "styled-components";
-import gameContext from "../../gameContext";
+import gameContext from "../../context/gameContext";
 import { JoinButton } from "../../App";
 import socketService from "../../services/socketService";
 import gameService from "../../services/gameService";

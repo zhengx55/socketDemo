@@ -1,10 +1,11 @@
 import { ChangeEvent, useEffect, useState } from "react";
 import styled from "styled-components";
 import socketService from "./services/socketService";
-import GameContext, { IGameContextProps } from "./gameContext";
+import GameContext, { IGameContextProps } from "./context/gameContext";
 import gameService from "./services/gameService";
 import Battle from "./components/Battle";
 import Knight from "./components/Hero";
+import { Stage } from "@inlet/react-pixi";
 
 const AppContainer = styled.div`
   width: 100%;
@@ -341,7 +342,9 @@ function App() {
         </MainContainer>
       </AppContainer> */}
       <AppContainer>
-        <Knight />
+        <Stage>
+          <Knight />
+        </Stage>
       </AppContainer>
     </GameContext.Provider>
   );

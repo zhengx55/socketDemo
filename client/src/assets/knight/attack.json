@@ -1,6 +1,6 @@
 {
 	"frames": {
-		"Attack (10).png": {
+		"Attack1.png": {
 			"frame": {
 				"x": 1,
 				"y": 1,
@@ -20,7 +20,7 @@
 				"h": 707
 			}
 		},
-		"Attack (1).png": {
+		"Attack10.png": {
 			"frame": {
 				"x": 590,
 				"y": 1,
@@ -40,7 +40,7 @@
 				"h": 707
 			}
 		},
-		"Attack (2).png": {
+		"Attack2.png": {
 			"frame": {
 				"x": 1179,
 				"y": 1,
@@ -60,7 +60,7 @@
 				"h": 707
 			}
 		},
-		"Attack (3).png": {
+		"Attack3.png": {
 			"frame": {
 				"x": 1,
 				"y": 710,
@@ -80,7 +80,7 @@
 				"h": 707
 			}
 		},
-		"Attack (4).png": {
+		"Attack4.png": {
 			"frame": {
 				"x": 590,
 				"y": 710,
@@ -100,7 +100,7 @@
 				"h": 707
 			}
 		},
-		"Attack (5).png": {
+		"Attack5.png": {
 			"frame": {
 				"x": 1179,
 				"y": 710,
@@ -120,7 +120,7 @@
 				"h": 707
 			}
 		},
-		"Attack (6).png": {
+		"Attack6.png": {
 			"frame": {
 				"x": 1768,
 				"y": 1,
@@ -140,7 +140,7 @@
 				"h": 707
 			}
 		},
-		"Attack (7).png": {
+		"Attack7.png": {
 			"frame": {
 				"x": 1768,
 				"y": 710,
@@ -160,7 +160,7 @@
 				"h": 707
 			}
 		},
-		"Attack (8).png": {
+		"Attack8.png": {
 			"frame": {
 				"x": 1,
 				"y": 1419,
@@ -180,7 +180,7 @@
 				"h": 707
 			}
 		},
-		"Attack (9).png": {
+		"Attack9.png": {
 			"frame": {
 				"x": 590,
 				"y": 1419,
@@ -204,7 +204,7 @@
 	"meta": {
 		"app": "http://www.codeandweb.com/texturepacker",
 		"version": "1.0",
-		"image": "spritesheet.png",
+		"image": "Attack.png",
 		"format": "RGBA8888",
 		"size": {
 			"w": 2356,
