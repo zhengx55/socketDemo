@@ -4,8 +4,6 @@ import socketService from "./services/socketService";
 import GameContext, { IGameContextProps } from "./context/gameContext";
 import gameService from "./services/gameService";
 import Battle from "./components/Battle";
-// import Knight from "./components/Hero";
-import { Stage } from "@inlet/react-pixi";
 
 const AppContainer = styled.div`
   width: 100%;
@@ -85,6 +83,9 @@ const InfoTypo = styled.p`
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 `;
+const attackSheet = "knight/attack.json";
+const positioSheet = "knight/position.json";
+const deadSheet = "knight/dead.json";
 
 function App() {
   const [playerInfo, setPlayerInfo] = useState<any>(null);
@@ -342,9 +343,16 @@ function App() {
         </MainContainer>
       </AppContainer>
       {/* <AppContainer>
-        <Stage width={800} height={600} options={{ backgroundAlpha: 0 }}>
-          <Knight />
+        <Stage width={800} height={800} options={{ backgroundAlpha: 0 }}>
+          <Knight texture={key} />
         </Stage>
+        <button
+          onClick={() => {
+            setKey(key === "attack" ? "position" : "attack");
+          }}
+        >
+          Change Texture
+        </button>
       </AppContainer> */}
     </GameContext.Provider>
   );

@@ -25,7 +25,7 @@ const mockData = {
         type: "1",
       },
     },
-    room_now_current_user: 2,
+    room_now_current_user: 1,
     room_id: "021656504",
     room_type: "pvp-auto",
     room_status: 1,
@@ -33,7 +33,7 @@ const mockData = {
     room_battle_reward: [],
     room_start_time: 1644997688,
     room_end_time: 0,
-    command: "attack",
+    command: "armor",
     button: "09gJm8ARMCNyZfu8BrEKAtdwGj+wh+bXmZzuZFyRCms=",
   },
 };

@@ -4,6 +4,8 @@ import gameContext from "../../context/gameContext";
 import { JoinButton } from "../../App";
 import socketService from "../../services/socketService";
 import gameService from "../../services/gameService";
+import Knight from "../Hero";
+import { Stage } from "@inlet/react-pixi";
 
 const Container = styled.div`
   width: 100%;
@@ -32,26 +34,28 @@ function Battle() {
   const { playerInfo, setPlayerInfo, userConnection, GameInfo, setGameInfo } =
     useContext(gameContext);
 
+  const [key, setKey] = useState<string>("position");
+
   useEffect(() => {
     console.log("GameInfo:", GameInfo);
     console.log("playerInfo:", playerInfo);
+    let timer: number | undefined;
     if (socketService.socket) {
-      socketService.socket
-        ?.off("game_update_success")
-        .on("game_update_success", (msg) => {
-          let user, component: any;
-          if (Object.keys(msg.data.playerList).length > 0) {
-            for (const player in msg.data.playerList) {
-              if (
-                msg.data.playerList[player].user_id ===
-                Number(playerInfo.user_id)
-              ) {
-                user = msg.data.playerList[player];
-              } else {
-                component = msg.data.playerList[player];
-              }
+      socketService.socket.on("game_update_success", (msg) => {
+        let user, component: any;
+        if (Object.keys(msg.data.playerList).length > 0) {
+          for (const player in msg.data.playerList) {
+            if (
+              msg.data.playerList[player].user_id === Number(playerInfo.user_id)
+            ) {
+              user = msg.data.playerList[player];
+            } else {
+              component = msg.data.playerList[player];
             }
           }
+        }
+        timer = setTimeout((user: {}) => {
+          setKey("position");
           setPlayerInfo(user);
           setGameInfo((prev: any) => ({
             ...prev,
@@ -62,16 +66,21 @@ function Battle() {
             button: msg.data.button,
             command_type: msg.data.command,
           }));
-        });
+        }, 1000);
+      });
       socketService.socket
         ?.off("game_update_error")
         .on("game_update_error", (msg) => {
           console.error(msg);
         });
     }
+    return () => {
+      if (timer) clearTimeout(timer);
+    };
   });
 
   const onSubmitCommandHandler = async (): Promise<void> => {
+    setKey("attack");
     if (socketService.socket) {
       try {
         const newInfo = await gameService.gameUpdate(
@@ -86,6 +95,7 @@ function Battle() {
           }
         );
         let user, component: any;
+        console.log(newInfo);
         if (newInfo.code === "200") {
           if (Object.keys(newInfo.data.playerList).length > 0) {
             for (const player in newInfo.data.playerList) {
@@ -121,6 +131,9 @@ function Battle() {
   return (
     <Container>
       <Player>
+        <Stage width={400} height={300} options={{ backgroundAlpha: 0 }}>
+          <Knight texture={key} />
+        </Stage>
         <InfoTypo>Your HP:{playerInfo.hp}</InfoTypo>
         <InfoTypo>
           {GameInfo.current_user === playerInfo.user_id
