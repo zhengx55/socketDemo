@@ -4,7 +4,7 @@ import socketService from "./services/socketService";
 import GameContext, { IGameContextProps } from "./context/gameContext";
 import gameService from "./services/gameService";
 import Battle from "./components/Battle";
-import Knight from "./components/Hero";
+// import Knight from "./components/Hero";
 import { Stage } from "@inlet/react-pixi";
 
 const AppContainer = styled.div`
