@@ -226,7 +226,7 @@ function App() {
   };
   return (
     <GameContext.Provider value={gameContextValue}>
-      {/* <AppContainer>
+      <AppContainer>
         <WelcomeText>WS PlayGround</WelcomeText>
         <MainContainer>
           <LoginText>{isLogin}</LoginText>
@@ -340,12 +340,12 @@ function App() {
             )
           ) : null}
         </MainContainer>
-      </AppContainer> */}
-      <AppContainer>
-        <Stage width={600} height={600} options={{ backgroundAlpha: 0 }}>
+      </AppContainer>
+      {/* <AppContainer>
+        <Stage width={800} height={600} options={{ backgroundAlpha: 0 }}>
           <Knight />
         </Stage>
-      </AppContainer>
+      </AppContainer> */}
     </GameContext.Provider>
   );
 }
