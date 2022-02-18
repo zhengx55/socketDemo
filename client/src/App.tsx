@@ -342,7 +342,7 @@ function App() {
         </MainContainer>
       </AppContainer> */}
       <AppContainer>
-        <Stage>
+        <Stage width={600} height={600} options={{ backgroundAlpha: 0 }}>
           <Knight />
         </Stage>
       </AppContainer>

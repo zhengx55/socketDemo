@@ -1,0 +1,102 @@
+{"frames": {
+
+"Idle (1).png":
+{
+	"frame": {"x":863,"y":1226,"w":437,"h":617},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":57,"y":41,"w":437,"h":617},
+	"sourceSize": {"w":587,"h":707},
+	"anchor": {"x":0,"y":0}
+},
+"Idle (2).png":
+{
+	"frame": {"x":427,"y":612,"w":434,"h":614},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":59,"y":43,"w":434,"h":614},
+	"sourceSize": {"w":587,"h":707},
+	"anchor": {"x":0,"y":0}
+},
+"Idle (3).png":
+{
+	"frame": {"x":861,"y":612,"w":430,"h":614},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":61,"y":44,"w":430,"h":614},
+	"sourceSize": {"w":587,"h":707},
+	"anchor": {"x":0,"y":0}
+},
+"Idle (4).png":
+{
+	"frame": {"x":418,"y":1,"w":427,"h":611},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":63,"y":46,"w":427,"h":611},
+	"sourceSize": {"w":587,"h":707},
+	"anchor": {"x":0,"y":0}
+},
+"Idle (5).png":
+{
+	"frame": {"x":845,"y":1,"w":423,"h":611},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":66,"y":47,"w":423,"h":611},
+	"sourceSize": {"w":587,"h":707},
+	"anchor": {"x":0,"y":0}
+},
+"Idle (6).png":
+{
+	"frame": {"x":1268,"y":1,"w":420,"h":611},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":68,"y":47,"w":420,"h":611},
+	"sourceSize": {"w":587,"h":707},
+	"anchor": {"x":0,"y":0}
+},
+"Idle (7).png":
+{
+	"frame": {"x":1,"y":1,"w":417,"h":609},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":70,"y":48,"w":417,"h":609},
+	"sourceSize": {"w":587,"h":707},
+	"anchor": {"x":0,"y":0}
+},
+"Idle (8).png":
+{
+	"frame": {"x":1,"y":612,"w":426,"h":613},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":64,"y":45,"w":426,"h":613},
+	"sourceSize": {"w":587,"h":707},
+	"anchor": {"x":0,"y":0}
+},
+"Idle (9).png":
+{
+	"frame": {"x":1,"y":1226,"w":427,"h":614},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":63,"y":44,"w":427,"h":614},
+	"sourceSize": {"w":587,"h":707},
+	"anchor": {"x":0,"y":0}
+},
+"Idle (10).png":
+{
+	"frame": {"x":428,"y":1226,"w":435,"h":616},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":58,"y":42,"w":435,"h":616},
+	"sourceSize": {"w":587,"h":707},
+	"anchor": {"x":0,"y":0}
+}},
+"meta": {
+	"app": "https://www.codeandweb.com/texturepacker",
+	"version": "1.0",
+	"image": "position.png",
+	"format": "BGRA8888",
+	"size": {"w":1689,"h":1844},
+	"scale": "1",
+	"smartupdate": "$TexturePacker:SmartUpdate:6d6766b329c3bdb9bb0721fc0a39ce0b:4659102e8d33e7ee09997aa92a9d4b74:9982fb613b9afacfe424dad22ab59760$"
+}
+}
