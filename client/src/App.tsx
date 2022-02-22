@@ -4,6 +4,7 @@ import socketService from "./services/socketService";
 import GameContext, { IGameContextProps } from "./context/gameContext";
 import gameService from "./services/gameService";
 import Battle from "./components/Battle";
+import useOrientation from "./hooks/useOrientation";
 
 const AppContainer = styled.div`
   width: 100%;
@@ -96,10 +97,11 @@ function App() {
   const [isMatch, setIsMatch] = useState(false);
   const [userConnection, setUserConnection] = useState("0");
   const [userId, setUserId] = useState("0");
+  const orientation = useOrientation();
 
   const connectSocket = async () => {
     await socketService
-      .connect("http://localhost:9000")
+      .connect("ws://localhost:9000")
       .then(() => {
         console.log("Ws service connected successfully");
       })
@@ -113,7 +115,7 @@ function App() {
   };
 
   useEffect(() => {
-    connectSocket();
+    // connectSocket();
     return () => {
       disconnectSocket();
     };
@@ -225,6 +227,7 @@ function App() {
     GameInfo,
     setGameInfo,
   };
+  if (orientation !== "landscape") return null;
   return (
     <GameContext.Provider value={gameContextValue}>
       <AppContainer>
