@@ -10,6 +10,7 @@ const animate = keyframes`
 export const Dot = styled.ul`
   margin: 0 0 10px 0;
   padding: 0;
+  height: 20px;
   display: flex;
   .dot {
     list-style: none;
