@@ -64,7 +64,7 @@ function App() {
   const [isLogin, setIsLogin] = useState<boolean>(false);
   const [userConnection, setUserConnection] = useState<string>("0");
   const [userId, setUserId] = useState<string>("0");
-  const [orientation, device] = useOrientation();
+  const [orientation] = useOrientation();
 
   const connectSocket = async (): Promise<void> => {
     await socketService
@@ -145,9 +145,7 @@ function App() {
     GameInfo,
     setGameInfo,
   };
-  if (device !== "mobile") return <div>s</div>;
-  else if (orientation !== "landscape") return <Portrait />;
-
+  if (orientation !== "landscape") return <Portrait />;
   return (
     <GameContext.Provider value={gameContextValue}>
       {!isGameStarted && <Match isLogin={isLogin} />}
