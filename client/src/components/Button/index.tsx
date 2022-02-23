@@ -21,4 +21,5 @@ export const Button = styled.button<ButtonProp>`
   padding: 0;
   outline: none;
   border: none;
+  padding-bottom: 5px;
 `;

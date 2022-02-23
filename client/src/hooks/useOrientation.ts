@@ -14,8 +14,12 @@ function useOrientation(): string | undefined {
     }
     // Add event listener
     window.addEventListener("resize", handleResize);
+    window.addEventListener("orientationchange", handleResize);
     handleResize();
-    return () => window.removeEventListener("resize", handleResize);
+    return () => {
+      window.removeEventListener("resize", handleResize);
+      window.removeEventListener("orientationchange", handleResize);
+    };
   }, []); // Empty array ensures that effect is only run on mount
   return orientation;
 }
