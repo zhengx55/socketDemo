@@ -5,6 +5,7 @@ import GameContext, { IGameContextProps } from "./context/gameContext";
 import gameService from "./services/gameService";
 import useOrientation from "./hooks/useOrientation";
 import Match from "./pages/Match";
+import Portrait from "./pages/prompt/portrait";
 
 type TypoProps = {
   weight?: string;
@@ -63,7 +64,7 @@ function App() {
   const [isLogin, setIsLogin] = useState<boolean>(false);
   const [userConnection, setUserConnection] = useState<string>("0");
   const [userId, setUserId] = useState<string>("0");
-  const orientation = useOrientation();
+  const [orientation, device] = useOrientation();
 
   const connectSocket = async (): Promise<void> => {
     await socketService
@@ -144,7 +145,9 @@ function App() {
     GameInfo,
     setGameInfo,
   };
-  if (orientation !== "landscape") return null;
+  if (device !== "mobile") return <div>s</div>;
+  else if (orientation !== "landscape") return <Portrait />;
+
   return (
     <GameContext.Provider value={gameContextValue}>
       {!isGameStarted && <Match isLogin={isLogin} />}

@@ -1,4 +1,4 @@
-import { ChangeEvent, useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import styled from "styled-components";
 import gameService from "../../services/gameService";
 import { Dot } from "../../components/Loading/DotLoading";
