@@ -89,7 +89,7 @@ const TitleContainer = styled.div`
 
 const Match = ({ isLogin }: MatchProps) => {
   const [isMatching, setIsMatching] = useState(false);
-  const [isMatch, setIsMatch] = useState(false);
+  const [isMatch, setIsMatch] = useState(true);
   const userId = "2";
   const { playerInfo, setPlayerInfo, userConnection, GameInfo, setGameInfo } =
     useContext(gameContext);
@@ -144,7 +144,10 @@ const Match = ({ isLogin }: MatchProps) => {
       <MainContainer>
         <TitleContainer>Competition</TitleContainer>
         {!isMatch && isMatching ? (
-          <>
+          <div style={{ display: "flex", alignItems: "center" }}>
+            <Typography weight="bold" color="#C69953">
+              Matching
+            </Typography>
             <Dot>
               <li className="dot" />
               <li className="dot" />
@@ -152,20 +155,15 @@ const Match = ({ isLogin }: MatchProps) => {
               <li className="dot" />
               <li className="dot" />
             </Dot>
-            <Typography weight="bold" color="#C69953">
-              Matching opponents
-            </Typography>
-          </>
+          </div>
         ) : !isMatching && isMatch ? (
           <>
-            <Dot />
             <Typography weight="bold" color="#C69953">
-              Ready!
+              Game Ready!
             </Typography>
           </>
         ) : (
           <>
-            <Dot />
             <Typography weight="bold" color="#C69953">
               Click start to match
             </Typography>
@@ -190,6 +188,11 @@ const Match = ({ isLogin }: MatchProps) => {
         {isMatch && !isMatching && (
           <Button w="12vw" h="5vw" color="#C69953" onClick={matchGame}>
             Enter
+          </Button>
+        )}
+        {!isMatch && isMatching && (
+          <Button w="12vw" h="5vw" color="#C69953" onClick={matchGame}>
+            Matching
           </Button>
         )}
       </MainContainer>

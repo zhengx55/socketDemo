@@ -3,21 +3,20 @@ import styled, { keyframes } from "styled-components";
 const animate = keyframes`
     0%{transform: translateY(0)}
     60%{transform: translateY(0)}
-    80%{transform: translateY(-20px)}
+    80%{transform: translateY(-5px)}
     100%{transform: translateY(0px)}
 `;
 
 export const Dot = styled.ul`
-  margin: 0 0 10px 0;
-  padding: 0;
-  height: 20px;
+  padding: 0 0 0 10px;
+  margin: 0;
   display: flex;
   .dot {
     list-style: none;
-    width: 20px;
-    height: 20px;
+    width: 5px;
+    height: 5px;
     background-color: #c69953;
-    margin: 0 5px;
+    margin: 0 2px;
     border-radius: 50%;
     animation: ${animate} 1.4s linear infinite;
     &:nth-child(1) {
