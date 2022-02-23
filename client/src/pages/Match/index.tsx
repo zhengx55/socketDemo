@@ -191,7 +191,7 @@ const Match = ({ isLogin }: MatchProps) => {
           </Button>
         )}
         {!isMatch && isMatching && (
-          <Button w="12vw" h="5vw" color="#C69953" onClick={matchGame}>
+          <Button w="12vw" h="5vw" color="#C69953" disabled>
             Matching
           </Button>
         )}
