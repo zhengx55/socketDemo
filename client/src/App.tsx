@@ -59,13 +59,13 @@ const deadSheet = "knight/dead.json";
 function App() {
   const [playerInfo, setPlayerInfo] = useState<any>(null);
   const [GameInfo, setGameInfo] = useState<any>({ room: "", component: {} });
-  const [isGameStarted, setGameStarted] = useState(false);
-  const [isLogin, setIsLogin] = useState(false);
-  const [userConnection, setUserConnection] = useState("0");
-  const [userId, setUserId] = useState("0");
+  const [isGameStarted, setGameStarted] = useState<boolean>(false);
+  const [isLogin, setIsLogin] = useState<boolean>(false);
+  const [userConnection, setUserConnection] = useState<string>("0");
+  const [userId, setUserId] = useState<string>("0");
   const orientation = useOrientation();
 
-  const connectSocket = async () => {
+  const connectSocket = async (): Promise<void> => {
     await socketService
       .connect("ws://localhost:9000")
       .then(() => {
@@ -76,7 +76,7 @@ function App() {
       });
   };
 
-  const disconnectSocket = () => {
+  const disconnectSocket = (): void => {
     if (socketService.socket) socketService.socket.close();
   };
 
@@ -97,7 +97,7 @@ function App() {
     }
   });
 
-  const loginGame = async (e: React.FormEvent) => {
+  const loginGame = async (e: React.FormEvent): Promise<void> => {
     e.preventDefault();
     let random = "";
     for (let i = 0; i < 4; i++) {

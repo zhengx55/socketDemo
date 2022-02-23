@@ -28,15 +28,6 @@ export const AppContainer = styled.div`
   background-size: 100% 100%;
 `;
 
-export const JoinRoomContainer = styled.div`
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  margin-top: 2em;
-`;
-
 const MainContainer = styled.div`
   width: 85%;
   height: 80%;
@@ -48,7 +39,7 @@ const MainContainer = styled.div`
   background-repeat: no-repeat;
   background-size: 100% 100%;
   position: relative;
-  padding-top: 7%;
+  justify-content: center;
 `;
 
 export const MatchContainer = styled.div`
@@ -98,7 +89,7 @@ const TitleContainer = styled.div`
 
 const Match = ({ isLogin }: MatchProps) => {
   const [isMatching, setIsMatching] = useState(false);
-  const [isMatch, setIsMatch] = useState(false);
+  const [isMatch, setIsMatch] = useState(true);
 
   const { playerInfo, setPlayerInfo, userConnection, GameInfo, setGameInfo } =
     useContext(gameContext);
@@ -194,6 +185,11 @@ const Match = ({ isLogin }: MatchProps) => {
         {!isMatch && !isMatching && (
           <Button w="12vw" h="5vw" color="#C69953" onClick={matchGame}>
             Match
+          </Button>
+        )}
+        {isMatch && !isMatching && (
+          <Button w="12vw" h="5vw" color="#C69953" onClick={matchGame}>
+            Enter
           </Button>
         )}
       </MainContainer>
