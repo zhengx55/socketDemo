@@ -90,7 +90,7 @@ const TitleContainer = styled.div`
 const Match = ({ isLogin }: MatchProps) => {
   const [isMatching, setIsMatching] = useState(false);
   const [isMatch, setIsMatch] = useState(true);
-
+  const userId = "2";
   const { playerInfo, setPlayerInfo, userConnection, GameInfo, setGameInfo } =
     useContext(gameContext);
 
