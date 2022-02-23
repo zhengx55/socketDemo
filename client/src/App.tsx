@@ -5,14 +5,24 @@ import GameContext, { IGameContextProps } from "./context/gameContext";
 import gameService from "./services/gameService";
 import Battle from "./components/Battle";
 import useOrientation from "./hooks/useOrientation";
+import { Dot } from "./components/Loading/DotLoading";
+
+type TypoProps = {
+  weight?: string;
+  color?: string;
+  size?: string;
+};
 
 const AppContainer = styled.div`
   width: 100%;
   height: 100%;
   display: flex;
-  flex-direction: column;
   align-items: center;
-  padding: 1em;
+  justify-content: center;
+  background-image: url("/img/Match_bg1.png");
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
 `;
 
 export const JoinRoomContainer = styled.div`
@@ -34,29 +44,64 @@ export const RoomIdInput = styled.input`
   padding: 0 10px;
 `;
 
-const WelcomeText = styled.h1`
-  margin: 0;
-  font-size: 4rem;
-  background: -webkit-linear-gradient(#eee, #8e44ad);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-`;
-
-const LoginText = styled.p`
-  margin: 0;
-  font-size: 2rem;
-  background: -webkit-linear-gradient(#eee, #8e44ad);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-`;
-
 const MainContainer = styled.div`
-  width: 100%;
-  height: 100%;
+  width: 85%;
+  height: 80%;
   display: flex;
   flex-direction: column;
   align-items: center;
-  row-gap: 12rem;
+  justify-content: center;
+  background-image: url("/img/Match_bg2.png");
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+  position: relative;
+  padding-top: 1%;
+`;
+
+export const MatchContainer = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 10%;
+  width: 100%;
+  .frame {
+    width: 20%;
+    background-image: url("/img/frame.png");
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: 100% 100%;
+    aspect-ratio: 0.9;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+`;
+
+export const Typography = styled.p<TypoProps>`
+  font-size: ${(props) => (props.size ? props.size : "2vw")};
+  font-weight: ${(props) => props.weight};
+  color: ${(props) => props.color};
+  line-height: 20px;
+  padding: 0;
+  margin: 0;
+`;
+
+const TitleContainer = styled.div`
+  position: absolute;
+  top: -8%;
+  width: 40%;
+  height: 25%;
+  padding-top: 2.5%;
+  background-image: url("/img/Ribbon.png");
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+  display: flex;
+  justify-content: center;
+  font-size: 2vw;
+  font-weight: 600;
+  color: #b09c7a;
 `;
 
 export const JoinButton = styled.button`
@@ -77,13 +122,6 @@ export const JoinButton = styled.button`
   }
 `;
 
-const InfoTypo = styled.p`
-  margin: 0;
-  font-size: 1.5rem;
-  background: -webkit-linear-gradient(#eee, #8e44ad);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-`;
 const attackSheet = "knight/attack.json";
 const positioSheet = "knight/position.json";
 const deadSheet = "knight/dead.json";
@@ -231,118 +269,37 @@ function App() {
   return (
     <GameContext.Provider value={gameContextValue}>
       <AppContainer>
-        <WelcomeText>WS PlayGround</WelcomeText>
         <MainContainer>
-          <LoginText>{isLogin}</LoginText>
-          {!isLogin && (
-            <form onSubmit={loginGame}>
-              <JoinRoomContainer>
-                <RoomIdInput
-                  placeholder="User id ..."
-                  value={userId}
-                  onChange={onChangeHandler}
-                />
-                <JoinButton type="submit" disabled={isMatching}>
-                  Login
-                </JoinButton>
-              </JoinRoomContainer>
-            </form>
+          <TitleContainer>Competition</TitleContainer>
+          {!isMatching ? (
+            <>
+              <Dot>
+                <li className="dot"></li>
+                <li className="dot"></li>
+                <li className="dot"></li>
+                <li className="dot"></li>
+                <li className="dot"></li>
+              </Dot>
+              <Typography weight="bold" color="#C69953">
+                Matching opponents
+              </Typography>
+            </>
+          ) : (
+            <Typography weight="bold" color="#C69953">
+              Ready!
+            </Typography>
           )}
-          {isLogin ? (
-            isMatch ? (
-              isGameStarted ? (
-                <Battle />
-              ) : (
-                <>
-                  <LoginText>Match Info Ready</LoginText>
-                  <JoinButton onClick={enterGameHandler}>Enter Game</JoinButton>
-                  {playerInfo && (
-                    <div
-                      style={{
-                        display: "flex",
-                        width: "50%",
-                        height: "100%",
-                        justifyContent: "space-between",
-                      }}
-                    >
-                      <div style={{ width: "25%" }}>
-                        <InfoTypo>Your Info: </InfoTypo>
-                        <div
-                          style={{
-                            display: "flex",
-                            justifyContent: "space-between",
-                            width: "100%",
-                          }}
-                        >
-                          <InfoTypo>HP:</InfoTypo>
-                          <InfoTypo>{playerInfo.hp}</InfoTypo>
-                        </div>
-                        <div
-                          style={{
-                            display: "flex",
-                            justifyContent: "space-between",
-                            width: "100%",
-                          }}
-                        >
-                          <InfoTypo>Attack:</InfoTypo>
-                          <InfoTypo>{playerInfo.attack}</InfoTypo>
-                        </div>
-                        <div
-                          style={{
-                            display: "flex",
-                            justifyContent: "space-between",
-                            width: "100%",
-                          }}
-                        >
-                          <InfoTypo>Armor:</InfoTypo>
-                          <InfoTypo>{playerInfo.armor}</InfoTypo>
-                        </div>
-                      </div>
-                      <div style={{ width: "35%" }}>
-                        <InfoTypo>Component Info: </InfoTypo>
-                        <div
-                          style={{
-                            display: "flex",
-                            justifyContent: "space-between",
-                            width: "100%",
-                          }}
-                        >
-                          <InfoTypo>HP:</InfoTypo>
-                          <InfoTypo>{GameInfo.component.hp}</InfoTypo>
-                        </div>
-                        <div
-                          style={{
-                            display: "flex",
-                            justifyContent: "space-between",
-                            width: "100%",
-                          }}
-                        >
-                          <InfoTypo>Attack:</InfoTypo>
-                          <InfoTypo>{GameInfo.component.attack}</InfoTypo>
-                        </div>
-                        <div
-                          style={{
-                            display: "flex",
-                            justifyContent: "space-between",
-                            width: "100%",
-                          }}
-                        >
-                          <InfoTypo>Armor:</InfoTypo>
-                          <InfoTypo>{GameInfo.component.armor}</InfoTypo>
-                        </div>
-                      </div>
-                    </div>
-                  )}
-                </>
-              )
-            ) : (
-              <form onSubmit={matchGame}>
-                <JoinButton type="submit" disabled={isMatching}>
-                  {isMatching ? "Matching..." : "Match"}
-                </JoinButton>
-              </form>
-            )
-          ) : null}
+          <MatchContainer>
+            <div className="frame" />
+            <Typography color="#B09C7A" weight="bold" size="6vw">
+              Vs
+            </Typography>
+            <div className="frame">
+              <Typography color="#C69953" weight="bold" size="8vw">
+                ?
+              </Typography>
+            </div>
+          </MatchContainer>
         </MainContainer>
       </AppContainer>
       {/* <AppContainer>
