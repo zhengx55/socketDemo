@@ -16,18 +16,14 @@ type TypoProps = {
 interface MatchProps {
   isLogin: boolean;
 }
-type ContainerProp = {
-  bg?: string;
-};
 
-export const AppContainer = styled.div<ContainerProp>`
+const AppContainer = styled.div`
   width: 100%;
   height: 100%;
   display: flex;
   align-items: center;
   justify-content: center;
-  background-image: ${(props) =>
-    props.bg ? props.bg : `url("/img/Match_bg1.png")`};
+  background-image: url("/img/Match_bg1.png");
   background-position: center;
   background-repeat: no-repeat;
   background-size: 100% 100%;
