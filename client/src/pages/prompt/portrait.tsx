@@ -20,6 +20,7 @@ const Background = styled.div`
   justify-content: center;
   align-items: center;
   background-color: #3d3835;
+  overflow: hidden;
 `;
 
 const PhoneContainer = styled.div`

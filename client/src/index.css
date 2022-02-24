@@ -24,7 +24,3 @@ body {
     env(safe-area-inset-bottom, 20px) env(safe-area-inset-left, 20px);
 }
 
-code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
-    monospace;
-}

@@ -5,53 +5,15 @@ import GameContext, { IGameContextProps } from "./context/gameContext";
 import gameService from "./services/gameService";
 import useOrientation from "./hooks/useOrientation";
 import Match from "./pages/Match";
-import Portrait from "./pages/prompt/portrait";
+import Portrait from "./pages/Prompt/portrait";
+import { useCookies } from "react-cookie";
+import Battle from "./pages/Battle/Battle";
 
 type TypoProps = {
   weight?: string;
   color?: string;
   size?: string;
 };
-
-export const AppContainer = styled.div`
-  width: 100%;
-  height: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background-image: url("/img/Match_bg1.png");
-  background-position: center;
-  background-repeat: no-repeat;
-  background-size: 100% 100%;
-`;
-
-export const MatchContainer = styled.div`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 0 10%;
-  width: 100%;
-  .frame {
-    width: 20%;
-    background-image: url("/img/frame.png");
-    background-position: center;
-    background-repeat: no-repeat;
-    background-size: 100% 100%;
-    aspect-ratio: 0.9;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
-`;
-
-export const Typography = styled.p<TypoProps>`
-  font-size: ${(props) => (props.size ? props.size : "2vw")};
-  font-weight: ${(props) => props.weight};
-  color: ${(props) => props.color};
-  line-height: 20px;
-  padding: 0;
-  margin: 0;
-`;
 
 const attackSheet = "knight/attack.json";
 const positioSheet = "knight/position.json";
@@ -63,22 +25,25 @@ function App() {
   const [isGameStarted, setGameStarted] = useState<boolean>(false);
   const [isLogin, setIsLogin] = useState<boolean>(false);
   const [userConnection, setUserConnection] = useState<string>("0");
-  const [userId, setUserId] = useState<string>("0");
   const [orientation] = useOrientation();
+  const [cookies, setCookie] = useCookies(["userid"]);
 
   const connectSocket = async (): Promise<void> => {
-    await socketService
-      .connect("ws://localhost:9000")
-      .then(() => {
-        console.log("Ws service connected successfully");
-      })
-      .catch((error) => {
-        console.log("Error:", error);
-      });
+    try {
+      const connect = await socketService.connect("ws://localhost:9000");
+      if (connect.connected) {
+        console.log("ws connection established successfully");
+        // await loginGame();
+      }
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   const disconnectSocket = (): void => {
-    if (socketService.socket) socketService.socket.close();
+    if (socketService.socket) {
+      socketService.socket.close();
+    }
   };
 
   useEffect(() => {
@@ -98,11 +63,19 @@ function App() {
     }
   });
 
-  const loginGame = async (e: React.FormEvent): Promise<void> => {
-    e.preventDefault();
+  const loginGame = async (): Promise<void> => {
     let random = "";
     for (let i = 0; i < 4; i++) {
       random += Math.floor(Math.random() * 9 + 1);
+    }
+    let userId = "";
+    if (!cookies.userid) {
+      for (let i = 0; i < 1; i++) {
+        userId += Math.floor(Math.random() * 9 + 1);
+      }
+      setCookie("userid", userId, { path: "/" });
+    } else {
+      userId = cookies.userid;
     }
     setUserConnection(random);
     socketService.socket?.emit("request_login", {
@@ -110,16 +83,13 @@ function App() {
       user_id: userId,
     });
     socketService.socket?.on("login_status", (res) => {
+      console.log(res);
       if (res.status === "success") {
         setIsLogin(true);
       } else {
         setIsLogin(false);
       }
     });
-  };
-
-  const onChangeHandler = (e: ChangeEvent<any>) => {
-    setUserId(e.target.value);
   };
 
   const enterGameHandler = async () => {
@@ -148,7 +118,8 @@ function App() {
   if (orientation !== "landscape") return <Portrait />;
   return (
     <GameContext.Provider value={gameContextValue}>
-      {!isGameStarted && <Match isLogin={isLogin} />}
+      {/* {!isGameStarted && <Match isLogin={isLogin} />} */}
+      {!isGameStarted && <Battle />}
       {/* <AppContainer>
         <Stage width={800} height={800} options={{ backgroundAlpha: 0 }}>
           <Knight texture={key} />

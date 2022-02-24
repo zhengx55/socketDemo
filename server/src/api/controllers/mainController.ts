@@ -37,6 +37,7 @@ export class MessageController {
       })
     );
     try {
+      console.log(data.user_id);
       const res = await myAxios.post("/login", {
         data: { coon_id: data.connection_id, user_id: data.user_id },
       });
@@ -47,9 +48,6 @@ export class MessageController {
             status: "success",
             id: data.user_id,
           });
-          // io.emit("broadcast", {
-          //   message: `user ${data.user_id} has successfully logged into the game lobby`,
-          // });
         }
       } else {
         socket.emit("login_status", {
@@ -67,6 +65,9 @@ export class MessageController {
 
   @OnDisconnect()
   public onDisconnection(@ConnectedSocket() socket: Socket) {
+    socket.on("user_disconnected", (msg: string) => {
+      console.log(msg);
+    });
     removeUser(socket.id);
     console.log("Socket disconnected:", socket.id);
   }

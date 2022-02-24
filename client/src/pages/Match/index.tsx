@@ -5,6 +5,7 @@ import { Dot } from "../../components/Loading/DotLoading";
 import socketService from "../../services/socketService";
 import gameContext from "../../context/gameContext";
 import { Button } from "../../components/Button";
+import { useCookies } from "react-cookie";
 
 type TypoProps = {
   weight?: string;
@@ -15,14 +16,18 @@ type TypoProps = {
 interface MatchProps {
   isLogin: boolean;
 }
+type ContainerProp = {
+  bg?: string;
+};
 
-export const AppContainer = styled.div`
+export const AppContainer = styled.div<ContainerProp>`
   width: 100%;
   height: 100%;
   display: flex;
   align-items: center;
   justify-content: center;
-  background-image: url("/img/Match_bg1.png");
+  background-image: ${(props) =>
+    props.bg ? props.bg : `url("/img/Match_bg1.png")`};
   background-position: center;
   background-repeat: no-repeat;
   background-size: 100% 100%;
@@ -90,7 +95,7 @@ const TitleContainer = styled.div`
 const Match = ({ isLogin }: MatchProps) => {
   const [isMatching, setIsMatching] = useState(false);
   const [isMatch, setIsMatch] = useState(false);
-  const userId = "2";
+  const [cookies] = useCookies(["userid"]);
   const { playerInfo, setPlayerInfo, userConnection, GameInfo, setGameInfo } =
     useContext(gameContext);
 
@@ -101,7 +106,7 @@ const Match = ({ isLogin }: MatchProps) => {
       const match = await gameService.matchGame(
         socketService.socket,
         userConnection,
-        userId
+        cookies.userid
       );
       if (!match.room) {
         setIsMatching(false);
@@ -112,7 +117,9 @@ const Match = ({ isLogin }: MatchProps) => {
           let user, component: any;
           if (Object.keys(msg.data.playerList).length > 0) {
             for (const player in msg.data.playerList) {
-              if (msg.data.playerList[player].user_id === Number(userId)) {
+              if (
+                msg.data.playerList[player].user_id === Number(cookies.userid)
+              ) {
                 user = msg.data.playerList[player];
               } else {
                 component = msg.data.playerList[player];
