@@ -1,5 +1,4 @@
 import { ChangeEvent, useEffect, useState } from "react";
-import styled from "styled-components";
 import socketService from "./services/socketService";
 import GameContext, { IGameContextProps } from "./context/gameContext";
 import gameService from "./services/gameService";
