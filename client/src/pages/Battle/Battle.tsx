@@ -55,6 +55,7 @@ const BattleContainer = styled.div`
   display: grid;
   width: 100%;
   grid-template-columns: repeat(3, 33%);
+  margin-bottom: 2vw;
   @media (max-width: 800px) {
     margin-top: 3vw;
     grid-row-gap: 3vw;
