@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
 import { LazyLoadImage } from "react-lazy-load-image-component";
 import "react-lazy-load-image-component/src/effects/blur.css";
@@ -55,7 +55,10 @@ const BattleContainer = styled.div`
   display: grid;
   width: 100%;
   grid-template-columns: repeat(3, 33%);
-  /* grid-template-rows: 100px 200px; */
+  @media (max-width: 800px) {
+    margin-top: 3vw;
+    grid-row-gap: 3vw;
+  } /* grid-template-rows: 100px 200px; */
   .player {
     display: flex;
     justify-content: center;
@@ -72,17 +75,39 @@ const BattleContainer = styled.div`
     row-gap: 2vw;
   }
   .button {
-    position: relative;
     display: flex;
     justify-content: center;
     align-items: center;
-    .img{
-        
+    flex-direction: column;
+    img {
+      aspect-ratio: 1;
+      width: 5vw;
+      &:active {
+        transform: scale(1.2);
+      }
     }
   }
   .button_bar {
   }
   .launch {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    img {
+      aspect-ratio: 1;
+      width: 9vw;
+      &:active {
+        transform: scale(1.02);
+      }
+    }
+    p {
+      color: #fff;
+      font-size: 2vw;
+      position: absolute;
+      margin: 0;
+      padding: 0;
+    }
   }
 `;
 
@@ -105,6 +130,12 @@ const ScoreFont = styled.h2`
 `;
 
 function Battle() {
+  const [battleInfo, setBattleInfo] = useState<{ score: string; rate: string }>(
+    {
+      score: "12",
+      rate: "Excellent",
+    }
+  );
   return (
     <Container>
       <AvatarContainer>
@@ -161,9 +192,9 @@ function Battle() {
             Vs
           </Typography>
           <Typography weight="normal" color="#B09C7A" size="2vw">
-            Score: 15
+            Score: {battleInfo.score}
           </Typography>
-          <ScoreFont>Excellent</ScoreFont>
+          <ScoreFont>{battleInfo.rate}</ScoreFont>
         </section>
         <section className="player">
           <LazyLoadImage
@@ -173,9 +204,25 @@ function Battle() {
             effect="blur"
           />
         </section>
-        <div className="button"></div>
-        <div className="button_bar"></div>
-        <div className="launch"></div>
+        <section className="button">
+          <LazyLoadImage alt="" src="/img/button/top.png" />
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+              width: "40%",
+              margin: "-10px 0",
+            }}
+          >
+            <LazyLoadImage alt="" src="/img/button/left.png" />
+            <LazyLoadImage alt="" src="/img/button/right.png" />
+          </div>
+          <LazyLoadImage alt="" src="/img/button/bottom.png" />
+        </section>
+        <section className="button_bar"></section>
+        <section className="launch">
+          <LazyLoadImage alt="" src="/img/button/launch.png" />
+        </section>
       </BattleContainer>
     </Container>
   );
