@@ -67,13 +67,41 @@ const BattleContainer = styled.div`
   .score_panel {
     display: flex;
     flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    row-gap: 2vw;
   }
   .button {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    .img{
+        
+    }
   }
   .button_bar {
   }
   .launch {
   }
+`;
+
+const ScoreFont = styled.h2`
+  padding: 0;
+  margin: 0;
+  background-clip: text;
+  font-size: 4vw;
+  -webkit-text-stroke: 1px #f2f2f2;
+  background: linear-gradient(
+    180deg,
+    #ffa351 0%,
+    #ff6807 37%,
+    #961a02 100%,
+    #ff8e36 100%
+  );
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  font-family: Alibaba-PuHuiTi-B, Alibaba-PuHuiTi;
 `;
 
 function Battle() {
@@ -128,7 +156,15 @@ function Battle() {
             effect="blur"
           />
         </section>
-        <section className="score_panel"></section>
+        <section className="score_panel">
+          <Typography weight="bold" color="#B09C7A" size="6vw">
+            Vs
+          </Typography>
+          <Typography weight="normal" color="#B09C7A" size="2vw">
+            Score: 15
+          </Typography>
+          <ScoreFont>Excellent</ScoreFont>
+        </section>
         <section className="player">
           <LazyLoadImage
             alt=""
