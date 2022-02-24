@@ -87,7 +87,22 @@ const BattleContainer = styled.div`
       }
     }
   }
-  .button_bar {
+  .button_bar_container {
+    .button_bar {
+      width: 100%;
+      height: 3vw;
+      border-radius: 22px;
+      border: 1px solid #6a6a6a;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      img {
+        width: 3vw;
+        max-height: 100%;
+        aspect-ratio: 1;
+        margin: 0 2px;
+      }
+    }
   }
   .launch {
     display: flex;
@@ -219,7 +234,18 @@ function Battle() {
           </div>
           <LazyLoadImage alt="" src="/img/button/bottom.png" />
         </section>
-        <section className="button_bar"></section>
+        <section className="button_bar_container">
+          <div className="button_bar">
+            <LazyLoadImage alt="" src="/img/button/left.png" />
+            <LazyLoadImage alt="" src="/img/button/right.png" />
+            <LazyLoadImage alt="" src="/img/button/left.png" />
+            <LazyLoadImage alt="" src="/img/button/right.png" />
+            <LazyLoadImage alt="" src="/img/button/left.png" />
+            <LazyLoadImage alt="" src="/img/button/right.png" />
+            <LazyLoadImage alt="" src="/img/button/left.png" />
+            <LazyLoadImage alt="" src="/img/button/right.png" />
+          </div>
+        </section>
         <section className="launch">
           <LazyLoadImage alt="" src="/img/button/launch.png" />
         </section>
