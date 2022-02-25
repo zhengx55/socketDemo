@@ -3,7 +3,15 @@ import styled from "styled-components";
 import { LazyLoadImage } from "react-lazy-load-image-component";
 import "react-lazy-load-image-component/src/effects/blur.css";
 import { Typography } from "../Match";
-import { useSpring, animated, config, useTransition } from "react-spring";
+import { motion } from "framer-motion";
+
+// import {
+//   useSpring,
+//   animated,
+//   config,
+//   useTransition,
+//   easings,
+// } from "react-spring";
 
 const Container = styled.div`
   width: 100%;
@@ -106,10 +114,6 @@ const BattleContainer = styled.div`
       position: relative;
       display: flex;
       align-items: center;
-      .prgressive_dot {
-        aspect-ratio: 0.9;
-        width: 1.5vw;
-      }
     }
     .button_bar {
       width: 100%;
@@ -149,6 +153,11 @@ const BattleContainer = styled.div`
   }
 `;
 
+const Swiper = styled(motion.img)`
+  aspect-ratio: 0.9;
+  width: 1.5vw;
+`;
+
 const ScoreFont = styled.h2`
   padding: 0;
   margin: 0;
@@ -184,17 +193,6 @@ const button_map: Button = {
 };
 
 function Battle() {
-  //   const [demo, setDemo] = useState<string[]>([
-  //     "4",
-  //     "2",
-  //     "1",
-  //     "3",
-  //     "2",
-  //     "1",
-  //     "2",
-  //     "4",
-  //   ]);
-
   const [demo, setDemo] = useState<Instruction[]>([
     { id: "button-1", button: "4", status: 0 },
     { id: "button-2", button: "2", status: 0 },
@@ -206,10 +204,10 @@ function Battle() {
     { id: "button-8", button: "1", status: 0 },
   ]);
 
-  const [battleInfo, setBattleInfo] = useState<{ score: string; rate: string }>(
+  const [battleInfo, setBattleInfo] = useState<{ score: number; rate: string }>(
     {
-      score: "12",
-      rate: "Excellent",
+      score: 0,
+      rate: "2",
     }
   );
 
@@ -237,12 +235,27 @@ function Battle() {
 
   const [start, setStart] = useState<boolean>(true);
 
-  const bar_style = useSpring({
-    loop: { reverse: true },
-    from: { x: 0 },
-    config: config.molasses,
-    to: { x: start ? (barLength.timebar > 0 ? barLength.timebar : 0) : 0 },
-  });
+  //   const bar_style = useSpring({
+  //     loop: { reverse: true },
+  //     from: { x: 0 },
+  //     config: {
+  //       duration: 1000,
+  //       easing: easings.easeInOutQuart,
+  //     },
+  //     to: { x: start ? (barLength.timebar > 0 ? barLength.timebar : 0) : 0 },
+  //   });
+
+  //   const rate_style = useSpring({
+  //     from: { opacity: 0, scale: 0.9 },
+  //     config: { duration: 500 },
+  //     to: { opacity: 1, scale: 1 },
+  //   });
+
+  //   const bar_inStyle = useTransition(demo, {
+  //     from: { opacity: 0 },
+  //     enter: { opacity: 1 },
+  //     leave: { opacity: 0 },
+  //   });
 
   const onButtonClick = useCallback(
     (type: string) => {
@@ -251,6 +264,7 @@ function Battle() {
         switch (type) {
           case "top":
             if (Number(clickTarget) === 1) {
+              setBattleInfo((prev) => ({ ...prev, score: prev.score + 1 }));
               setDemo(
                 [...demo].map((item: Instruction, index: number) => {
                   if (index === clickRef.current.clickCount) {
@@ -281,6 +295,7 @@ function Battle() {
             break;
           case "right":
             if (Number(clickTarget) === 2) {
+              setBattleInfo((prev) => ({ ...prev, score: prev.score + 1 }));
               setDemo(
                 [...demo].map((item: Instruction, index: number) => {
                   if (index === clickRef.current.clickCount) {
@@ -311,6 +326,7 @@ function Battle() {
             break;
           case "bottom":
             if (Number(clickTarget) === 3) {
+              setBattleInfo((prev) => ({ ...prev, score: prev.score + 1 }));
               setDemo(
                 [...demo].map((item: Instruction, index: number) => {
                   if (index === clickRef.current.clickCount) {
@@ -341,6 +357,7 @@ function Battle() {
             break;
           case "left":
             if (Number(clickTarget) === 4) {
+              setBattleInfo((prev) => ({ ...prev, score: prev.score + 1 }));
               setDemo(
                 [...demo].map((item: Instruction, index: number) => {
                   if (index === clickRef.current.clickCount) {
@@ -479,8 +496,14 @@ function Battle() {
         </section>
         <section className="button_bar_container">
           <div className="time_bar">
-            <animated.img
-              style={bar_style}
+            <Swiper
+              animate={{ x: barLength.timebar - 20 }}
+              transition={{
+                repeat: Infinity,
+                repeatType: "reverse",
+                ease: "easeOut",
+                duration: 1,
+              }}
               alt=""
               src="/img/bar/progressive.png"
               className="prgressive_dot"
