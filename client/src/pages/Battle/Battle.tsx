@@ -170,6 +170,11 @@ const ScoreFont = styled.h2`
 type Button = {
   [key: string | number]: string;
 };
+type Instruction = {
+  id: string;
+  button: string;
+  status: number;
+};
 
 const button_map: Button = {
   "1": "top",
@@ -179,16 +184,28 @@ const button_map: Button = {
 };
 
 function Battle() {
-  const [demo, setDemo] = useState<string[]>([
-    "4",
-    "2",
-    "1",
-    "3",
-    "2",
-    "1",
-    "2",
-    "4",
+  //   const [demo, setDemo] = useState<string[]>([
+  //     "4",
+  //     "2",
+  //     "1",
+  //     "3",
+  //     "2",
+  //     "1",
+  //     "2",
+  //     "4",
+  //   ]);
+
+  const [demo, setDemo] = useState<Instruction[]>([
+    { id: "button-1", button: "4", status: 0 },
+    { id: "button-2", button: "2", status: 0 },
+    { id: "button-3", button: "1", status: 0 },
+    { id: "button-4", button: "3", status: 0 },
+    { id: "button-5", button: "2", status: 0 },
+    { id: "button-6", button: "2", status: 0 },
+    { id: "button-7", button: "4", status: 0 },
+    { id: "button-8", button: "1", status: 0 },
   ]);
+
   const [battleInfo, setBattleInfo] = useState<{ score: string; rate: string }>(
     {
       score: "12",
@@ -210,7 +227,10 @@ function Battle() {
     setBarLength({ timebar: bar_length, buttonbar: button_bar_length });
   }, []);
 
-  const clickRef = useRef<{ clickCount: number; clickResult: number[] }>({
+  const clickRef = useRef<{
+    clickCount: number;
+    clickResult: number[];
+  }>({
     clickCount: 0,
     clickResult: [],
   });
@@ -227,18 +247,126 @@ function Battle() {
   const onButtonClick = useCallback(
     (type: string) => {
       if (demo.length > 0 && clickRef.current.clickCount <= demo.length - 1) {
-        const clickTarget = demo[clickRef.current.clickCount];
+        const clickTarget = demo[clickRef.current.clickCount].button;
         switch (type) {
           case "top":
+            if (Number(clickTarget) === 1) {
+              setDemo(
+                [...demo].map((item: Instruction, index: number) => {
+                  if (index === clickRef.current.clickCount) {
+                    return {
+                      ...item,
+                      status: 1,
+                    };
+                  } else {
+                    return item;
+                  }
+                })
+              );
+            } else {
+              setDemo(
+                [...demo].map((item: Instruction, index: number) => {
+                  if (index === clickRef.current.clickCount) {
+                    return {
+                      ...item,
+                      status: 2,
+                    };
+                  } else {
+                    return item;
+                  }
+                })
+              );
+            }
             clickRef.current.clickResult.push(1);
             break;
           case "right":
+            if (Number(clickTarget) === 2) {
+              setDemo(
+                [...demo].map((item: Instruction, index: number) => {
+                  if (index === clickRef.current.clickCount) {
+                    return {
+                      ...item,
+                      status: 1,
+                    };
+                  } else {
+                    return item;
+                  }
+                })
+              );
+            } else {
+              setDemo(
+                [...demo].map((item: Instruction, index: number) => {
+                  if (index === clickRef.current.clickCount) {
+                    return {
+                      ...item,
+                      status: 2,
+                    };
+                  } else {
+                    return item;
+                  }
+                })
+              );
+            }
             clickRef.current.clickResult.push(2);
             break;
           case "bottom":
+            if (Number(clickTarget) === 3) {
+              setDemo(
+                [...demo].map((item: Instruction, index: number) => {
+                  if (index === clickRef.current.clickCount) {
+                    return {
+                      ...item,
+                      status: 1,
+                    };
+                  } else {
+                    return item;
+                  }
+                })
+              );
+            } else {
+              setDemo(
+                [...demo].map((item: Instruction, index: number) => {
+                  if (index === clickRef.current.clickCount) {
+                    return {
+                      ...item,
+                      status: 2,
+                    };
+                  } else {
+                    return item;
+                  }
+                })
+              );
+            }
             clickRef.current.clickResult.push(3);
             break;
           case "left":
+            if (Number(clickTarget) === 4) {
+              setDemo(
+                [...demo].map((item: Instruction, index: number) => {
+                  if (index === clickRef.current.clickCount) {
+                    return {
+                      ...item,
+                      status: 1,
+                    };
+                  } else {
+                    return item;
+                  }
+                })
+              );
+            } else {
+              setDemo(
+                [...demo].map((item: Instruction, index: number) => {
+                  if (index === clickRef.current.clickCount) {
+                    return {
+                      ...item,
+                      status: 2,
+                    };
+                  } else {
+                    return item;
+                  }
+                })
+              );
+            }
             clickRef.current.clickResult.push(4);
             break;
         }
@@ -359,12 +487,18 @@ function Battle() {
             />
           </div>
           <div className="button_bar">
-            {demo.map((item: string, index: number) => {
+            {demo.map((item: Instruction) => {
               return (
                 <LazyLoadImage
-                  key={index}
+                  key={item.id}
                   alt=""
-                  src={`/img/button/${button_map[item]}_unselected.png`}
+                  src={`/img/button/${button_map[item.button]}${
+                    item.status === 0
+                      ? "_unselected"
+                      : item.status === 1
+                      ? "_selected"
+                      : ""
+                  }.png`}
                   effect="blur"
                 />
               );
