@@ -5,14 +5,6 @@ import "react-lazy-load-image-component/src/effects/blur.css";
 import { Typography } from "../Match";
 import { motion } from "framer-motion";
 
-// import {
-//   useSpring,
-//   animated,
-//   config,
-//   useTransition,
-//   easings,
-// } from "react-spring";
-
 const Container = styled.div`
   width: 100%;
   height: 100%;
@@ -64,6 +56,11 @@ const AvatarInfo = styled.div`
   }
 `;
 
+const Direction = styled(motion.img)`
+  aspect-ratio: 1;
+  width: 6vw;
+`;
+
 const BattleContainer = styled.div`
   display: grid;
   width: 100%;
@@ -93,13 +90,6 @@ const BattleContainer = styled.div`
     justify-content: center;
     align-items: center;
     flex-direction: column;
-    img {
-      aspect-ratio: 1;
-      width: 6vw;
-      &:active {
-        transform: scale(1.2);
-      }
-    }
   }
   .button_bar_container {
     display: flex;
@@ -225,6 +215,17 @@ function Battle() {
     setBarLength({ timebar: bar_length, buttonbar: button_bar_length });
   }, []);
 
+  const variants = {
+    visible: (i: number) => ({
+      opacity: 1,
+      x: 0,
+      transition: {
+        delay: i * 0.3,
+      },
+    }),
+    hidden: { opacity: 0, x: 200 },
+  };
+
   const clickRef = useRef<{
     clickCount: number;
     clickResult: number[];
@@ -234,29 +235,10 @@ function Battle() {
   });
 
   const [start, setStart] = useState<boolean>(true);
-
-  //   const bar_style = useSpring({
-  //     loop: { reverse: true },
-  //     from: { x: 0 },
-  //     config: {
-  //       duration: 1000,
-  //       easing: easings.easeInOutQuart,
-  //     },
-  //     to: { x: start ? (barLength.timebar > 0 ? barLength.timebar : 0) : 0 },
-  //   });
-
-  //   const rate_style = useSpring({
-  //     from: { opacity: 0, scale: 0.9 },
-  //     config: { duration: 500 },
-  //     to: { opacity: 1, scale: 1 },
-  //   });
-
-  //   const bar_inStyle = useTransition(demo, {
-  //     from: { opacity: 0 },
-  //     enter: { opacity: 1 },
-  //     leave: { opacity: 0 },
-  //   });
-
+  const time_bar_variant = {
+    activate: { x: barLength.timebar },
+    deactivate: { x: 0 },
+  };
   const onButtonClick = useCallback(
     (type: string) => {
       if (demo.length > 0 && clickRef.current.clickCount <= demo.length - 1) {
@@ -464,9 +446,10 @@ function Battle() {
           />
         </section>
         <section className="button">
-          <LazyLoadImage
+          <Direction
             alt=""
             src="/img/button/top.png"
+            whileTap={{ scale: 1.1 }}
             onClick={() => onButtonClick("top")}
           />
           <div
@@ -477,27 +460,31 @@ function Battle() {
               margin: "-10px 0",
             }}
           >
-            <LazyLoadImage
+            <Direction
               alt=""
               src="/img/button/left_unselected.png"
+              whileTap={{ scale: 1.1 }}
               onClick={() => onButtonClick("left")}
             />
-            <LazyLoadImage
+            <Direction
               alt=""
               src="/img/button/right_selected.png"
+              whileTap={{ scale: 1.1 }}
               onClick={() => onButtonClick("right")}
             />
           </div>
-          <LazyLoadImage
+          <Direction
             alt=""
             src="/img/button/bottom.png"
+            whileTap={{ scale: 1.1 }}
             onClick={() => onButtonClick("bottom")}
           />
         </section>
         <section className="button_bar_container">
           <div className="time_bar">
             <Swiper
-              animate={{ x: barLength.timebar - 20 }}
+              animate={start ? "activate" : "deactivate"}
+              variants={time_bar_variant}
               transition={{
                 repeat: Infinity,
                 repeatType: "reverse",
@@ -509,11 +496,13 @@ function Battle() {
               className="prgressive_dot"
             />
           </div>
-          <div className="button_bar">
-            {demo.map((item: Instruction) => {
+          <motion.div className="button_bar" animate="visible" initial="hidden">
+            {demo.map((item: Instruction, i: number) => {
               return (
-                <LazyLoadImage
+                <motion.img
+                  custom={i}
                   key={item.id}
+                  variants={variants}
                   alt=""
                   src={`/img/button/${button_map[item.button]}${
                     item.status === 0
@@ -522,11 +511,10 @@ function Battle() {
                       ? "_selected"
                       : ""
                   }.png`}
-                  effect="blur"
                 />
               );
             })}
-          </div>
+          </motion.div>
         </section>
         <section className="launch">
           <LazyLoadImage
