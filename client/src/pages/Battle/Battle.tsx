@@ -104,6 +104,13 @@ const BattleContainer = styled.div`
       position: relative;
       display: flex;
       align-items: center;
+      .flash {
+        height: 100%;
+        width: auto;
+        aspect-ratio: 5;
+        position: absolute;
+        right: 0%;
+      }
     }
     .button_bar {
       width: 100%;
@@ -248,6 +255,11 @@ function Battle() {
   const time_bar_variant = {
     activate: { x: barLength.timebar },
     deactivate: { x: 0 },
+  };
+
+  const flash_variant = {
+    activate: { opacity: 0.5 },
+    deactivate: { opacity: 1 },
   };
   const onButtonClick = useCallback(
     (type: string) => {
@@ -492,6 +504,18 @@ function Battle() {
         </section>
         <section className="button_bar_container">
           <div className="time_bar">
+            <motion.img
+              className="flash"
+              src="/img/bar/progressive_light.png"
+              alt=""
+              animate={start ? "activate" : "deactivate"}
+              variants={flash_variant}
+              transition={{
+                repeat: Infinity,
+                ease: "easeInOut",
+                duration: .5,
+              }}
+            />
             <Swiper
               animate={start ? "activate" : "deactivate"}
               variants={time_bar_variant}
