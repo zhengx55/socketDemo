@@ -3,20 +3,9 @@ import socketService from "./services/socketService";
 import GameContext, { IGameContextProps } from "./context/gameContext";
 import gameService from "./services/gameService";
 import useOrientation from "./hooks/useOrientation";
-import Match from "./pages/Match";
 import Portrait from "./pages/Prompt/portrait";
 import { useCookies } from "react-cookie";
 import Battle from "./pages/Battle/Battle";
-
-type TypoProps = {
-  weight?: string;
-  color?: string;
-  size?: string;
-};
-
-const attackSheet = "knight/attack.json";
-const positioSheet = "knight/position.json";
-const deadSheet = "knight/dead.json";
 
 function App() {
   const [playerInfo, setPlayerInfo] = useState<any>(null);
@@ -117,7 +106,6 @@ function App() {
   if (orientation !== "landscape") return <Portrait />;
   return (
     <GameContext.Provider value={gameContextValue}>
-      {/* {!isGameStarted && <Match isLogin={isLogin} />} */}
       {!isGameStarted && <Battle />}
       {/* <AppContainer>
         <Stage width={800} height={800} options={{ backgroundAlpha: 0 }}>

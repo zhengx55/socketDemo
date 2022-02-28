@@ -2,10 +2,10 @@ import React, { useEffect, useState } from "react";
 import { Texture } from "pixi.js";
 import * as PIXI from "pixi.js";
 import { Container, AnimatedSprite, useApp } from "@inlet/react-pixi";
-const [width, height] = [700, 600];
 const attackSheet = "knight/attack.json";
 const positioSheet = "knight/position.json";
 const deadSheet = "knight/dead.json";
+const positionReverseSheet = "knight/reverse.json";
 interface KnightProps {
   texture: string;
 }
@@ -20,6 +20,7 @@ function Knight({ texture }: KnightProps) {
       .add(attackSheet)
       .add(positioSheet)
       .add(deadSheet)
+      .add(positionReverseSheet)
       .load((_, resource) => {
         const attackFrame = Object.keys(resource[attackSheet].data.frames).map(
           (frame) => Texture.from(frame)
@@ -31,10 +32,16 @@ function Knight({ texture }: KnightProps) {
         const deadFrame = Object.keys(resource[deadSheet].data.frames).map(
           (frame) => Texture.from(frame)
         );
+
+        const positionReverseFrame = Object.keys(
+          resource[positionReverseSheet].data.frames
+        ).map((frame) => Texture.from(frame));
+
         setFrames({
           attack: attackFrame,
           position: positioFrame,
           dead: deadFrame,
+          position_reverse: positionReverseFrame,
         });
       });
     return () => {
@@ -46,15 +53,15 @@ function Knight({ texture }: KnightProps) {
     return null;
   }
   return (
-    <Container x={width / 2} y={height / 2}>
+    <Container position={[250, 100]}>
       <AnimatedSprite
         key={texture}
         animationSpeed={0.2}
         isPlaying={true}
         textures={frames[texture]}
-        anchor={1.3}
-        scale={0.3}
-        loop={texture === "position" ? true : false}
+        anchor={0}
+        scale={0.5}
+        loop={texture === "position" || "position_reverse" ? true : false}
         initialFrame={1}
       />
     </Container>

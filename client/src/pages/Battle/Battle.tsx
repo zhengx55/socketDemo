@@ -4,6 +4,12 @@ import { LazyLoadImage } from "react-lazy-load-image-component";
 import "react-lazy-load-image-component/src/effects/blur.css";
 import { Typography } from "../Match";
 import { AnimatePresence, motion } from "framer-motion";
+import { Stage } from "@inlet/react-pixi";
+import Knight from "../../components/Hero";
+
+const attackSheet = "knight/attack.json";
+const positioSheet = "knight/position.json";
+const deadSheet = "knight/dead.json";
 
 const Container = styled.div`
   width: 100%;
@@ -74,6 +80,10 @@ const BattleContainer = styled.div`
   .player {
     display: flex;
     justify-content: center;
+    canvas {
+      width: 100% !important;
+      height: 100% !important;
+    }
   }
   .character {
     width: 20vw;
@@ -463,12 +473,9 @@ function Battle() {
       </AvatarContainer>
       <BattleContainer>
         <section className="player">
-          <LazyLoadImage
-            alt=""
-            className="character"
-            src="/img/character/Knight.png"
-            effect="blur"
-          />
+          <Stage options={{ backgroundAlpha: 0 }}>
+            <Knight texture={"position"} />
+          </Stage>
         </section>
         <section className="score_panel">
           <Typography weight="bold" color="#B09C7A" size="6vw">
@@ -489,12 +496,9 @@ function Battle() {
           </AnimatePresence>
         </section>
         <section className="player">
-          <LazyLoadImage
-            alt=""
-            className="character"
-            src="/img/character/Knight.png"
-            effect="blur"
-          />
+          <Stage options={{ backgroundAlpha: 0 }}>
+            <Knight texture={"position_reverse"} />
+          </Stage>
         </section>
         <section className="button">
           <Direction
