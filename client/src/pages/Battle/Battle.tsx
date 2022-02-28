@@ -411,6 +411,7 @@ function Battle() {
           SwiperRef.current.getBoundingClientRect().width / 2
       );
       clickRef.current.clickCount = 0;
+      clickRef.current.clickResult = [];
       if (Math.abs(swiper_x - flash_x) <= 10) {
         setBattleInfo((prev) => ({ ...prev, rate: "Execllent" }));
       } else if (Math.abs(swiper_x - flash_x) <= 20) {
@@ -482,9 +483,8 @@ function Battle() {
           <AnimatePresence>
             {battleInfo.rate !== "" && (
               <ScoreFont
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1.2, rotate: [1, -1.4, 0] }}
               >
                 {battleInfo.rate}
               </ScoreFont>
