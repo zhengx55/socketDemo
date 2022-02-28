@@ -3,7 +3,7 @@ import styled from "styled-components";
 import { LazyLoadImage } from "react-lazy-load-image-component";
 import "react-lazy-load-image-component/src/effects/blur.css";
 import { Typography } from "../Match";
-import { motion } from "framer-motion";
+import { motion, useMotionValue, useTransform } from "framer-motion";
 
 const Container = styled.div`
   width: 100%;
@@ -112,7 +112,7 @@ const BattleContainer = styled.div`
       border: 1px solid #6a6a6a;
       display: flex;
       align-items: center;
-      justify-content: center;
+      overflow: hidden;
       img {
         width: 2.6vw;
         max-height: 100%;
@@ -182,9 +182,21 @@ const button_map: Button = {
   "4": "left",
 };
 
+const variants = {
+  visible: (i: number) => ({
+    x: "-100vw",
+    transition: {
+      delay: i + 0.05,
+      duration: 10,
+      ease: "linear",
+    },
+  }),
+  hidden: (i: number) => ({ x: "100vw " }),
+};
+
 function Battle() {
   const [demo, setDemo] = useState<Instruction[]>([
-    { id: "button-1", button: "4", status: 0 },
+    { id: "button-1", button: "2", status: 0 },
     { id: "button-2", button: "2", status: 0 },
     { id: "button-3", button: "1", status: 0 },
     { id: "button-4", button: "3", status: 0 },
@@ -192,6 +204,14 @@ function Battle() {
     { id: "button-6", button: "2", status: 0 },
     { id: "button-7", button: "4", status: 0 },
     { id: "button-8", button: "1", status: 0 },
+    { id: "button-9", button: "4", status: 0 },
+    { id: "button-10", button: "1", status: 0 },
+    { id: "button-16", button: "4", status: 0 },
+    { id: "button-11", button: "1", status: 0 },
+    { id: "button-14", button: "4", status: 0 },
+    { id: "button-12", button: "1", status: 0 },
+    { id: "button-15", button: "4", status: 0 },
+    { id: "button-13", button: "1", status: 0 },
   ]);
 
   const [battleInfo, setBattleInfo] = useState<{ score: number; rate: string }>(
@@ -215,17 +235,6 @@ function Battle() {
     setBarLength({ timebar: bar_length, buttonbar: button_bar_length });
   }, []);
 
-  const variants = {
-    visible: (i: number) => ({
-      opacity: 1,
-      x: 0,
-      transition: {
-        delay: i * 0.3,
-      },
-    }),
-    hidden: { opacity: 0, x: 200 },
-  };
-
   const clickRef = useRef<{
     clickCount: number;
     clickResult: number[];
@@ -235,6 +244,7 @@ function Battle() {
   });
 
   const [start, setStart] = useState<boolean>(true);
+
   const time_bar_variant = {
     activate: { x: barLength.timebar },
     deactivate: { x: 0 },
@@ -488,7 +498,7 @@ function Battle() {
               transition={{
                 repeat: Infinity,
                 repeatType: "reverse",
-                ease: "easeOut",
+                ease: "linear",
                 duration: 1,
               }}
               alt=""
