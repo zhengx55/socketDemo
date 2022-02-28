@@ -3,7 +3,12 @@ import styled from "styled-components";
 import { LazyLoadImage } from "react-lazy-load-image-component";
 import "react-lazy-load-image-component/src/effects/blur.css";
 import { Typography } from "../Match";
-import { motion, useMotionValue, useTransform } from "framer-motion";
+import {
+  AnimatePresence,
+  motion,
+  useMotionValue,
+  useTransform,
+} from "framer-motion";
 
 const Container = styled.div`
   width: 100%;
@@ -109,22 +114,23 @@ const BattleContainer = styled.div`
         width: auto;
         aspect-ratio: 5;
         position: absolute;
-        right: 0%;
+        right: 0;
       }
     }
     .button_bar {
       width: 100%;
-      height: 3vw;
+      height: 4vw;
       border-radius: 22px;
       border: 1px solid #6a6a6a;
       display: flex;
       align-items: center;
       overflow: hidden;
+      justify-content: center;
       img {
-        width: 2.6vw;
+        width: 3.2vw;
         max-height: 100%;
         aspect-ratio: 1;
-        margin: 0 0.6vw;
+        margin: 0 0.2vw;
       }
     }
   }
@@ -133,12 +139,15 @@ const BattleContainer = styled.div`
     justify-content: center;
     align-items: center;
     position: relative;
-    img {
+    .launch_button {
       aspect-ratio: 1;
       width: 9vw;
       &:active {
         transform: scale(1.02);
       }
+    }
+    .launch_button_disable {
+      display: none;
     }
     p {
       color: #fff;
@@ -155,7 +164,7 @@ const Swiper = styled(motion.img)`
   width: 1.5vw;
 `;
 
-const ScoreFont = styled.h2`
+const ScoreFont = styled(motion.h2)`
   padding: 0;
   margin: 0;
   background-clip: text;
@@ -191,14 +200,14 @@ const button_map: Button = {
 
 const variants = {
   visible: (i: number) => ({
-    x: "-100vw",
+    opacity: 1,
     transition: {
-      delay: i + 0.05,
-      duration: 10,
+      delay: i * 0.1,
+      duration: 1,
       ease: "linear",
     },
   }),
-  hidden: (i: number) => ({ x: "100vw " }),
+  hidden: (i: number) => ({ opacity: 0 }),
 };
 
 function Battle() {
@@ -212,19 +221,12 @@ function Battle() {
     { id: "button-7", button: "4", status: 0 },
     { id: "button-8", button: "1", status: 0 },
     { id: "button-9", button: "4", status: 0 },
-    { id: "button-10", button: "1", status: 0 },
-    { id: "button-16", button: "4", status: 0 },
-    { id: "button-11", button: "1", status: 0 },
-    { id: "button-14", button: "4", status: 0 },
-    { id: "button-12", button: "1", status: 0 },
-    { id: "button-15", button: "4", status: 0 },
-    { id: "button-13", button: "1", status: 0 },
   ]);
 
-  const [battleInfo, setBattleInfo] = useState<{ score: number; rate: string }>(
+  const [battleInfo, setBattleInfo] = useState<{ rate: string; timer: string }>(
     {
-      score: 0,
-      rate: "2",
+      rate: "",
+      timer: "",
     }
   );
 
@@ -250,6 +252,9 @@ function Battle() {
     clickResult: [],
   });
 
+  const SwiperRef = useRef<HTMLImageElement>(null);
+  const FlashRef = useRef<HTMLImageElement>(null);
+
   const [start, setStart] = useState<boolean>(true);
 
   const time_bar_variant = {
@@ -268,7 +273,6 @@ function Battle() {
         switch (type) {
           case "top":
             if (Number(clickTarget) === 1) {
-              setBattleInfo((prev) => ({ ...prev, score: prev.score + 1 }));
               setDemo(
                 [...demo].map((item: Instruction, index: number) => {
                   if (index === clickRef.current.clickCount) {
@@ -299,7 +303,6 @@ function Battle() {
             break;
           case "right":
             if (Number(clickTarget) === 2) {
-              setBattleInfo((prev) => ({ ...prev, score: prev.score + 1 }));
               setDemo(
                 [...demo].map((item: Instruction, index: number) => {
                   if (index === clickRef.current.clickCount) {
@@ -330,7 +333,6 @@ function Battle() {
             break;
           case "bottom":
             if (Number(clickTarget) === 3) {
-              setBattleInfo((prev) => ({ ...prev, score: prev.score + 1 }));
               setDemo(
                 [...demo].map((item: Instruction, index: number) => {
                   if (index === clickRef.current.clickCount) {
@@ -361,7 +363,6 @@ function Battle() {
             break;
           case "left":
             if (Number(clickTarget) === 4) {
-              setBattleInfo((prev) => ({ ...prev, score: prev.score + 1 }));
               setDemo(
                 [...demo].map((item: Instruction, index: number) => {
                   if (index === clickRef.current.clickCount) {
@@ -398,6 +399,27 @@ function Battle() {
     },
     [demo]
   );
+
+  const onLaunchHandler = useCallback(() => {
+    if (FlashRef.current && SwiperRef.current) {
+      const flash_x = Math.floor(
+        FlashRef.current.getBoundingClientRect().x +
+          FlashRef.current.getBoundingClientRect().width / 2
+      );
+      const swiper_x = Math.floor(
+        SwiperRef.current.getBoundingClientRect().x +
+          SwiperRef.current.getBoundingClientRect().width / 2
+      );
+      clickRef.current.clickCount = 0;
+      if (Math.abs(swiper_x - flash_x) <= 10) {
+        setBattleInfo((prev) => ({ ...prev, rate: "Execllent" }));
+      } else if (Math.abs(swiper_x - flash_x) <= 20) {
+        setBattleInfo((prev) => ({ ...prev, rate: "Good" }));
+      } else {
+        setBattleInfo((prev) => ({ ...prev, rate: "Miss" }));
+      }
+    }
+  }, [battleInfo]);
 
   return (
     <Container>
@@ -455,9 +477,19 @@ function Battle() {
             Vs
           </Typography>
           <Typography weight="normal" color="#B09C7A" size="2vw">
-            Score: {battleInfo.score}
+            Time: 0
           </Typography>
-          <ScoreFont>{battleInfo.rate}</ScoreFont>
+          <AnimatePresence>
+            {battleInfo.rate !== "" && (
+              <ScoreFont
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+              >
+                {battleInfo.rate}
+              </ScoreFont>
+            )}
+          </AnimatePresence>
         </section>
         <section className="player">
           <LazyLoadImage
@@ -506,6 +538,7 @@ function Battle() {
           <div className="time_bar">
             <motion.img
               className="flash"
+              ref={FlashRef}
               src="/img/bar/progressive_light.png"
               alt=""
               animate={start ? "activate" : "deactivate"}
@@ -513,11 +546,12 @@ function Battle() {
               transition={{
                 repeat: Infinity,
                 ease: "easeInOut",
-                duration: .5,
+                duration: 0.5,
               }}
             />
             <Swiper
               animate={start ? "activate" : "deactivate"}
+              ref={SwiperRef}
               variants={time_bar_variant}
               transition={{
                 repeat: Infinity,
@@ -553,11 +587,11 @@ function Battle() {
         <section className="launch">
           <LazyLoadImage
             alt=""
+            className={`launch_button${
+              demo.length === clickRef.current.clickCount ? "" : "_disable"
+            }`}
             src="/img/button/launch.png"
-            effect="blur"
-            onClick={() => {
-              console.log(clickRef.current.clickResult);
-            }}
+            onClick={onLaunchHandler}
           />
         </section>
       </BattleContainer>
