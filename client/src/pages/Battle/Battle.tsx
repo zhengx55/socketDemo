@@ -504,7 +504,7 @@ function Battle() {
             alt=""
             src="/img/button/top.png"
             whileTap={{ scale: 1.1 }}
-            onClick={() => onButtonClick("top")}
+            onTouchStart={() => onButtonClick("top")}
           />
           <div
             style={{
@@ -518,20 +518,20 @@ function Battle() {
               alt=""
               src="/img/button/left_unselected.png"
               whileTap={{ scale: 1.1 }}
-              onClick={() => onButtonClick("left")}
+              onTouchStart={() => onButtonClick("left")}
             />
             <Direction
               alt=""
               src="/img/button/right_selected.png"
               whileTap={{ scale: 1.1 }}
-              onClick={() => onButtonClick("right")}
+              onTouchStart={() => onButtonClick("right")}
             />
           </div>
           <Direction
             alt=""
             src="/img/button/bottom.png"
             whileTap={{ scale: 1.1 }}
-            onClick={() => onButtonClick("bottom")}
+            onTouchStart={() => onButtonClick("bottom")}
           />
         </section>
         <section className="button_bar_container">
@@ -591,7 +591,7 @@ function Battle() {
               demo.length === clickRef.current.clickCount ? "" : "_disable"
             }`}
             src="/img/button/launch.png"
-            onClick={onLaunchHandler}
+            onTouchStart={onLaunchHandler}
           />
         </section>
       </BattleContainer>
