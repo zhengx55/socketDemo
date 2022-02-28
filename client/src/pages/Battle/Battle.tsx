@@ -3,12 +3,7 @@ import styled from "styled-components";
 import { LazyLoadImage } from "react-lazy-load-image-component";
 import "react-lazy-load-image-component/src/effects/blur.css";
 import { Typography } from "../Match";
-import {
-  AnimatePresence,
-  motion,
-  useMotionValue,
-  useTransform,
-} from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
 
 const Container = styled.div`
   width: 100%;
@@ -17,7 +12,7 @@ const Container = styled.div`
   background-image: url(/img/bg.png);
   background-position: center;
   background-repeat: no-repeat;
-  background-size: 101% 100%;
+  background-size: 100% 100%;
   flex-direction: column;
   .lazy-load-image-background {
     display: flex !important;
@@ -64,6 +59,7 @@ const AvatarInfo = styled.div`
 const Direction = styled(motion.img)`
   aspect-ratio: 1;
   width: 6vw;
+  touch-action: manipulation;
 `;
 
 const BattleContainer = styled.div`
@@ -142,6 +138,7 @@ const BattleContainer = styled.div`
     .launch_button {
       aspect-ratio: 1;
       width: 9vw;
+      touch-action: manipulation;
       &:active {
         transform: scale(1.02);
       }
