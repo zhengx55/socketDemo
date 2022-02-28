@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Texture } from "pixi.js";
 import * as PIXI from "pixi.js";
-import { Container, AnimatedSprite, useApp } from "@inlet/react-pixi";
+import { Container, AnimatedSprite } from "@inlet/react-pixi";
 const attackSheet = "knight/attack.json";
 const positioSheet = "knight/position.json";
 const deadSheet = "knight/dead.json";
@@ -12,38 +12,39 @@ interface KnightProps {
 
 function Knight({ texture }: KnightProps) {
   const [frames, setFrames] = useState<any>({});
-  const app = useApp();
+
   useEffect(() => {
-    const pixiLoader = app.loader;
-    pixiLoader.reset();
-    pixiLoader
-      .add(attackSheet)
-      .add(positioSheet)
-      .add(deadSheet)
-      .add(positionReverseSheet)
-      .load((_, resource) => {
-        const attackFrame = Object.keys(resource[attackSheet].data.frames).map(
-          (frame) => Texture.from(frame)
-        );
-        const positioFrame = Object.keys(
-          resource[positioSheet].data.frames
-        ).map((frame) => Texture.from(frame));
+    const pixiLoader = PIXI.Loader.shared;
+    if (Object.keys(pixiLoader.resources).length === 0) {
+      pixiLoader
+        .add(attackSheet)
+        .add(positioSheet)
+        .add(deadSheet)
+        .add(positionReverseSheet)
+        .load((_, resource) => {
+          const attackFrame = Object.keys(
+            resource[attackSheet].data.frames
+          ).map((frame) => Texture.from(frame));
+          const positioFrame = Object.keys(
+            resource[positioSheet].data.frames
+          ).map((frame) => Texture.from(frame));
 
-        const deadFrame = Object.keys(resource[deadSheet].data.frames).map(
-          (frame) => Texture.from(frame)
-        );
+          const deadFrame = Object.keys(resource[deadSheet].data.frames).map(
+            (frame) => Texture.from(frame)
+          );
+          const positionReverseFrame = Object.keys(
+            resource[positionReverseSheet].data.frames
+          ).map((frame) => Texture.from(frame));
 
-        const positionReverseFrame = Object.keys(
-          resource[positionReverseSheet].data.frames
-        ).map((frame) => Texture.from(frame));
-
-        setFrames({
-          attack: attackFrame,
-          position: positioFrame,
-          dead: deadFrame,
-          position_reverse: positionReverseFrame,
+          setFrames({
+            attack: attackFrame,
+            position: positioFrame,
+            dead: deadFrame,
+            position_reverse: positionReverseFrame,
+          });
         });
-      });
+    }
+
     return () => {
       PIXI.utils.clearTextureCache();
     };

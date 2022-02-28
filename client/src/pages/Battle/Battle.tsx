@@ -7,10 +7,6 @@ import { AnimatePresence, motion } from "framer-motion";
 import { Stage } from "@inlet/react-pixi";
 import Knight from "../../components/Hero";
 
-const attackSheet = "knight/attack.json";
-const positioSheet = "knight/position.json";
-const deadSheet = "knight/dead.json";
-
 const Container = styled.div`
   width: 100%;
   height: 100%;
