@@ -6,6 +6,7 @@ import useOrientation from "./hooks/useOrientation";
 import Portrait from "./pages/Prompt/portrait";
 import { useCookies } from "react-cookie";
 import Battle from "./pages/Battle/Battle";
+import Match from "./pages/Match";
 
 function App() {
   const [playerInfo, setPlayerInfo] = useState<any>(null);
@@ -21,7 +22,7 @@ function App() {
       const connect = await socketService.connect("ws://localhost:9000");
       if (connect.connected) {
         console.log("ws connection established successfully");
-        // await loginGame();
+        await loginGame();
       }
     } catch (error) {
       console.error(error);
@@ -72,7 +73,8 @@ function App() {
     });
     socketService.socket?.on("login_status", (res) => {
       console.log(res);
-      if (res.status === "success") {
+      if (res.status === "success" || res.status.includes("already")) {
+        setUserConnection(res.connection_id);
         setIsLogin(true);
       } else {
         setIsLogin(false);
@@ -102,23 +104,14 @@ function App() {
     setUserConnection,
     GameInfo,
     setGameInfo,
+    setGameStarted,
+    isGameStarted,
   };
   if (orientation !== "landscape") return <Portrait />;
   return (
     <GameContext.Provider value={gameContextValue}>
-      {!isGameStarted && <Battle />}
-      {/* <AppContainer>
-        <Stage width={800} height={800} options={{ backgroundAlpha: 0 }}>
-          <Knight texture={key} />
-        </Stage>
-        <button
-          onClick={() => {
-            setKey(key === "attack" ? "position" : "attack");
-          }}
-        >
-          Change Texture
-        </button>
-      </AppContainer> */}
+      {isGameStarted && <Battle />}
+      {!isGameStarted && <Match isLogin={isLogin} />}
     </GameContext.Provider>
   );
 }

@@ -14,6 +14,8 @@ export interface IGameContextProps {
   setGameInfo: (info: any) => void;
   userConnection: string;
   setUserConnection: (id: string) => void;
+  setGameStarted: (value: boolean) => void;
+  isGameStarted: boolean;
 }
 
 const defaultState: IGameContextProps = {
@@ -30,6 +32,8 @@ const defaultState: IGameContextProps = {
   setGameInfo: () => {},
   userConnection: "0",
   setUserConnection: () => {},
+  setGameStarted: () => {},
+  isGameStarted: false,
 };
 
 export default React.createContext(defaultState);

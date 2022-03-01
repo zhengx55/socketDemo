@@ -38,11 +38,13 @@ export class GameController {
       data: { coon_id: message.connection_id, user_id: message.user_id },
     });
     if (res.data.code === "200") {
-      client.subscribe("some-key", (msg: any) => {
+      client.subscribe("matchMsg", (msg: any) => {
+        console.log(msg);
         socket.emit("match_info", JSON.parse(msg));
       });
     } else {
-      client.subscribe("some-key", (msg: any) => {
+      client.subscribe("matchMsg", (msg: any) => {
+        console.log(msg);
         socket.emit("match_info", JSON.parse(msg));
       });
       // socket.emit("match_error", { error: res.data.msg });

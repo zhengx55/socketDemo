@@ -9,6 +9,7 @@ body,
 #root {
   width: 100vw;
   min-height: 100vh;
+  height: 100vh;
   -webkit-text-size-adjust: 100%;
   padding: 0;
 }

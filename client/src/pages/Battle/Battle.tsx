@@ -50,11 +50,17 @@ const AvatarInfo = styled.div`
       margin: 0.8vw 0;
     }
   }
-  .health_bar {
+  .health_bar_container {
     min-width: 25vw;
-    height: 12px;
+    height: 2vw;
     background: #453f31;
     border-radius: 6px;
+  }
+  .health_bar {
+    height: 100%;
+    background: #de712e;
+    border-radius: 6px;
+    transition: width 0.5s ease;
   }
 `;
 
@@ -269,6 +275,7 @@ function Battle() {
     activate: { opacity: 0.5 },
     deactivate: { opacity: 1 },
   };
+
   const onButtonClick = useCallback(
     (type: string) => {
       if (demo.length > 0 && clickRef.current.clickCount <= demo.length - 1) {
@@ -444,7 +451,9 @@ function Battle() {
                 160
               </Typography>
             </div>
-            <span className="health_bar" />
+            <div className="health_bar_container">
+              <span className="health_bar" />
+            </div>
           </div>
         </AvatarInfo>
         <AvatarInfo>
@@ -463,7 +472,9 @@ function Battle() {
                 160
               </Typography>
             </div>
-            <span className="health_bar" />
+            <div className="health_bar_container">
+              <span className="health_bar" />
+            </div>
           </div>
         </AvatarInfo>
       </AvatarContainer>

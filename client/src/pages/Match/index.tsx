@@ -92,7 +92,7 @@ const Match = ({ isLogin }: MatchProps) => {
   const [isMatching, setIsMatching] = useState(false);
   const [isMatch, setIsMatch] = useState(false);
   const [cookies] = useCookies(["userid"]);
-  const { playerInfo, setPlayerInfo, userConnection, GameInfo, setGameInfo } =
+  const { setPlayerInfo, userConnection, setGameInfo, setGameStarted } =
     useContext(gameContext);
 
   const matchGame = async (e: React.FormEvent) => {
