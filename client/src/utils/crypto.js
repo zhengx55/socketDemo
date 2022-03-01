@@ -5,16 +5,18 @@ var key = CryptoJS.enc.Utf8.parse(KEY);
 var iv = CryptoJS.enc.Utf8.parse(IV);
 
 export const Encrypt = (data) => {
-  return CryptoJS.AES.encrypt(data, key, {
+  let encrypted = CryptoJS.AES.encrypt(data, key, {
     iv: iv,
     mode: CryptoJS.mode.CBC,
     padding: CryptoJS.pad.Pkcs7,
   });
+  return encrypted.toString();
 };
 
 export const Decrypt = (data) => {
-  return CryptoJS.AES.decrypt(data, key, {
+  let decrypted = CryptoJS.AES.decrypt(data, key, {
     iv: iv,
     padding: CryptoJS.pad.Pkcs7,
   });
+  return decrypted.toString(CryptoJS.enc.Utf8);
 };
