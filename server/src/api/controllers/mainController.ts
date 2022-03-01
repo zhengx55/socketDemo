@@ -46,14 +46,14 @@ export class MessageController {
           socket.emit("login_status", {
             status: "success",
             id: data.user_id,
-            connection_id: data.coon_id,
+            connection_id: res.data.coon_id,
           });
         }
       } else {
         socket.emit("login_status", {
           status: "user has already logged in",
           id: data.user_id,
-          connection_id: data.coon_id,
+          connection_id: res.data.coon_id,
         });
       }
     } catch (error) {

@@ -1,7 +1,6 @@
-import { ChangeEvent, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import socketService from "./services/socketService";
 import GameContext, { IGameContextProps } from "./context/gameContext";
-import gameService from "./services/gameService";
 import useOrientation from "./hooks/useOrientation";
 import Portrait from "./pages/Prompt/portrait";
 import { useCookies } from "react-cookie";
@@ -72,29 +71,12 @@ function App() {
       user_id: userId,
     });
     socketService.socket?.on("login_status", (res) => {
-      console.log(res);
       if (res.status === "success" || res.status.includes("already")) {
-        setUserConnection(res.connection_id);
         setIsLogin(true);
       } else {
         setIsLogin(false);
       }
     });
-  };
-
-  const enterGameHandler = async () => {
-    if (socketService.socket) {
-      try {
-        const ready = await gameService.onStartGame(
-          socketService.socket,
-          GameInfo.room
-        );
-        if (ready.status === "success") setGameStarted(true);
-      } catch (error) {
-        console.error(error);
-        setGameStarted(false);
-      }
-    }
   };
 
   const gameContextValue: IGameContextProps = {

@@ -38,14 +38,22 @@ export class GameController {
       data: { coon_id: message.connection_id, user_id: message.user_id },
     });
     if (res.data.code === "200") {
-      client.subscribe("matchMsg", (msg: any) => {
-        console.log(msg);
-        socket.emit("match_info", JSON.parse(msg));
+      client.subscribe("some-key", (msg: any) => {
+        const matchInfo = JSON.parse(msg).find((item: any) => {
+          if (item.playerList.hasOwnProperty(message.user_id)) {
+            return item;
+          }
+        });
+        socket.emit("match_info", { data: matchInfo, status: "success" });
       });
     } else {
-      client.subscribe("matchMsg", (msg: any) => {
-        console.log(msg);
-        socket.emit("match_info", JSON.parse(msg));
+      client.subscribe("some-key", (msg: any) => {
+        const matchInfo = JSON.parse(msg).find((item: any) => {
+          if (item.playerList.hasOwnProperty(message.user_id)) {
+            return item;
+          }
+        });
+        socket.emit("match_info", { data: matchInfo, status: "success" });
       });
       // socket.emit("match_error", { error: res.data.msg });
     }

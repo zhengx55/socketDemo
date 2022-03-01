@@ -7,36 +7,24 @@ import socketServer from "./socket";
 import { createClient } from "redis";
 import "dotenv/config";
 
-const mockData = {
-  data: {
+const mockData = [
+  {
     playerList: {
-      "1": {
-        user_id: 1,
-        hp: 1000,
-        attack: 200,
-        armor: 300,
-        type: "1",
-      },
-      "2": {
-        user_id: 2,
-        hp: 900,
-        attack: 150,
-        armor: 400,
-        type: "1",
-      },
+      "1": { user_id: 1, hp: 1000, attack: 200, armor: 300, type: "1" },
+      "4": { user_id: 4, hp: 900, attack: 150, armor: 400, type: "1" },
     },
-    room_now_current_user: 1,
-    room_id: "021656504",
+    room_now_current_user: 4,
+    room_id: "030157535",
     room_type: "pvp-auto",
     room_status: 1,
     room_battle_logs: [],
     room_battle_reward: [],
-    room_start_time: 1644997688,
+    room_start_time: 1646112841,
     room_end_time: 0,
-    command: "armor",
-    button: "09gJm8ARMCNyZfu8BrEKAtdwGj+wh+bXmZzuZFyRCms=",
+    command: "attack",
+    hash: "NkRUyYCShrret1yRb0e+qpiC3FEH36oIRcOnqrUbdRo=",
   },
-};
+];
 /**
  * Get port from environment and store in Express.
  */

@@ -1,4 +1,10 @@
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, {
+  useCallback,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import styled from "styled-components";
 import { LazyLoadImage } from "react-lazy-load-image-component";
 import "react-lazy-load-image-component/src/effects/blur.css";
@@ -6,6 +12,7 @@ import { Typography } from "../Match";
 import { AnimatePresence, motion } from "framer-motion";
 import { Stage } from "@inlet/react-pixi";
 import Knight from "../../components/Hero";
+import gameContext from "../../context/gameContext";
 
 const Container = styled.div`
   width: 100%;
@@ -220,6 +227,8 @@ const variants = {
 };
 
 function Battle() {
+  const { GameInfo, playerInfo } = useContext(gameContext);
+
   const [demo, setDemo] = useState<Instruction[]>([
     { id: "button-1", button: "2", status: 0 },
     { id: "button-2", button: "2", status: 0 },
@@ -245,13 +254,16 @@ function Battle() {
   }>({ timebar: 0, buttonbar: 0 });
 
   useEffect(() => {
-    const bar_length =
-      document.getElementsByClassName("time_bar")[0].clientWidth -
-      document.getElementsByClassName("prgressive_dot")[0].clientWidth;
-    const button_bar_length =
-      document.getElementsByClassName("button_bar")[0].clientWidth;
-    setBarLength({ timebar: bar_length, buttonbar: button_bar_length });
-  }, []);
+    if (GameInfo.current_user === playerInfo.user_id) {
+      const bar_length =
+        document.getElementsByClassName("time_bar")[0].clientWidth -
+        document.getElementsByClassName("prgressive_dot")[0].clientWidth;
+      const button_bar_length =
+        document.getElementsByClassName("button_bar")[0].clientWidth;
+      setBarLength({ timebar: bar_length, buttonbar: button_bar_length });
+      
+    }
+  }, [GameInfo, playerInfo]);
 
   const clickRef = useRef<{
     clickCount: number;
@@ -448,7 +460,7 @@ function Battle() {
                 Warrior
               </Typography>
               <Typography weight="normal" color="#C69953">
-                160
+                {playerInfo.hp}
               </Typography>
             </div>
             <div className="health_bar_container">
@@ -469,7 +481,7 @@ function Battle() {
                 Warrior
               </Typography>
               <Typography weight="normal" color="#C69953">
-                160
+                {GameInfo.component.hp}
               </Typography>
             </div>
             <div className="health_bar_container">
@@ -507,91 +519,103 @@ function Battle() {
             <Knight texture={"position_reverse"} />
           </Stage>
         </section>
-        <section className="button">
-          <Direction
-            alt=""
-            src="/img/button/top.png"
-            whileTap={{ scale: 1.1 }}
-            onTouchStart={() => onButtonClick("top")}
-          />
-          <div
-            style={{
-              display: "flex",
-              justifyContent: "space-between",
-              width: "50%",
-              margin: "-10px 0",
-            }}
-          >
+        {GameInfo.current_user === playerInfo.user_id ? (
+          <section className="button">
             <Direction
               alt=""
-              src="/img/button/left_unselected.png"
+              src="/img/button/top.png"
               whileTap={{ scale: 1.1 }}
-              onTouchStart={() => onButtonClick("left")}
+              onTouchStart={() => onButtonClick("top")}
             />
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "space-between",
+                width: "50%",
+                margin: "-10px 0",
+              }}
+            >
+              <Direction
+                alt=""
+                src="/img/button/left_unselected.png"
+                whileTap={{ scale: 1.1 }}
+                onTouchStart={() => onButtonClick("left")}
+              />
+              <Direction
+                alt=""
+                src="/img/button/right_selected.png"
+                whileTap={{ scale: 1.1 }}
+                onTouchStart={() => onButtonClick("right")}
+              />
+            </div>
             <Direction
               alt=""
-              src="/img/button/right_selected.png"
+              src="/img/button/bottom.png"
               whileTap={{ scale: 1.1 }}
-              onTouchStart={() => onButtonClick("right")}
+              onTouchStart={() => onButtonClick("bottom")}
             />
-          </div>
-          <Direction
-            alt=""
-            src="/img/button/bottom.png"
-            whileTap={{ scale: 1.1 }}
-            onTouchStart={() => onButtonClick("bottom")}
-          />
-        </section>
-        <section className="button_bar_container">
-          <div className="time_bar">
-            <motion.img
-              className="flash"
-              ref={FlashRef}
-              src="/img/bar/progressive_light.png"
-              alt=""
-              animate={start ? "activate" : "deactivate"}
-              variants={flash_variant}
-              transition={{
-                repeat: Infinity,
-                ease: "easeInOut",
-                duration: 0.5,
-              }}
-            />
-            <Swiper
-              animate={start ? "activate" : "deactivate"}
-              ref={SwiperRef}
-              variants={time_bar_variant}
-              transition={{
-                repeat: Infinity,
-                repeatType: "reverse",
-                ease: "linear",
-                duration: 1,
-              }}
-              alt=""
-              src="/img/bar/progressive.png"
-              className="prgressive_dot"
-            />
-          </div>
-          <motion.div className="button_bar" animate="visible" initial="hidden">
-            {demo.map((item: Instruction, i: number) => {
-              return (
-                <motion.img
-                  custom={i}
-                  key={item.id}
-                  variants={variants}
-                  alt=""
-                  src={`/img/button/${button_map[item.button]}${
-                    item.status === 0
-                      ? "_unselected"
-                      : item.status === 1
-                      ? "_selected"
-                      : ""
-                  }.png`}
-                />
-              );
-            })}
-          </motion.div>
-        </section>
+          </section>
+        ) : (
+          <section></section>
+        )}
+        {GameInfo.current_user === playerInfo.user_id ? (
+          <section className="button_bar_container">
+            <div className="time_bar">
+              <motion.img
+                className="flash"
+                ref={FlashRef}
+                src="/img/bar/progressive_light.png"
+                alt=""
+                animate={start ? "activate" : "deactivate"}
+                variants={flash_variant}
+                transition={{
+                  repeat: Infinity,
+                  ease: "easeInOut",
+                  duration: 0.5,
+                }}
+              />
+              <Swiper
+                animate={start ? "activate" : "deactivate"}
+                ref={SwiperRef}
+                variants={time_bar_variant}
+                transition={{
+                  repeat: Infinity,
+                  repeatType: "reverse",
+                  ease: "linear",
+                  duration: 1,
+                }}
+                alt=""
+                src="/img/bar/progressive.png"
+                className="prgressive_dot"
+              />
+            </div>
+            <motion.div
+              className="button_bar"
+              animate="visible"
+              initial="hidden"
+            >
+              {demo.map((item: Instruction, i: number) => {
+                return (
+                  <motion.img
+                    custom={i}
+                    key={item.id}
+                    variants={variants}
+                    alt=""
+                    src={`/img/button/${button_map[item.button]}${
+                      item.status === 0
+                        ? "_unselected"
+                        : item.status === 1
+                        ? "_selected"
+                        : ""
+                    }.png`}
+                  />
+                );
+              })}
+            </motion.div>
+          </section>
+        ) : (
+          <p>waiting</p>
+        )}
         <section className="launch">
           <LazyLoadImage
             alt=""

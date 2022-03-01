@@ -92,8 +92,20 @@ const Match = ({ isLogin }: MatchProps) => {
   const [isMatching, setIsMatching] = useState(false);
   const [isMatch, setIsMatch] = useState(false);
   const [cookies] = useCookies(["userid"]);
-  const { setPlayerInfo, userConnection, setGameInfo, setGameStarted } =
-    useContext(gameContext);
+  const {
+    setPlayerInfo,
+    userConnection,
+    setGameInfo,
+    setGameStarted,
+    GameInfo,
+  } = useContext(gameContext);
+
+  // useEffect(() => {
+  //   // listening for match event
+  //   if (isLogin && socketService.socket) {
+
+  //   }
+  // }, [isLogin]);
 
   const matchGame = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -104,11 +116,11 @@ const Match = ({ isLogin }: MatchProps) => {
         userConnection,
         cookies.userid
       );
-      if (!match.room) {
+      console.log(match);
+      if (match.status === "success") {
         setIsMatching(false);
         setIsMatch(true);
         socketService.socket?.once("match_info", (msg) => {
-          console.log(msg.data);
           // if message contains user's data, enter the specific room id
           let user, component: any;
           if (Object.keys(msg.data.playerList).length > 0) {
@@ -128,7 +140,7 @@ const Match = ({ isLogin }: MatchProps) => {
               type: msg.data.room_type,
               current_user: msg.data.room_now_current_user,
               component: component,
-              button: msg.data.button,
+              button: msg.data.hash,
               command_type: msg.data.command,
             }));
           }
@@ -137,11 +149,25 @@ const Match = ({ isLogin }: MatchProps) => {
             console.log(res.message);
           });
         });
-      } else {
-        console.error(isMatch);
       }
     }
   };
+
+  const enterGameHandler = async () => {
+    if (socketService.socket) {
+      try {
+        const ready = await gameService.onStartGame(
+          socketService.socket,
+          GameInfo.room
+        );
+        if (ready.status === "success") setGameStarted(true);
+      } catch (error) {
+        console.error(error);
+        setGameStarted(false);
+      }
+    }
+  };
+
   return (
     <AppContainer>
       <MainContainer>
@@ -189,7 +215,7 @@ const Match = ({ isLogin }: MatchProps) => {
           </Button>
         )}
         {isMatch && !isMatching && (
-          <Button w="12vw" h="5vw" color="#C69953" onClick={matchGame}>
+          <Button w="12vw" h="5vw" color="#C69953" onClick={enterGameHandler}>
             Enter
           </Button>
         )}
