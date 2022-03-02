@@ -44,7 +44,7 @@ export class GameController {
         data: {
           coon_id: message.connection_id,
           user_id: message.user_id,
-          room_id: "030253549",
+          room_id: "030257545",
           room_type: "pvp-auto",
         },
       });
@@ -91,7 +91,7 @@ export class GameController {
         data: {
           coon_id: message.connection_id,
           user_id: message.user_id,
-          room_id: "030253549",
+          room_id: "030257545",
           room_type: "pvp-auto",
         },
       });

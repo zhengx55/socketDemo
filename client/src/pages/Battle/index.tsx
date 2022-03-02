@@ -302,6 +302,9 @@ function Battle() {
   });
   const SwiperRef = useRef<HTMLImageElement>(null);
   const FlashRef = useRef<HTMLImageElement>(null);
+  const TimerRef = useRef<{ rateTimer: number | undefined }>({
+    rateTimer: undefined,
+  });
   const time_bar_variant = {
     activate: { x: barLength },
     deactivate: { x: 0 },
@@ -310,7 +313,11 @@ function Battle() {
     activate: { opacity: 0.5 },
     deactivate: { opacity: 1 },
   };
-
+  useEffect(() => {
+    return () => {
+      clearTimeout(TimerRef.current.rateTimer);
+    };
+  }, []);
   useEffect(() => {
     if (GameInfo.current_user === playerInfo.user_id) {
       let Instruction: any = Object.values(
@@ -533,6 +540,10 @@ function Battle() {
         setBattleInfo((prev) => ({ ...prev, rate: "Miss" }));
         Res_buffer.gather = 0;
       }
+      TimerRef.current.rateTimer = setTimeout(() => {
+        setBattleInfo((prev) => ({ ...prev, rate: "" }));
+      }, 1000);
+
       Res_buffer = Encrypt(JSON.stringify(Res_buffer));
       clickRef.current.clickCount = 0;
       clickRef.current.clickResult = [];

@@ -10,19 +10,33 @@ import "dotenv/config";
 const mockData = [
   {
     playerList: {
-      "6": { user_id: 6, hp: 900, attack: 150, armor: 400, type: "1" },
-      "9": { user_id: 9, hp: 900, attack: 150, armor: 400, type: "1" },
+      "6": {
+        user_id: 6,
+        initial_hp: 900,
+        hp: 900,
+        attack: 150,
+        armor: 400,
+        type: "1",
+      },
+      "9": {
+        user_id: 9,
+        initial_hp: 900,
+        hp: 900,
+        attack: 150,
+        armor: 400,
+        type: "1",
+      },
     },
-    room_now_current_user: 6,
-    room_id: "030253549",
+    room_now_current_user: 9,
+    room_id: "030257545",
     room_type: "pvp-auto",
     room_status: 1,
     room_battle_logs: [],
     room_battle_reward: [],
-    room_start_time: 1646187541,
+    room_start_time: 1646200681,
     room_end_time: 0,
-    command: "armor",
-    hash: "i9t3OUH/Xsue+4Ad/2yAJNliiKeHjeWcHDgLIKXPxdkH63kueQnt0Sx7k+8sH6Fq4T9F5hRQSx3vpNT3sxOCPyttHsTCb4IuKttOn9JMC8KV6zwtCkyF9lXMM2T1rPlKsTRdl38hyk7MHhE1VYc4ii+Jis6FJgFZz9gUimv7ZA4=",
+    command: "attack",
+    hash: "ZHzJH3vE9nRatu6qQIvO3IVerQ2PVRM/pz29vz6M1FqD/C3lAOYMekkEwCwt8pWPkG3F7R3mlGuVoNuE3gQ35o1Mi7hQCs9DXitJf45VLimcgVQhCU95KbYxZDH/Bn8VITN4rwI+LydNrtkSppG8d4Fl/qp0VnwpfrmHg6ds980=",
   },
 ];
 /**

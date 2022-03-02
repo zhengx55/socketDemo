@@ -4,8 +4,10 @@ import * as PIXI from "pixi.js";
 import { Container, AnimatedSprite } from "@inlet/react-pixi";
 const attackSheet = "knight/attack.json";
 const positioSheet = "knight/position.json";
-const deadSheet = "knight/dead.json";
-const positionReverseSheet = "knight/reverse.json";
+const deadSheet = "knight/die.json";
+const positionReverseSheet = "knight/position_reverse.json";
+const attackReverseSheet = "knight/attack_reverse.json";
+const deadReverseSheet = "knight/die_reverse.json";
 interface KnightProps {
   texture: string;
 }
@@ -21,6 +23,8 @@ function Knight({ texture }: KnightProps) {
       .add(positioSheet)
       .add(deadSheet)
       .add(positionReverseSheet)
+      .add(attackReverseSheet)
+      .add(deadReverseSheet)
       .load((_, resource) => {
         const attackFrame = Object.keys(resource[attackSheet].data.frames).map(
           (frame) => Texture.from(frame)
@@ -36,11 +40,20 @@ function Knight({ texture }: KnightProps) {
           resource[positionReverseSheet].data.frames
         ).map((frame) => Texture.from(frame));
 
+        const attackReverseFrame = Object.keys(
+          resource[positionReverseSheet].data.frames
+        ).map((frame) => Texture.from(frame));
+
+        const deadReverseFrame = Object.keys(
+          resource[positionReverseSheet].data.frames
+        ).map((frame) => Texture.from(frame));
         setFrames({
           attack: attackFrame,
           position: positioFrame,
           dead: deadFrame,
           position_reverse: positionReverseFrame,
+          attack_reverse: attackReverseFrame,
+          dead_reverse: deadReverseFrame,
         });
       });
 
