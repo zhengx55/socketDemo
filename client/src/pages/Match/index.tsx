@@ -11,6 +11,7 @@ type TypoProps = {
   weight?: string;
   color?: string;
   size?: string;
+  mt?: string;
 };
 
 interface MatchProps {
@@ -68,7 +69,7 @@ export const Typography = styled.p<TypoProps>`
   color: ${(props) => props.color};
   line-height: 20px;
   padding: 0;
-  margin: 0;
+  margin: ${(props) => (props.mt ? `${props.mt} 0 0 0` : "0")};
 `;
 
 const TitleContainer = styled.div`

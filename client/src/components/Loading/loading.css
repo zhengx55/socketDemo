@@ -1,0 +1,27 @@
+@keyframes animate {
+  0% {
+    transform: translateY(0px);
+  }
+  20% {
+    transform: translateY(-10px);
+  }
+  40%,
+  100% {
+    transform: translateY(0px);
+  }
+}
+
+.text_loading {
+  display: flex;
+  justify-content: center;
+}
+
+.text_loading span {
+  position: relative;
+  font-size: 3vw;
+  margin: 0 2px;
+  color: #b09c7a;
+  text-transform: uppercase;
+  animation: animate 1s ease-in-out infinite;
+  animation-delay: calc(0.1s * var(--i));
+}

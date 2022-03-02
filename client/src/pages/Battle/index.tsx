@@ -17,6 +17,7 @@ import { Decrypt, Encrypt } from "../../utils/crypto";
 import socketService from "../../services/socketService";
 import gameService from "../../services/gameService";
 import { useCookies } from "react-cookie";
+import FontLoading from "../../components/Loading/FontLoading";
 
 const Container = styled.div`
   width: 100%;
@@ -112,53 +113,8 @@ const BattleContainer = styled.div`
   .score_panel {
     display: flex;
     flex-direction: column;
-    justify-content: center;
     align-items: center;
-    row-gap: 2vw;
-  }
-  .waiting_status {
-    width: 100%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    span {
-      position: relative;
-      font-size: 3vw;
-      margin: 0 2px;
-      color: #b09c7a;
-      text-transform: uppercase;
-      animation: ${animate} 1s ease infinite;
-      &:nth-child(1) {
-        animation-delay: 0.1s;
-      }
-      &:nth-child(2) {
-        animation-delay: 0.2s;
-      }
-      &:nth-child(3) {
-        animation-delay: 0.3s;
-      }
-      &:nth-child(4) {
-        animation-delay: 0.4s;
-      }
-      &:nth-child(5) {
-        animation-delay: 0.5s;
-      }
-      &:nth-child(6) {
-        animation-delay: 0.6s;
-      }
-      &:nth-child(7) {
-        animation-delay: 0.7s;
-      }
-      &:nth-child(8) {
-        animation-delay: 0.8s;
-      }
-      &:nth-child(9) {
-        animation-delay: 0.9s;
-      }
-      &:nth-child(10) {
-        animation-delay: 1s;
-      }
-    }
+    padding-top: 2vw;
   }
   .button {
     display: flex;
@@ -237,7 +193,7 @@ const Swiper = styled(motion.img)`
 
 const ScoreFont = styled(motion.h2)`
   padding: 0;
-  margin: 0;
+  margin: 4vw 0 0 0;
   background-clip: text;
   font-size: 4vw;
   -webkit-text-stroke: 1px #f2f2f2;
@@ -670,7 +626,17 @@ function Battle() {
           </Stage>
         </section>
         <section className="score_panel">
-          <Typography weight="bold" color="#B09C7A" size="6vw">
+          {GameInfo.current_user === playerInfo.user_id ? (
+            <>
+              {GameInfo.command_type === "attack" ? (
+                <FontLoading loadingText="Attacking..." />
+              ) : (
+                <FontLoading loadingText="Defending..." />
+              )}
+            </>
+          ) : null}
+
+          <Typography weight="bold" color="#B09C7A" size="6vw" mt="5vw">
             Vs
           </Typography>
           {/* <Typography weight="normal" color="#B09C7A" size="2vw">
@@ -799,18 +765,7 @@ function Battle() {
         ) : (
           <>
             <section></section>
-            <div className="waiting_status">
-              <span>W</span>
-              <span>a</span>
-              <span>i</span>
-              <span>t</span>
-              <span>i</span>
-              <span>n</span>
-              <span>g</span>
-              <span>.</span>
-              <span>.</span>
-              <span>.</span>
-            </div>
+            <FontLoading loadingText="Waiting..." />
             <section></section>
           </>
         )}
