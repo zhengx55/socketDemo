@@ -1,6 +1,6 @@
 {
 	"frames": {
-		"Dying_000.png": {
+		"Dying_reverse_000.png": {
 			"frame": {
 				"x": 2,
 				"y": 2,
@@ -20,7 +20,7 @@
 				"h": 900
 			}
 		},
-		"Dying_001.png": {
+		"Dying_reverse_001.png": {
 			"frame": {
 				"x": 906,
 				"y": 2,
@@ -40,7 +40,7 @@
 				"h": 900
 			}
 		},
-		"Dying_002.png": {
+		"Dying_reverse_002.png": {
 			"frame": {
 				"x": 1810,
 				"y": 2,
@@ -60,7 +60,7 @@
 				"h": 900
 			}
 		},
-		"Dying_003.png": {
+		"Dying_reverse_003.png": {
 			"frame": {
 				"x": 2,
 				"y": 906,
@@ -80,7 +80,7 @@
 				"h": 900
 			}
 		},
-		"Dying_004.png": {
+		"Dying_reverse_004.png": {
 			"frame": {
 				"x": 906,
 				"y": 906,
@@ -100,7 +100,7 @@
 				"h": 900
 			}
 		},
-		"Dying_005.png": {
+		"Dying_reverse_005.png": {
 			"frame": {
 				"x": 1810,
 				"y": 906,
@@ -120,7 +120,7 @@
 				"h": 900
 			}
 		},
-		"Dying_006.png": {
+		"Dying_reverse_006.png": {
 			"frame": {
 				"x": 2,
 				"y": 1810,
@@ -140,7 +140,7 @@
 				"h": 900
 			}
 		},
-		"Dying_007.png": {
+		"Dying_reverse_007.png": {
 			"frame": {
 				"x": 906,
 				"y": 1810,
@@ -160,7 +160,7 @@
 				"h": 900
 			}
 		},
-		"Dying_008.png": {
+		"Dying_reverse_008.png": {
 			"frame": {
 				"x": 1810,
 				"y": 1810,
@@ -180,7 +180,7 @@
 				"h": 900
 			}
 		},
-		"Dying_009.png": {
+		"Dying_reverse_009.png": {
 			"frame": {
 				"x": 2714,
 				"y": 2,
@@ -200,7 +200,7 @@
 				"h": 900
 			}
 		},
-		"Dying_010.png": {
+		"Dying_reverse_010.png": {
 			"frame": {
 				"x": 2714,
 				"y": 906,
@@ -220,7 +220,7 @@
 				"h": 900
 			}
 		},
-		"Dying_011.png": {
+		"Dying_reverse_011.png": {
 			"frame": {
 				"x": 2714,
 				"y": 1810,
@@ -240,7 +240,7 @@
 				"h": 900
 			}
 		},
-		"Dying_012.png": {
+		"Dying_reverse_012.png": {
 			"frame": {
 				"x": 2,
 				"y": 2714,
@@ -260,7 +260,7 @@
 				"h": 900
 			}
 		},
-		"Dying_013.png": {
+		"Dying_reverse_013.png": {
 			"frame": {
 				"x": 906,
 				"y": 2714,
@@ -280,7 +280,7 @@
 				"h": 900
 			}
 		},
-		"Dying_014.png": {
+		"Dying_reverse_014.png": {
 			"frame": {
 				"x": 1810,
 				"y": 2714,

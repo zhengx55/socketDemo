@@ -1,6 +1,6 @@
 {
 	"frames": {
-		"Attacking_000.png": {
+		"Attacking_reverse_000.png": {
 			"frame": {
 				"x": 2,
 				"y": 2,
@@ -20,7 +20,7 @@
 				"h": 900
 			}
 		},
-		"Attacking_001.png": {
+		"Attacking_reverse_001.png": {
 			"frame": {
 				"x": 906,
 				"y": 2,
@@ -40,7 +40,7 @@
 				"h": 900
 			}
 		},
-		"Attacking_002.png": {
+		"Attacking_reverse_002.png": {
 			"frame": {
 				"x": 1810,
 				"y": 2,
@@ -60,7 +60,7 @@
 				"h": 900
 			}
 		},
-		"Attacking_003.png": {
+		"Attacking_reverse_003.png": {
 			"frame": {
 				"x": 2,
 				"y": 906,
@@ -80,7 +80,7 @@
 				"h": 900
 			}
 		},
-		"Attacking_004.png": {
+		"Attacking_reverse_004.png": {
 			"frame": {
 				"x": 906,
 				"y": 906,
@@ -100,7 +100,7 @@
 				"h": 900
 			}
 		},
-		"Attacking_005.png": {
+		"Attacking_reverse_005.png": {
 			"frame": {
 				"x": 1810,
 				"y": 906,
@@ -120,7 +120,7 @@
 				"h": 900
 			}
 		},
-		"Attacking_006.png": {
+		"Attacking_reverse_006.png": {
 			"frame": {
 				"x": 2,
 				"y": 1810,
@@ -140,7 +140,7 @@
 				"h": 900
 			}
 		},
-		"Attacking_007.png": {
+		"Attacking_reverse_007.png": {
 			"frame": {
 				"x": 906,
 				"y": 1810,
@@ -160,7 +160,7 @@
 				"h": 900
 			}
 		},
-		"Attacking_008.png": {
+		"Attacking_reverse_008.png": {
 			"frame": {
 				"x": 1810,
 				"y": 1810,
@@ -180,7 +180,7 @@
 				"h": 900
 			}
 		},
-		"Attacking_009.png": {
+		"Attacking_reverse_009.png": {
 			"frame": {
 				"x": 2714,
 				"y": 2,
@@ -200,7 +200,7 @@
 				"h": 900
 			}
 		},
-		"Attacking_010.png": {
+		"Attacking_reverse_010.png": {
 			"frame": {
 				"x": 2714,
 				"y": 906,
@@ -220,7 +220,7 @@
 				"h": 900
 			}
 		},
-		"Attacking_011.png": {
+		"Attacking_reverse_011.png": {
 			"frame": {
 				"x": 2714,
 				"y": 1810,
@@ -244,7 +244,7 @@
 	"meta": {
 		"app": "http://www.codeandweb.com/texturepacker",
 		"version": "1.0",
-		"image": "attack_revese.png",
+		"image": "attack_reverse.png",
 		"format": "RGBA8888",
 		"size": {
 			"w": 3616,

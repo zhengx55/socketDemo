@@ -1,6 +1,6 @@
 {
 	"frames": {
-		"Idle_000.png": {
+		"Idle_reverse_000.png": {
 			"frame": {
 				"x": 2,
 				"y": 2,
@@ -20,7 +20,7 @@
 				"h": 900
 			}
 		},
-		"Idle_001.png": {
+		"Idle_reverse_001.png": {
 			"frame": {
 				"x": 906,
 				"y": 2,
@@ -40,7 +40,7 @@
 				"h": 900
 			}
 		},
-		"Idle_002.png": {
+		"Idle_reverse_002.png": {
 			"frame": {
 				"x": 1810,
 				"y": 2,
@@ -60,7 +60,7 @@
 				"h": 900
 			}
 		},
-		"Idle_003.png": {
+		"Idle_reverse_003.png": {
 			"frame": {
 				"x": 2714,
 				"y": 2,
@@ -80,7 +80,7 @@
 				"h": 900
 			}
 		},
-		"Idle_004.png": {
+		"Idle_reverse_004.png": {
 			"frame": {
 				"x": 2,
 				"y": 906,
@@ -100,7 +100,7 @@
 				"h": 900
 			}
 		},
-		"Idle_005.png": {
+		"Idle_reverse_005.png": {
 			"frame": {
 				"x": 906,
 				"y": 906,
@@ -120,7 +120,7 @@
 				"h": 900
 			}
 		},
-		"Idle_006.png": {
+		"Idle_reverse_006.png": {
 			"frame": {
 				"x": 1810,
 				"y": 906,
@@ -140,7 +140,7 @@
 				"h": 900
 			}
 		},
-		"Idle_007.png": {
+		"Idle_reverse_007.png": {
 			"frame": {
 				"x": 2714,
 				"y": 906,
@@ -160,7 +160,7 @@
 				"h": 900
 			}
 		},
-		"Idle_008.png": {
+		"Idle_reverse_008.png": {
 			"frame": {
 				"x": 2,
 				"y": 1810,
@@ -180,7 +180,7 @@
 				"h": 900
 			}
 		},
-		"Idle_009.png": {
+		"Idle_reverse_009.png": {
 			"frame": {
 				"x": 906,
 				"y": 1810,
@@ -200,7 +200,7 @@
 				"h": 900
 			}
 		},
-		"Idle_010.png": {
+		"Idle_reverse_010.png": {
 			"frame": {
 				"x": 1810,
 				"y": 1810,
@@ -220,7 +220,7 @@
 				"h": 900
 			}
 		},
-		"Idle_011.png": {
+		"Idle_reverse_011.png": {
 			"frame": {
 				"x": 2714,
 				"y": 1810,
@@ -240,7 +240,7 @@
 				"h": 900
 			}
 		},
-		"Idle_012.png": {
+		"Idle_reverse_012.png": {
 			"frame": {
 				"x": 2,
 				"y": 2714,
@@ -260,7 +260,7 @@
 				"h": 900
 			}
 		},
-		"Idle_013.png": {
+		"Idle_reverse_013.png": {
 			"frame": {
 				"x": 906,
 				"y": 2714,
@@ -280,7 +280,7 @@
 				"h": 900
 			}
 		},
-		"Idle_014.png": {
+		"Idle_reverse_014.png": {
 			"frame": {
 				"x": 1810,
 				"y": 2714,
@@ -300,7 +300,7 @@
 				"h": 900
 			}
 		},
-		"Idle_015.png": {
+		"Idle_reverse_015.png": {
 			"frame": {
 				"x": 2714,
 				"y": 2714,
@@ -320,7 +320,7 @@
 				"h": 900
 			}
 		},
-		"Idle_016.png": {
+		"Idle_reverse_016.png": {
 			"frame": {
 				"x": 3618,
 				"y": 2,
@@ -340,7 +340,7 @@
 				"h": 900
 			}
 		},
-		"Idle_017.png": {
+		"Idle_reverse_017.png": {
 			"frame": {
 				"x": 3618,
 				"y": 906,
