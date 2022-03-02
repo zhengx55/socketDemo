@@ -44,7 +44,6 @@ export class GameController {
         data: {
           coon_id: message.connection_id,
           user_id: message.user_id,
-          room_id: "030257545",
           room_type: "pvp-auto",
         },
       });
@@ -91,7 +90,6 @@ export class GameController {
         data: {
           coon_id: message.connection_id,
           user_id: message.user_id,
-          room_id: "030257545",
           room_type: "pvp-auto",
         },
       });
@@ -133,10 +131,6 @@ export class GameController {
         timeout: 5000,
       })
     );
-    let random = "";
-    for (let i = 0; i < 3; i++) {
-      random += Math.floor(Math.random() * 9 + 1);
-    }
     const res = await myAxios.post("/battle", {
       data: {
         coon_id: message.connection_id,
@@ -144,13 +138,18 @@ export class GameController {
         user_id: message.user_id,
         room_type: message.battle_type,
         command: message.command,
-        number: random,
         hash: message.button,
       },
     });
     if (res.status === 200) {
       socket.emit("game_update_success", res.data);
       socket.to(message.room_id).emit("game_update_success", res.data);
+      if (message.command === "attack") {
+        socket.emit("texture_update", { user_id: message.user_id });
+        socket
+          .to(message.room_id)
+          .emit("texture_update", { user_id: message.user_id });
+      }
     } else {
       socket.emit("game_update_error", { error: "some error occured" });
     }

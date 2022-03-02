@@ -72,6 +72,7 @@ const AvatarInfo = styled.div`
     background: #de712e;
     border-radius: 6px;
     transition: width 0.5s ease;
+    width: 0;
   }
 `;
 
@@ -95,7 +96,7 @@ const BattleContainer = styled.div`
   @media (max-width: 800px) {
     margin-top: 3vw;
     grid-row-gap: 3vw;
-  } /* grid-template-rows: 100px 200px; */
+  }
   .player {
     display: flex;
     justify-content: center;
@@ -292,6 +293,10 @@ function Battle() {
     rate: "",
     timer: "",
   });
+  const [texture, setTexture] = useState<{ your: string; component: string }>({
+    your: "position",
+    component: "position_reverse",
+  });
   const [barLength, setBarLength] = useState<number>(0);
   const clickRef = useRef<{
     clickCount: number;
@@ -302,8 +307,12 @@ function Battle() {
   });
   const SwiperRef = useRef<HTMLImageElement>(null);
   const FlashRef = useRef<HTMLImageElement>(null);
-  const TimerRef = useRef<{ rateTimer: number | undefined }>({
+  const TimerRef = useRef<{
+    rateTimer: number | undefined;
+    textureTimer: number | undefined;
+  }>({
     rateTimer: undefined,
+    textureTimer: undefined,
   });
   const time_bar_variant = {
     activate: { x: barLength },
@@ -316,28 +325,34 @@ function Battle() {
   useEffect(() => {
     return () => {
       clearTimeout(TimerRef.current.rateTimer);
+      clearTimeout(TimerRef.current.textureTimer);
     };
   }, []);
+
   useEffect(() => {
-    if (GameInfo.current_user === playerInfo.user_id) {
-      let Instruction: any = Object.values(
-        JSON.parse(Decrypt(GameInfo.button))
-      );
-      let buttons: Instruction[] = [];
-      for (let i = 0; i < Instruction[0].length; i++) {
-        buttons.push({
-          id: `button-${i}`,
-          button: Instruction[0][i].toString(),
-          status: 0,
-        });
+    if (playerInfo.hp === 0) {
+      setTexture((prev) => ({ ...prev, your: "dead" }));
+    } else if (GameInfo.component.hp === 0) {
+      setTexture((prev) => ({ ...prev, component: "dead_reverse" }));
+    } else {
+      if (GameInfo.current_user === playerInfo.user_id) {
+        let Instruction: any = Object.values(
+          JSON.parse(Decrypt(GameInfo.button))
+        );
+        let buttons: Instruction[] = [];
+        for (let i = 0; i < Instruction[0].length; i++) {
+          buttons.push({
+            id: `button-${i}`,
+            button: Instruction[0][i].toString(),
+            status: 0,
+          });
+        }
+        setButtons(buttons);
+        const bar_length =
+          document.getElementsByClassName("time_bar")[0].clientWidth -
+          document.getElementsByClassName("prgressive_dot")[0].clientWidth;
+        setBarLength(bar_length);
       }
-      setButtons(buttons);
-
-      const bar_length =
-        document.getElementsByClassName("time_bar")[0].clientWidth -
-        document.getElementsByClassName("prgressive_dot")[0].clientWidth;
-
-      setBarLength(bar_length);
     }
   }, [GameInfo, playerInfo]);
 
@@ -346,7 +361,25 @@ function Battle() {
     // console.log("playerInfo:", playerInfo);
     if (socketService.socket) {
       socketService.socket
-        ?.off("game_update_success")
+        .off("texture_update")
+        .on("texture_update", (res: { user_id: string }) => {
+          if (res.user_id === playerInfo.user_id) {
+            setTexture((prev) => ({ ...prev, your: "attack" }));
+            TimerRef.current.textureTimer = setTimeout(() => {
+              setTexture((prev) => ({ ...prev, your: "position" }));
+            }, 1000);
+          } else {
+            setTexture((prev) => ({ ...prev, component: "attack_reverse" }));
+            TimerRef.current.textureTimer = setTimeout(() => {
+              setTexture((prev) => ({
+                ...prev,
+                component: "position_reverse",
+              }));
+            }, 1500);
+          }
+        });
+      socketService.socket
+        .off("game_update_success")
         .on("game_update_success", (msg) => {
           let user, component: any;
           if (Object.keys(msg.data.playerList).length > 0) {
@@ -591,7 +624,12 @@ function Battle() {
               </Typography>
             </div>
             <div className="health_bar_container">
-              <span className="health_bar" />
+              <span
+                className="health_bar"
+                style={{
+                  width: `${(playerInfo.hp / playerInfo.initial_hp) * 100}%`,
+                }}
+              />
             </div>
           </div>
         </AvatarInfo>
@@ -612,7 +650,15 @@ function Battle() {
               </Typography>
             </div>
             <div className="health_bar_container">
-              <span className="health_bar" />
+              <span
+                className="health_bar"
+                style={{
+                  width: `${
+                    (GameInfo.component.hp / GameInfo.component.initial_hp) *
+                    100
+                  }%`,
+                }}
+              />
             </div>
           </div>
         </AvatarInfo>
@@ -620,16 +666,16 @@ function Battle() {
       <BattleContainer>
         <section className="player">
           <Stage options={{ backgroundAlpha: 0 }}>
-            <Knight texture={"position"} />
+            <Knight texture={texture.your} />
           </Stage>
         </section>
         <section className="score_panel">
           <Typography weight="bold" color="#B09C7A" size="6vw">
             Vs
           </Typography>
-          <Typography weight="normal" color="#B09C7A" size="2vw">
+          {/* <Typography weight="normal" color="#B09C7A" size="2vw">
             Time: 0
-          </Typography>
+          </Typography> */}
           <AnimatePresence>
             {battleInfo.rate !== "" && (
               <ScoreFont
@@ -643,12 +689,11 @@ function Battle() {
         </section>
         <section className="player">
           <Stage options={{ backgroundAlpha: 0 }}>
-            <Knight texture={"position_reverse"} />
+            <Knight texture={texture.component} />
           </Stage>
         </section>
         {GameInfo.current_user === playerInfo.user_id ? (
           <>
-            {" "}
             <section className="button">
               <Direction
                 alt=""

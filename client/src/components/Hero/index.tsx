@@ -41,11 +41,11 @@ function Knight({ texture }: KnightProps) {
         ).map((frame) => Texture.from(frame));
 
         const attackReverseFrame = Object.keys(
-          resource[positionReverseSheet].data.frames
+          resource[attackReverseSheet].data.frames
         ).map((frame) => Texture.from(frame));
 
         const deadReverseFrame = Object.keys(
-          resource[positionReverseSheet].data.frames
+          resource[deadReverseSheet].data.frames
         ).map((frame) => Texture.from(frame));
         setFrames({
           attack: attackFrame,
@@ -72,9 +72,9 @@ function Knight({ texture }: KnightProps) {
         animationSpeed={0.2}
         isPlaying={true}
         textures={frames[texture]}
-        anchor={0.1}
+        anchor={[0.2, 0.15]}
         scale={0.7}
-        loop={texture === "position" || "position_reverse" ? true : false}
+        loop={["position", "position_reverse"].includes(texture) ? true : false}
         initialFrame={1}
       />
     </Container>
