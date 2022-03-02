@@ -58,6 +58,10 @@ function App() {
             button: isInGame.data.hash,
             command_type: isInGame.data.command,
           }));
+          socketService.socket?.emit("enter_room", isInGame.data.room_id);
+          socketService.socket?.on("room_joined", (res) => {
+            console.log(res.message);
+          });
         }
         setGameStarted(true);
       } else {
