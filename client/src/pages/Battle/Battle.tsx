@@ -14,6 +14,8 @@ import { Stage } from "@inlet/react-pixi";
 import Knight from "../../components/Hero";
 import gameContext from "../../context/gameContext";
 import { Decrypt, Encrypt } from "../../utils/crypto";
+import socketService from "../../services/socketService";
+import gameService from "../../services/gameService";
 
 const Container = styled.div`
   width: 100%;
@@ -278,19 +280,35 @@ const variants = {
 };
 
 function Battle() {
-  const { GameInfo, playerInfo } = useContext(gameContext);
-
+  const { GameInfo, playerInfo, setGameInfo, setPlayerInfo, userConnection } =
+    useContext(gameContext);
   const [demo, setDemo] = useState<Instruction[]>([]);
-
   const [battleInfo, setBattleInfo] = useState<{ rate: string; timer: string }>(
     {
       rate: "",
       timer: "",
     }
   );
-
   const [barLength, setBarLength] = useState<number>(0);
-
+  const clickRef = useRef<{
+    clickCount: number;
+    clickResult: number[];
+  }>({
+    clickCount: 0,
+    clickResult: [],
+  });
+  const SwiperRef = useRef<HTMLImageElement>(null);
+  const FlashRef = useRef<HTMLImageElement>(null);
+  const [start, setStart] = useState<boolean>(false);
+  const time_bar_variant = {
+    activate: { x: barLength },
+    deactivate: { x: 0 },
+  };
+  const flash_variant = {
+    activate: { opacity: 0.5 },
+    deactivate: { opacity: 1 },
+  };
+  
   useEffect(() => {
     if (GameInfo.current_user === playerInfo.user_id) {
       setStart(true);
@@ -310,36 +328,51 @@ function Battle() {
       const bar_length =
         document.getElementsByClassName("time_bar")[0].clientWidth -
         document.getElementsByClassName("prgressive_dot")[0].clientWidth;
-      // const button_bar_length =
-      //   document.getElementsByClassName("button_bar")[0].clientWidth;
+
       setBarLength(bar_length);
     } else {
       setStart(false);
     }
   }, [GameInfo, playerInfo]);
 
-  const clickRef = useRef<{
-    clickCount: number;
-    clickResult: number[];
-  }>({
-    clickCount: 0,
-    clickResult: [],
+  useEffect(() => {
+    // console.log("GameInfo:", GameInfo);
+    // console.log("playerInfo:", playerInfo);
+    if (socketService.socket) {
+      socketService.socket
+        ?.off("game_update_success")
+        .on("game_update_success", (msg) => {
+          let user, component: any;
+          if (Object.keys(msg.data.playerList).length > 0) {
+            for (const player in msg.data.playerList) {
+              if (
+                msg.data.playerList[player].user_id ===
+                Number(playerInfo.user_id)
+              ) {
+                user = msg.data.playerList[player];
+              } else {
+                component = msg.data.playerList[player];
+              }
+            }
+          }
+          setPlayerInfo(user);
+          setGameInfo((prev: any) => ({
+            ...prev,
+            room: msg.data.room_id,
+            type: msg.data.room_type,
+            component: component,
+            current_user: msg.data.room_now_current_user,
+            button: msg.data.hash,
+            command_type: msg.data.command,
+          }));
+        });
+      socketService.socket
+        ?.off("game_update_error")
+        .on("game_update_error", (msg) => {
+          console.error(msg);
+        });
+    }
   });
-
-  const SwiperRef = useRef<HTMLImageElement>(null);
-  const FlashRef = useRef<HTMLImageElement>(null);
-
-  const [start, setStart] = useState<boolean>(false);
-
-  const time_bar_variant = {
-    activate: { x: barLength },
-    deactivate: { x: 0 },
-  };
-
-  const flash_variant = {
-    activate: { opacity: 0.5 },
-    deactivate: { opacity: 1 },
-  };
 
   const onButtonClick = useCallback(
     (type: string) => {
@@ -475,9 +508,9 @@ function Battle() {
     [demo]
   );
 
-  const onLaunchHandler = useCallback(() => {
-    let Res_buffer: any = Object.values(JSON.parse(Decrypt(GameInfo.button)));
-    Res_buffer[3] = clickRef.current.clickResult;
+  const onLaunchHandler = useCallback(async (): Promise<void> => {
+    let Res_buffer: any = JSON.parse(Decrypt(GameInfo.button));
+    Res_buffer.submitButton = clickRef.current.clickResult;
     if (FlashRef.current && SwiperRef.current) {
       const flash_x = Math.floor(
         FlashRef.current.getBoundingClientRect().x +
@@ -487,21 +520,39 @@ function Battle() {
         SwiperRef.current.getBoundingClientRect().x +
           SwiperRef.current.getBoundingClientRect().width / 2
       );
-      clickRef.current.clickCount = 0;
-      clickRef.current.clickResult = [];
+
       if (Math.abs(swiper_x - flash_x) <= 10) {
         setBattleInfo((prev) => ({ ...prev, rate: "Execllent" }));
-        Res_buffer[4] = 2;
+        Res_buffer.gather = 2;
       } else if (Math.abs(swiper_x - flash_x) <= 20) {
         setBattleInfo((prev) => ({ ...prev, rate: "Good" }));
-        Res_buffer[4] = 1;
+        Res_buffer.gather = 1;
       } else {
         setBattleInfo((prev) => ({ ...prev, rate: "Miss" }));
-        Res_buffer[4] = 0;
+        Res_buffer.gather = 0;
       }
       Res_buffer = Encrypt(JSON.stringify(Res_buffer));
+      clickRef.current.clickCount = 0;
+      clickRef.current.clickResult = [];
+      if (socketService.socket) {
+        console.log("submit info:", GameInfo);
+        try {
+          await gameService.gameUpdate(socketService.socket, userConnection, {
+            connection_id: userConnection,
+            room_id: GameInfo.room,
+            user_id: playerInfo.user_id,
+            battle_type: GameInfo.type,
+            command: GameInfo.command_type,
+            button: Res_buffer,
+          });
+        } catch (error) {
+          console.error(error);
+        }
+      } else {
+        console.error("socket service is not available");
+      }
     }
-  }, [battleInfo]);
+  }, [GameInfo, playerInfo]);
 
   return (
     <Container>

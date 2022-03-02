@@ -116,38 +116,36 @@ const Match = ({ isLogin }: MatchProps) => {
         userConnection,
         cookies.userid
       );
-      console.log(match);
       if (match.status === "success") {
         setIsMatching(false);
         setIsMatch(true);
-        socketService.socket?.once("match_info", (msg) => {
-          // if message contains user's data, enter the specific room id
-          let user, component: any;
-          if (Object.keys(msg.data.playerList).length > 0) {
-            for (const player in msg.data.playerList) {
-              if (
-                msg.data.playerList[player].user_id === Number(cookies.userid)
-              ) {
-                user = msg.data.playerList[player];
-              } else {
-                component = msg.data.playerList[player];
-              }
+
+        // if message contains user's data, enter the specific room id
+        let user, component: any;
+        if (Object.keys(match.data.playerList).length > 0) {
+          for (const player in match.data.playerList) {
+            if (
+              match.data.playerList[player].user_id === Number(cookies.userid)
+            ) {
+              user = match.data.playerList[player];
+            } else {
+              component = match.data.playerList[player];
             }
-            setPlayerInfo(user);
-            setGameInfo((prev: any) => ({
-              ...prev,
-              room: msg.data.room_id,
-              type: msg.data.room_type,
-              current_user: msg.data.room_now_current_user,
-              component: component,
-              button: msg.data.hash,
-              command_type: msg.data.command,
-            }));
           }
-          socketService.socket?.emit("enter_room", msg.data.room_id);
-          socketService.socket?.on("room_joined", (res) => {
-            console.log(res.message);
-          });
+          setPlayerInfo(user);
+          setGameInfo((prev: any) => ({
+            ...prev,
+            room: match.data.room_id,
+            type: match.data.room_type,
+            current_user: match.data.room_now_current_user,
+            component: component,
+            button: match.data.hash,
+            command_type: match.data.command,
+          }));
+        }
+        socketService.socket?.emit("enter_room", match.data.room_id);
+        socketService.socket?.on("room_joined", (res) => {
+          console.log(res.message);
         });
       }
     }
@@ -156,6 +154,7 @@ const Match = ({ isLogin }: MatchProps) => {
   const enterGameHandler = async () => {
     if (socketService.socket) {
       try {
+        console.log(GameInfo);
         const ready = await gameService.onStartGame(
           socketService.socket,
           GameInfo.room
@@ -210,12 +209,17 @@ const Match = ({ isLogin }: MatchProps) => {
           </div>
         </MatchContainer>
         {!isMatch && !isMatching && (
-          <Button w="12vw" h="5vw" color="#C69953" onClick={matchGame}>
+          <Button w="12vw" h="5vw" color="#C69953" onTouchStart={matchGame}>
             Match
           </Button>
         )}
         {isMatch && !isMatching && (
-          <Button w="12vw" h="5vw" color="#C69953" onClick={enterGameHandler}>
+          <Button
+            w="12vw"
+            h="5vw"
+            color="#C69953"
+            onTouchStart={enterGameHandler}
+          >
             Enter
           </Button>
         )}

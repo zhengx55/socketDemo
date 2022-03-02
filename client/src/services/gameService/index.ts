@@ -33,7 +33,7 @@ class GameService {
         user_id: userId,
       });
       socket.on("match_info", (res) => rs(res));
-      socket.on("match_error", ({ error }) => rs(error));
+      socket.on("match_error", ({ error }) => rj(error));
     });
   }
 

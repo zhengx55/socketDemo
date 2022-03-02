@@ -35,7 +35,11 @@ export class GameController {
       })
     );
     const res: any = await myAxios.post("/matching", {
-      data: { coon_id: message.connection_id, user_id: message.user_id },
+      data: {
+        coon_id: message.connection_id,
+        user_id: message.user_id,
+        room_type: "pvp-auto",
+      },
     });
     if (res.data.code === "200") {
       client.subscribe("some-key", (msg: any) => {
@@ -46,16 +50,19 @@ export class GameController {
         });
         socket.emit("match_info", { data: matchInfo, status: "success" });
       });
-    } else {
-      client.subscribe("some-key", (msg: any) => {
-        const matchInfo = JSON.parse(msg).find((item: any) => {
-          if (item.playerList.hasOwnProperty(message.user_id)) {
-            return item;
-          }
-        });
-        socket.emit("match_info", { data: matchInfo, status: "success" });
+    } else if (res.data.code === "400") {
+      const res: any = await myAxios.post("/getRoomData", {
+        data: {
+          coon_id: message.connection_id,
+          user_id: message.user_id,
+          room_id: "030253549",
+          room_type: "pvp-auto",
+        },
       });
-      // socket.emit("match_error", { error: res.data.msg });
+      if (res.data.code === "200") {
+        const matchInfo = res.data.data;
+        socket.emit("match_info", { data: matchInfo, status: "success" });
+      }
     }
   }
 
@@ -95,16 +102,14 @@ export class GameController {
       random += Math.floor(Math.random() * 9 + 1);
     }
     const res = await myAxios.post("/battle", {
-      // use random number for testing
       data: {
-        // conn_id: message.connection_id,
-        coon_id: 5851,
+        coon_id: message.connection_id,
         room_id: message.room_id,
         user_id: message.user_id,
         room_type: message.battle_type,
         command: message.command,
         number: random,
-        button: message.button,
+        hash: message.button,
       },
     });
     if (res.status === 200) {
