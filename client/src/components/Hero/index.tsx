@@ -59,8 +59,8 @@ function Knight({ texture }: KnightProps) {
         animationSpeed={0.2}
         isPlaying={true}
         textures={frames[texture]}
-        anchor={0}
-        scale={0.5}
+        anchor={0.1}
+        scale={0.7}
         loop={texture === "position" || "position_reverse" ? true : false}
         initialFrame={1}
       />

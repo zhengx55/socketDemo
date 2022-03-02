@@ -1,4 +1,4 @@
-import axios from "axios";
+import axios, { AxiosResponse } from "axios";
 import {
   ConnectedSocket,
   MessageBody,
@@ -21,6 +21,42 @@ export class GameController {
     return gameRoom;
   }
 
+  @OnMessage("game_progress_check")
+  public async gamecheck(
+    @ConnectedSocket() socket: Socket,
+    @MessageBody() message: any
+  ) {
+    const myAxios = setupInterceptorsTo(
+      axios.create({
+        baseURL: "https://dao.oin.finance/index/game",
+        timeout: 5000,
+      })
+    );
+    const res: AxiosResponse = await myAxios.post("/matching", {
+      data: {
+        coon_id: message.connection_id,
+        user_id: message.user_id,
+        room_type: "pvp-auto",
+      },
+    });
+    if (res.data.code === "400") {
+      const res: AxiosResponse = await myAxios.post("/getRoomData", {
+        data: {
+          coon_id: message.connection_id,
+          user_id: message.user_id,
+          room_id: "030253549",
+          room_type: "pvp-auto",
+        },
+      });
+      if (res.data.code === "200") {
+        const matchInfo = res.data.data;
+        socket.emit("game_status", { data: matchInfo, status: true });
+      } else {
+        socket.emit("game_status", { status: false });
+      }
+    }
+  }
+
   // User successfully Logined in
   // Match started, redis subscribe for room info
   @OnMessage("match_room")
@@ -34,7 +70,7 @@ export class GameController {
         timeout: 5000,
       })
     );
-    const res: any = await myAxios.post("/matching", {
+    const res: AxiosResponse = await myAxios.post("/matching", {
       data: {
         coon_id: message.connection_id,
         user_id: message.user_id,
@@ -51,7 +87,7 @@ export class GameController {
         socket.emit("match_info", { data: matchInfo, status: "success" });
       });
     } else if (res.data.code === "400") {
-      const res: any = await myAxios.post("/getRoomData", {
+      const res: AxiosResponse = await myAxios.post("/getRoomData", {
         data: {
           coon_id: message.connection_id,
           user_id: message.user_id,

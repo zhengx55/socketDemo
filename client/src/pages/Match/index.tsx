@@ -91,21 +91,9 @@ const TitleContainer = styled.div`
 const Match = ({ isLogin }: MatchProps) => {
   const [isMatching, setIsMatching] = useState(false);
   const [isMatch, setIsMatch] = useState(false);
-  const [cookies] = useCookies(["userid"]);
-  const {
-    setPlayerInfo,
-    userConnection,
-    setGameInfo,
-    setGameStarted,
-    GameInfo,
-  } = useContext(gameContext);
-
-  // useEffect(() => {
-  //   // listening for match event
-  //   if (isLogin && socketService.socket) {
-
-  //   }
-  // }, [isLogin]);
+  const [cookies] = useCookies(["userid", "userConnection"]);
+  const { setPlayerInfo, setGameInfo, setGameStarted, GameInfo } =
+    useContext(gameContext);
 
   const matchGame = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -113,7 +101,7 @@ const Match = ({ isLogin }: MatchProps) => {
     if (isLogin && socketService.socket) {
       const match = await gameService.matchGame(
         socketService.socket,
-        userConnection,
+        cookies.userConnection,
         cookies.userid
       );
       if (match.status === "success") {

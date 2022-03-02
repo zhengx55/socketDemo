@@ -59,6 +59,28 @@ class GameService {
         .on("game_update_error", ({ error }) => rj(error));
     });
   }
+
+  public async gameInProgress(
+    socket: Socket,
+    userConnection: string,
+    userId: string
+  ): Promise<any> {
+    return new Promise<any>((resolve, reject) => {
+      socket?.emit("game_progress_check", {
+        connection_id: userConnection,
+        user_id: userId,
+      });
+      socket
+        .off("game_status")
+        .on("game_status", (res: { data: any; status: boolean }) => {
+          if (res.status) {
+            resolve({ status: true, data: res.data });
+          } else {
+            resolve({ status: false, data: res.data });
+          }
+        });
+    });
+  }
 }
 
 export default new GameService();

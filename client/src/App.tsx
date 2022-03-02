@@ -4,17 +4,17 @@ import GameContext, { IGameContextProps } from "./context/gameContext";
 import useOrientation from "./hooks/useOrientation";
 import Portrait from "./pages/Prompt/portrait";
 import { useCookies } from "react-cookie";
-import Battle from "./pages/Battle/Battle";
+import Battle from "./pages/Battle";
 import Match from "./pages/Match";
+import gameService from "./services/gameService";
 
 function App() {
   const [playerInfo, setPlayerInfo] = useState<any>(null);
   const [GameInfo, setGameInfo] = useState<any>({ room: "", component: {} });
   const [isGameStarted, setGameStarted] = useState<boolean>(false);
   const [isLogin, setIsLogin] = useState<boolean>(false);
-  const [userConnection, setUserConnection] = useState<string>("0");
   const [orientation] = useOrientation();
-  const [cookies, setCookie] = useCookies(["userid"]);
+  const [cookies, setCookie] = useCookies(["userid", "userConnection"]);
 
   const connectSocket = async (): Promise<void> => {
     try {
@@ -28,6 +28,44 @@ function App() {
     }
   };
 
+  const gameProgressCheck = async (): Promise<void> => {
+    if (socketService.socket) {
+      const isInGame = await gameService.gameInProgress(
+        socketService.socket,
+        cookies.userConnection,
+        cookies.userid
+      );
+      if (isInGame.status) {
+        let user, component: any;
+        if (Object.keys(isInGame.data.playerList).length > 0) {
+          for (const player in isInGame.data.playerList) {
+            if (
+              isInGame.data.playerList[player].user_id ===
+              Number(cookies.userid)
+            ) {
+              user = isInGame.data.playerList[player];
+            } else {
+              component = isInGame.data.playerList[player];
+            }
+          }
+          setPlayerInfo(user);
+          setGameInfo((prev: any) => ({
+            ...prev,
+            room: isInGame.data.room_id,
+            type: isInGame.data.room_type,
+            current_user: isInGame.data.room_now_current_user,
+            component: component,
+            button: isInGame.data.hash,
+            command_type: isInGame.data.command,
+          }));
+        }
+        setGameStarted(true);
+      } else {
+        return;
+      }
+    }
+  };
+
   const disconnectSocket = (): void => {
     if (socketService.socket) {
       socketService.socket.close();
@@ -36,6 +74,7 @@ function App() {
 
   useEffect(() => {
     connectSocket();
+    gameProgressCheck();
     return () => {
       disconnectSocket();
     };
@@ -53,8 +92,13 @@ function App() {
 
   const loginGame = async (): Promise<void> => {
     let random = "";
-    for (let i = 0; i < 4; i++) {
-      random += Math.floor(Math.random() * 9 + 1);
+    if (!cookies.userConnection) {
+      for (let i = 0; i < 4; i++) {
+        random += Math.floor(Math.random() * 9 + 1);
+      }
+      setCookie("userConnection", random, { path: "/" });
+    } else {
+      random = cookies.userConnection;
     }
     let userId = "";
     if (!cookies.userid) {
@@ -65,7 +109,6 @@ function App() {
     } else {
       userId = cookies.userid;
     }
-    setUserConnection(random);
     socketService.socket?.emit("request_login", {
       connection_id: random,
       user_id: userId,
@@ -82,8 +125,6 @@ function App() {
   const gameContextValue: IGameContextProps = {
     playerInfo,
     setPlayerInfo,
-    userConnection,
-    setUserConnection,
     GameInfo,
     setGameInfo,
     setGameStarted,
