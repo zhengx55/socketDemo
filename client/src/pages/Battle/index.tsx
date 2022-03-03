@@ -112,6 +112,7 @@ const BattleContainer = styled.div`
   }
   .score_panel {
     display: flex;
+    position: relative;
     flex-direction: column;
     align-items: center;
     padding-top: 2vw;
@@ -169,13 +170,12 @@ const BattleContainer = styled.div`
       aspect-ratio: 1;
       width: 9vw;
       touch-action: manipulation;
+      transition: transform 0.2s cubic-bezier(0.075, 0.82, 0.165, 1);
       &:active {
-        transform: scale(1.02);
+        transform: scale(1.2);
       }
     }
-    .launch_button_disable {
-      display: none;
-    }
+
     p {
       color: #fff;
       font-size: 2vw;
@@ -192,10 +192,12 @@ const Swiper = styled(motion.img)`
 `;
 
 const ScoreFont = styled(motion.h2)`
+  position: absolute;
+  bottom: 0;
+  right: 0;
   padding: 0;
-  margin: 4vw 0 0 0;
   background-clip: text;
-  font-size: 4vw;
+  font-size: 2vw;
   -webkit-text-stroke: 1px #f2f2f2;
   background: linear-gradient(
     180deg,
@@ -206,7 +208,6 @@ const ScoreFont = styled(motion.h2)`
   );
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
-  font-family: Alibaba-PuHuiTi-B, Alibaba-PuHuiTi;
 `;
 
 type Button = {
@@ -244,10 +245,10 @@ function Battle() {
   const [buttons, setButtons] = useState<Instruction[]>([]);
   const [battleInfo, setBattleInfo] = useState<{
     rate: string;
-    timer: string;
+    timer: number;
   }>({
     rate: "",
-    timer: "",
+    timer: 20,
   });
   const [texture, setTexture] = useState<{ your: string; component: string }>({
     your: "position",
@@ -266,9 +267,11 @@ function Battle() {
   const TimerRef = useRef<{
     rateTimer: number | undefined;
     textureTimer: number | undefined;
+    CountdownTimer: number | undefined;
   }>({
     rateTimer: undefined,
     textureTimer: undefined,
+    CountdownTimer: undefined,
   });
   const time_bar_variant = {
     activate: { x: barLength },
@@ -278,12 +281,23 @@ function Battle() {
     activate: { opacity: 0.5 },
     deactivate: { opacity: 1 },
   };
+
   useEffect(() => {
+    TimerRef.current.CountdownTimer = setInterval(() => {
+      setBattleInfo((prev) => ({ ...prev, timer: prev.timer - 1 }));
+    }, 1000);
     return () => {
       clearTimeout(TimerRef.current.rateTimer);
       clearTimeout(TimerRef.current.textureTimer);
+      clearTimeout(TimerRef.current.CountdownTimer);
     };
   }, []);
+
+  useEffect(() => {
+    if (battleInfo.timer === 0) {
+      clearTimeout(TimerRef.current.CountdownTimer);
+    }
+  }, [battleInfo]);
 
   useEffect(() => {
     if (playerInfo.hp === 0) {
@@ -313,8 +327,6 @@ function Battle() {
   }, [GameInfo, playerInfo]);
 
   useEffect(() => {
-    // console.log("GameInfo:", GameInfo);
-    // console.log("playerInfo:", playerInfo);
     if (socketService.socket) {
       socketService.socket
         .off("texture_update")
@@ -507,58 +519,62 @@ function Battle() {
   );
 
   const onLaunchHandler = useCallback(async (): Promise<void> => {
-    let Res_buffer: any = JSON.parse(Decrypt(GameInfo.button));
-    Res_buffer.submitButton = clickRef.current.clickResult;
-    if (FlashRef.current && SwiperRef.current) {
-      const flash_x = Math.floor(
-        FlashRef.current.getBoundingClientRect().x +
-          FlashRef.current.getBoundingClientRect().width / 2
-      );
-      const swiper_x = Math.floor(
-        SwiperRef.current.getBoundingClientRect().x +
-          SwiperRef.current.getBoundingClientRect().width / 2
-      );
+    if (clickRef.current.clickCount !== buttons.length) {
+      return;
+    } else {
+      let Res_buffer: any = JSON.parse(Decrypt(GameInfo.button));
+      Res_buffer.submitButton = clickRef.current.clickResult;
+      if (FlashRef.current && SwiperRef.current) {
+        const flash_x = Math.floor(
+          FlashRef.current.getBoundingClientRect().x +
+            FlashRef.current.getBoundingClientRect().width / 2
+        );
+        const swiper_x = Math.floor(
+          SwiperRef.current.getBoundingClientRect().x +
+            SwiperRef.current.getBoundingClientRect().width / 2
+        );
 
-      if (Math.abs(swiper_x - flash_x) <= 10) {
-        setBattleInfo((prev) => ({ ...prev, rate: "Execllent" }));
-        Res_buffer.gather = 2;
-      } else if (Math.abs(swiper_x - flash_x) <= 20) {
-        setBattleInfo((prev) => ({ ...prev, rate: "Good" }));
-        Res_buffer.gather = 1;
-      } else {
-        setBattleInfo((prev) => ({ ...prev, rate: "Miss" }));
-        Res_buffer.gather = 0;
-      }
-      TimerRef.current.rateTimer = setTimeout(() => {
-        setBattleInfo((prev) => ({ ...prev, rate: "" }));
-      }, 1000);
-
-      Res_buffer = Encrypt(JSON.stringify(Res_buffer));
-      clickRef.current.clickCount = 0;
-      clickRef.current.clickResult = [];
-      if (socketService.socket) {
-        console.log("submit info:", GameInfo);
-        try {
-          await gameService.gameUpdate(
-            socketService.socket,
-            cookies.userConnection,
-            {
-              connection_id: cookies.userConnection,
-              room_id: GameInfo.room,
-              user_id: playerInfo.user_id,
-              battle_type: GameInfo.type,
-              command: GameInfo.command_type,
-              button: Res_buffer,
-            }
-          );
-        } catch (error) {
-          console.error(error);
+        if (Math.abs(swiper_x - flash_x) <= 10) {
+          setBattleInfo((prev) => ({ ...prev, rate: "Execllent" }));
+          Res_buffer.gather = 2;
+        } else if (Math.abs(swiper_x - flash_x) <= 20) {
+          setBattleInfo((prev) => ({ ...prev, rate: "Good" }));
+          Res_buffer.gather = 1;
+        } else {
+          setBattleInfo((prev) => ({ ...prev, rate: "Miss" }));
+          Res_buffer.gather = 0;
         }
-      } else {
-        console.error("socket service is not available");
+        TimerRef.current.rateTimer = setTimeout(() => {
+          setBattleInfo((prev) => ({ ...prev, rate: "" }));
+        }, 1000);
+
+        Res_buffer = Encrypt(JSON.stringify(Res_buffer));
+        clickRef.current.clickCount = 0;
+        clickRef.current.clickResult = [];
+        if (socketService.socket) {
+          console.log("submit info:", GameInfo);
+          try {
+            await gameService.gameUpdate(
+              socketService.socket,
+              cookies.userConnection,
+              {
+                connection_id: cookies.userConnection,
+                room_id: GameInfo.room,
+                user_id: playerInfo.user_id,
+                battle_type: GameInfo.type,
+                command: GameInfo.command_type,
+                button: Res_buffer,
+              }
+            );
+          } catch (error) {
+            console.error(error);
+          }
+        } else {
+          console.error("socket service is not available");
+        }
       }
     }
-  }, [GameInfo, playerInfo]);
+  }, [GameInfo, playerInfo, buttons]);
 
   return (
     <Container>
@@ -639,14 +655,16 @@ function Battle() {
           <Typography weight="bold" color="#B09C7A" size="6vw" mt="5vw">
             Vs
           </Typography>
-          {/* <Typography weight="normal" color="#B09C7A" size="2vw">
-            Time: 0
-          </Typography> */}
+          {GameInfo.current_user === playerInfo.user_id ? (
+            <Typography weight="normal" color="#B09C7A" size="2vw" mt="5vw">
+              Time: {battleInfo.timer}
+            </Typography>
+          ) : null}
+
           <AnimatePresence>
             {battleInfo.rate !== "" && (
               <ScoreFont
-                initial={{ opacity: 0, scale: 0.9 }}
-                animate={{ opacity: 1, scale: 1.2, rotate: [1, -1.4, 0] }}
+                animate={{ opacity: 1, scale: 1.4, rotate: [2, -2, 0] }}
               >
                 {battleInfo.rate}
               </ScoreFont>
@@ -690,7 +708,7 @@ function Battle() {
               </div>
               <Direction
                 alt=""
-                src="/img/button/bottom.png"
+                src="/img/button/bottom_btn.png"
                 whileTap={{ scale: 1.1 }}
                 onTouchStart={() => onButtonClick("bottom")}
               />
@@ -752,11 +770,7 @@ function Battle() {
             <section className="launch">
               <LazyLoadImage
                 alt=""
-                className={`launch_button${
-                  buttons.length === clickRef.current.clickCount
-                    ? ""
-                    : "_disable"
-                }`}
+                className="launch_button"
                 src="/img/button/launch.png"
                 onTouchStart={onLaunchHandler}
               />
