@@ -226,18 +226,6 @@ const button_map: Button = {
   "4": "left",
 };
 
-const variants = {
-  visible: (i: number) => ({
-    opacity: 1,
-    transition: {
-      delay: i * 0.1,
-      duration: 1,
-      ease: "linear",
-    },
-  }),
-  hidden: { opacity: 0 },
-};
-
 function Battle() {
   const { GameInfo, playerInfo, setGameInfo, setPlayerInfo } =
     useContext(gameContext);
@@ -283,18 +271,15 @@ function Battle() {
   };
 
   useEffect(() => {
-    TimerRef.current.CountdownTimer = setInterval(() => {
-      setBattleInfo((prev) => ({ ...prev, timer: prev.timer - 1 }));
-    }, 1000);
     return () => {
       clearTimeout(TimerRef.current.rateTimer);
       clearTimeout(TimerRef.current.textureTimer);
-      clearTimeout(TimerRef.current.CountdownTimer);
     };
   }, []);
 
   useEffect(() => {
     if (battleInfo.timer === 0) {
+      autoSubmit();
       clearTimeout(TimerRef.current.CountdownTimer);
     }
   }, [battleInfo]);
@@ -307,6 +292,9 @@ function Battle() {
     } else {
       if (GameInfo.current_user === playerInfo.user_id) {
         setBattleInfo((prev) => ({ ...prev, timer: 20 }));
+        TimerRef.current.CountdownTimer = setInterval(() => {
+          setBattleInfo((prev) => ({ ...prev, timer: prev.timer - 1 }));
+        }, 1000);
         let Instruction: any = Object.values(
           JSON.parse(Decrypt(GameInfo.button))
         );
@@ -325,6 +313,9 @@ function Battle() {
         setBarLength(bar_length);
       }
     }
+    return () => {
+      clearTimeout(TimerRef.current.CountdownTimer);
+    };
   }, [GameInfo, playerInfo]);
 
   useEffect(() => {
@@ -381,6 +372,32 @@ function Battle() {
         });
     }
   });
+
+  const autoSubmit = async (): Promise<void> => {
+    let Res_buffer: any = JSON.parse(Decrypt(GameInfo.button));
+    Res_buffer.submitButton = [0, 0, 0, 0, 0, 0, 0, 0, 0];
+    Res_buffer = Encrypt(JSON.stringify(Res_buffer));
+    clickRef.current.clickCount = 0;
+    clickRef.current.clickResult = [];
+    if (socketService.socket) {
+      try {
+        await gameService.gameUpdate(
+          socketService.socket,
+          cookies.userConnection,
+          {
+            connection_id: cookies.userConnection,
+            room_id: GameInfo.room,
+            user_id: playerInfo.user_id,
+            battle_type: GameInfo.type,
+            command: GameInfo.command_type,
+            button: Res_buffer,
+          }
+        );
+      } catch (error) {
+        console.error(error);
+      }
+    }
+  };
 
   const onButtonClick = useCallback(
     (type: string) => {
@@ -752,7 +769,6 @@ function Battle() {
                     <motion.img
                       custom={i}
                       key={item.id}
-                      variants={variants}
                       alt=""
                       src={`/img/button/${button_map[item.button]}${
                         item.status === 0
