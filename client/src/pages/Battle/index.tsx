@@ -233,10 +233,10 @@ function Battle() {
   const [buttons, setButtons] = useState<Instruction[]>([]);
   const [battleInfo, setBattleInfo] = useState<{
     rate: string;
-    timer: number;
+    timer: number | undefined;
   }>({
     rate: "",
-    timer: 20,
+    timer: undefined,
   });
   const [texture, setTexture] = useState<{ your: string; component: string }>({
     your: "position",
@@ -291,13 +291,16 @@ function Battle() {
       setTexture((prev) => ({ ...prev, component: "dead_reverse" }));
     } else {
       if (GameInfo.current_user === playerInfo.user_id) {
-        setBattleInfo((prev) => ({ ...prev, timer: 20 }));
-        TimerRef.current.CountdownTimer = setInterval(() => {
-          setBattleInfo((prev) => ({ ...prev, timer: prev.timer - 1 }));
-        }, 1000);
         let Instruction: any = Object.values(
           JSON.parse(Decrypt(GameInfo.button))
         );
+        setBattleInfo((prev) => ({ ...prev, timer: Instruction[1] }));
+        TimerRef.current.CountdownTimer = setInterval(() => {
+          setBattleInfo((prev) => ({
+            ...prev,
+            timer: prev.timer && prev.timer - 1,
+          }));
+        }, 1000);
         let buttons: Instruction[] = [];
         for (let i = 0; i < Instruction[0].length; i++) {
           buttons.push({

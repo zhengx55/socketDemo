@@ -6,6 +6,8 @@ export default (httpServer) => {
     cors: {
       origin: "*",
     },
+    pingInterval: 5000,
+    pingTimeout: 6000,
   });
   useSocketServer(io, { controllers: [__dirname + "/api/controllers/*.ts"] });
   return io;

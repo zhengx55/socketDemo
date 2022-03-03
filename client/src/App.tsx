@@ -79,8 +79,13 @@ function App() {
   useEffect(() => {
     connectSocket();
     gameProgressCheck();
-    return () => {
+    window.addEventListener("beforeunload", () => {
       disconnectSocket();
+    });
+    return () => {
+      window.removeEventListener("beforeunload", () => {
+        disconnectSocket();
+      });
     };
   }, []);
 

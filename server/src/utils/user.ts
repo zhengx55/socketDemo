@@ -1,6 +1,7 @@
 interface User {
   socket_id: string;
   user_id: string;
+  connection_id: string;
 }
 const users: User[] = [];
 
@@ -39,5 +40,9 @@ export const removeUser = (id: string) => {
  * @returns
  */
 export const getUser = (id: string): User => {
+  return users.find((user) => user.socket_id === id);
+};
+
+export const getUserbyUserid = (id: string): User => {
   return users.find((user) => user.user_id === id);
 };
