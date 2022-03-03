@@ -13,13 +13,13 @@ import { setupInterceptorsTo } from "../Interceptors.ts";
 @SocketController()
 export class GameController {
   // 获取room信息
-  private getSocketGameRoom(socket: Socket): string {
-    const socketRooms = Array.from(socket.rooms.values()).filter(
-      (room) => room !== socket.id
-    );
-    const gameRoom = socketRooms && socketRooms[0];
-    return gameRoom;
-  }
+  // private getSocketGameRoom(socket: Socket): string {
+  //   const socketRooms = Array.from(socket.rooms.values()).filter(
+  //     (room) => room !== socket.id
+  //   );
+  //   const gameRoom = socketRooms && socketRooms[0];
+  //   return gameRoom;
+  // }
 
   @OnMessage("game_progress_check")
   public async gamecheck(
@@ -69,24 +69,8 @@ export class GameController {
         timeout: 5000,
       })
     );
-    const res: AxiosResponse = await myAxios.post("/matching", {
-      data: {
-        coon_id: message.connection_id,
-        user_id: message.user_id,
-        room_type: "pvp-auto",
-      },
-    });
-    if (res.data.code === "200") {
-      client.subscribe("some-key", (msg: any) => {
-        const matchInfo = JSON.parse(msg).find((item: any) => {
-          if (item.playerList.hasOwnProperty(message.user_id)) {
-            return item;
-          }
-        });
-        socket.emit("match_info", { data: matchInfo, status: "success" });
-      });
-    } else if (res.data.code === "400") {
-      const res: AxiosResponse = await myAxios.post("/getRoomData", {
+    try {
+      const res: AxiosResponse = await myAxios.post("/matching", {
         data: {
           coon_id: message.connection_id,
           user_id: message.user_id,
@@ -94,9 +78,42 @@ export class GameController {
         },
       });
       if (res.data.code === "200") {
-        const matchInfo = res.data.data;
-        socket.emit("match_info", { data: matchInfo, status: "success" });
+        client.subscribe("some-key", (msg: any) => {
+          const matchInfo = JSON.parse(msg).find((item: any) => {
+            if (item.playerList.hasOwnProperty(message.user_id)) {
+              return item;
+            }
+          });
+          socket.emit("match_info", { data: matchInfo, status: "success" });
+        });
+      } else if (res.data.code === "400") {
+        try {
+          const res: AxiosResponse = await myAxios.post("/getRoomData", {
+            data: {
+              coon_id: message.connection_id,
+              user_id: message.user_id,
+              room_type: "pvp-auto",
+            },
+          });
+          if (res.data.code === "200") {
+            const matchInfo = res.data.data;
+            socket.emit("match_info", { data: matchInfo, status: "success" });
+          } else {
+            client.subscribe("matchMsg", (msg: any) => {
+              const matchInfo = JSON.parse(msg).find((item: any) => {
+                if (item.playerList.hasOwnProperty(message.user_id)) {
+                  return item;
+                }
+              });
+              socket.emit("match_info", { data: matchInfo, status: "success" });
+            });
+          }
+        } catch (error) {
+          console.log("get room data error", error);
+        }
       }
+    } catch (error) {
+      console.error("Match Room", error);
     }
   }
 
@@ -131,36 +148,30 @@ export class GameController {
         timeout: 5000,
       })
     );
-    const res = await myAxios.post("/battle", {
-      data: {
-        coon_id: message.connection_id,
-        room_id: message.room_id,
-        user_id: message.user_id,
-        room_type: message.battle_type,
-        command: message.command,
-        hash: message.button,
-      },
-    });
-    if (res.status === 200) {
-      socket.emit("game_update_success", res.data);
-      socket.to(message.room_id).emit("game_update_success", res.data);
-      if (message.command === "attack") {
-        socket.emit("texture_update", { user_id: message.user_id });
-        socket
-          .to(message.room_id)
-          .emit("texture_update", { user_id: message.user_id });
+    try {
+      const res = await myAxios.post("/battle", {
+        data: {
+          coon_id: message.connection_id,
+          room_id: message.room_id,
+          user_id: message.user_id,
+          room_type: message.battle_type,
+          command: message.command,
+          hash: message.button,
+        },
+      });
+      if (res.status === 200) {
+        socket.emit("game_update_success", res.data);
+        socket.to(message.room_id).emit("game_update_success", res.data);
+        if (message.command === "attack") {
+          socket.emit("texture_update", { user_id: message.user_id });
+          socket
+            .to(message.room_id)
+            .emit("texture_update", { user_id: message.user_id });
+        }
       }
-    } else {
-      socket.emit("game_update_error", { error: "some error occured" });
+    } catch (error) {
+      console.error(error);
+      socket.emit("game_update_error", "update game error");
     }
-  }
-
-  @OnMessage("game_win")
-  public async gameWin(
-    @ConnectedSocket() socket: Socket,
-    @MessageBody() message: any
-  ) {
-    const gameRoom = this.getSocketGameRoom(socket);
-    socket.to(gameRoom).emit("on_game_win", message);
   }
 }

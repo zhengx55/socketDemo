@@ -38,7 +38,7 @@ const AvatarContainer = styled.div`
   display: flex;
   width: 100%;
   padding: 0 5vw;
-  margin-top: 3vw;
+  margin-top: 10px;
   justify-content: space-between;
   height: max-content;
   min-height: 50px;
@@ -306,6 +306,7 @@ function Battle() {
       setTexture((prev) => ({ ...prev, component: "dead_reverse" }));
     } else {
       if (GameInfo.current_user === playerInfo.user_id) {
+        setBattleInfo((prev) => ({ ...prev, timer: 20 }));
         let Instruction: any = Object.values(
           JSON.parse(Decrypt(GameInfo.button))
         );
@@ -569,8 +570,6 @@ function Battle() {
           } catch (error) {
             console.error(error);
           }
-        } else {
-          console.error("socket service is not available");
         }
       }
     }
