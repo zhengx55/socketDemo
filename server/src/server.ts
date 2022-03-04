@@ -6,7 +6,8 @@ import * as http from "http";
 import socketServer from "./socket";
 import { createClient } from "redis";
 import "dotenv/config";
-import { Addroom, Room } from "./utils/room";
+import { Room } from "./utils/room";
+import { getUserbyUserid } from "./utils/user";
 
 /**
  * Get port from environment and store in Express.
@@ -106,8 +107,13 @@ export const runRedis = async () => {
   client.subscribe("matchMsg", (msg: any) => {
     if (msg) {
       JSON.parse(msg).map((item: Room) => {
-        console.log(item);
-        Addroom(item);
+        Object.keys(item.playerList).forEach((player: any) => {
+          const user = getUserbyUserid(player);
+          io.to(user.socket_id).emit("match_info", {
+            data: item,
+            status: "success",
+          });
+        });
       });
     }
   });
