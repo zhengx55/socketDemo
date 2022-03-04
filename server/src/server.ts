@@ -7,38 +7,6 @@ import socketServer from "./socket";
 import { createClient } from "redis";
 import "dotenv/config";
 
-const mockData = [
-  {
-    playerList: {
-      "6": {
-        user_id: 6,
-        initial_hp: 900,
-        hp: 900,
-        attack: 150,
-        armor: 400,
-        type: "1",
-      },
-      "9": {
-        user_id: 9,
-        initial_hp: 900,
-        hp: 900,
-        attack: 150,
-        armor: 400,
-        type: "1",
-      },
-    },
-    room_now_current_user: 9,
-    room_id: "030257545",
-    room_type: "pvp-auto",
-    room_status: 1,
-    room_battle_logs: [],
-    room_battle_reward: [],
-    room_start_time: 1646200681,
-    room_end_time: 0,
-    command: "attack",
-    hash: "ZHzJH3vE9nRatu6qQIvO3IVerQ2PVRM/pz29vz6M1FqD/C3lAOYMekkEwCwt8pWPkG3F7R3mlGuVoNuE3gQ35o1Mi7hQCs9DXitJf45VLimcgVQhCU95KbYxZDH/Bn8VITN4rwI+LydNrtkSppG8d4Fl/qp0VnwpfrmHg6ds980=",
-  },
-];
 /**
  * Get port from environment and store in Express.
  */
@@ -127,17 +95,12 @@ export const client = createClient({
   password: process.env.REDIS_PASSWORD,
 });
 
-const runRedis = async () => {
+export const runRedis = async () => {
   client.on("error", (error: Error) => console.error(error));
   client.on("connect", () =>
     console.log("Redis client connected and starting initiator")
   );
   client.on("ready", () => console.log("Redis client is ready"));
-  const pubClient = client.duplicate();
   await client.connect();
-  await pubClient.connect();
   // Redis subscriber return info of matching information
-  setInterval(() => {
-    pubClient.publish("some-key", JSON.stringify(mockData));
-  }, 1000);
 };

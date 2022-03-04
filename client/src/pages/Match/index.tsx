@@ -96,8 +96,7 @@ const Match = ({ isLogin }: MatchProps) => {
   const { setPlayerInfo, setGameInfo, setGameStarted, GameInfo } =
     useContext(gameContext);
 
-  const matchGame = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const matchGame = async () => {
     setIsMatching(true);
     if (isLogin && socketService.socket) {
       const match = await gameService.matchGame(

@@ -18,6 +18,7 @@ import socketService from "../../services/socketService";
 import gameService from "../../services/gameService";
 import { useCookies } from "react-cookie";
 import FontLoading from "../../components/Loading/FontLoading";
+import GameEnd from "../../components/Modal/GameEnd";
 
 const Container = styled.div`
   width: 100%;
@@ -234,9 +235,11 @@ function Battle() {
   const [battleInfo, setBattleInfo] = useState<{
     rate: string;
     timer: number | undefined;
+    over: boolean;
   }>({
     rate: "",
     timer: undefined,
+    over: false,
   });
   const [texture, setTexture] = useState<{ your: string; component: string }>({
     your: "position",
@@ -287,8 +290,10 @@ function Battle() {
   useEffect(() => {
     if (playerInfo.hp === 0) {
       setTexture((prev) => ({ ...prev, your: "dead" }));
+      setBattleInfo((prev) => ({ ...prev, over: true }));
     } else if (GameInfo.component.hp === 0) {
       setTexture((prev) => ({ ...prev, component: "dead_reverse" }));
+      setBattleInfo((prev) => ({ ...prev, over: true }));
     } else {
       if (GameInfo.current_user === playerInfo.user_id) {
         let Instruction: any = Object.values(
@@ -378,7 +383,7 @@ function Battle() {
 
   const autoSubmit = async (): Promise<void> => {
     let Res_buffer: any = JSON.parse(Decrypt(GameInfo.button));
-    Res_buffer.submitButton = [0, 0, 0, 0, 0, 0, 0, 0, 0];
+    Res_buffer.submitButton = new Array(buttons.length).fill(0);
     Res_buffer = Encrypt(JSON.stringify(Res_buffer));
     clickRef.current.clickCount = 0;
     clickRef.current.clickResult = [];
@@ -597,6 +602,7 @@ function Battle() {
 
   return (
     <Container>
+      {battleInfo.over && <GameEnd />}
       <AvatarContainer>
         <AvatarInfo>
           <LazyLoadImage
