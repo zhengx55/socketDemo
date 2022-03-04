@@ -93,7 +93,7 @@ export class MessageController {
             .emit("game_update_success", res.data);
         }
       }
-    }, 20000);
+    }, 2000);
     console.log("Socket disconnected:", socket.id);
   }
 }

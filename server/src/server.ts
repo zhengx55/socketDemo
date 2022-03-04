@@ -104,7 +104,10 @@ export const runRedis = async () => {
   );
   client.on("ready", () => console.log("Redis client is ready"));
   await client.connect();
-  client.subscribe("matchMsg", (msg: any) => {
+  const subscriber = client.duplicate();
+  await subscriber.connect();
+  subscriber.subscribe("matchMsg", (msg: any) => {
+    console.log(msg);
     if (msg) {
       JSON.parse(msg).map((item: Room) => {
         Object.keys(item.playerList).forEach((player: any) => {
