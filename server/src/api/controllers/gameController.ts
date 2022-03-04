@@ -9,6 +9,7 @@ import {
 import { Socket, Server } from "socket.io";
 import { setupInterceptorsTo } from "../Interceptors.ts";
 import { client } from "../../server";
+import { getRoom } from "../../utils/room";
 
 @SocketController()
 export class GameController {
@@ -70,17 +71,10 @@ export class GameController {
         },
       });
       if (res.data.code === "200") {
-        client.subscribe("matchMsg", (msg: any) => {
-          if (msg) {
-            console.log(msg);
-            const matchInfo = JSON.parse(msg).find((item: any) => {
-              if (item.playerList.hasOwnProperty(message.user_id)) {
-                return item;
-              }
-            });
-            socket.emit("match_info", { data: matchInfo, status: "success" });
-          }
-        });
+        const roomInfo = getRoom(message.user_id);
+        if (roomInfo) {
+          socket.emit("match_info", { data: roomInfo, status: "success" });
+        }
       } else if (res.data.code === "400") {
         try {
           const res: AxiosResponse = await myAxios.post("/getRoomData", {

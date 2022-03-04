@@ -6,6 +6,7 @@ import * as http from "http";
 import socketServer from "./socket";
 import { createClient } from "redis";
 import "dotenv/config";
+import { Addroom, Room } from "./utils/room";
 
 /**
  * Get port from environment and store in Express.
@@ -102,5 +103,13 @@ export const runRedis = async () => {
   );
   client.on("ready", () => console.log("Redis client is ready"));
   await client.connect();
+  client.subscribe("matchMsg", (msg: any) => {
+    if (msg) {
+      JSON.parse(msg).map((item: Room) => {
+        console.log(item);
+        Addroom(item);
+      });
+    }
+  });
   // Redis subscriber return info of matching information
 };
