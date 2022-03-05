@@ -28,7 +28,7 @@ const Backdrop = styled.div`
   align-items: center;
 `;
 
-const ModalBody = styled.div`
+const ModalBody = styled(motion.div)`
   width: 50%;
   height: 70%;
   background-image: url("/img/modal_bg.png");
@@ -63,7 +63,11 @@ function GameEnd({ score }: GameEndModalProp) {
   return (
     <Portal id="game_end">
       <Backdrop>
-        <ModalBody>
+        <ModalBody
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ type: "spring", stiffness: 100, duration: 2 }}
+        >
           <Close
             alt="close"
             src="/img/button/button_close.png"
