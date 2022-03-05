@@ -8,7 +8,6 @@ import {
 } from "socket-controllers";
 import { Socket, Server } from "socket.io";
 import { setupInterceptorsTo } from "../Interceptors.ts";
-import { client } from "../../server";
 import { getRoom } from "../../utils/room";
 
 @SocketController()

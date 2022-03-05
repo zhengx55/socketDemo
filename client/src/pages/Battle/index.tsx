@@ -285,6 +285,7 @@ function Battle() {
 
   useEffect(() => {
     if (playerInfo.hp === 0) {
+      console.log(GameInfo);
       setTexture((prev) => ({ ...prev, your: "dead" }));
       setBattleInfo((prev) => ({
         ...prev,
@@ -295,6 +296,7 @@ function Battle() {
         },
       }));
     } else if (GameInfo.component.hp === 0) {
+      console.log(GameInfo);
       setTexture((prev) => ({ ...prev, component: "dead_reverse" }));
       setBattleInfo((prev) => ({
         ...prev,
@@ -372,7 +374,6 @@ function Battle() {
               }
             }
           }
-          setPlayerInfo(user);
           setGameInfo((prev: any) => ({
             ...prev,
             room: msg.data.room_id,
@@ -383,11 +384,7 @@ function Battle() {
             command_type: msg.data.command,
             reward: msg.data.room_battle_reward,
           }));
-        });
-      socketService.socket
-        ?.off("game_update_error")
-        .on("game_update_error", (msg) => {
-          console.error(msg);
+          setPlayerInfo(user);
         });
     }
   });

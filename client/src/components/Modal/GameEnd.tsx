@@ -30,7 +30,7 @@ const Backdrop = styled.div`
 
 const ModalBody = styled(motion.div)`
   width: 50%;
-  height: 70%;
+  height: 30vw;
   background-image: url("/img/modal_bg.png");
   background-position: center;
   background-repeat: no-repeat;
@@ -72,9 +72,9 @@ function GameEnd({ score }: GameEndModalProp) {
             alt="close"
             src="/img/button/button_close.png"
             whileTap={{ scale: 1.2 }}
-            onTouchStart={() => setGameStarted(false)}
+            onTouchEnd={() => setGameStarted(false)}
           />
-          <FlexContent px="25%">
+          <FlexContent px="23%">
             <Typography weight="normal" color="#C69953">
               Score
             </Typography>
@@ -87,7 +87,7 @@ function GameEnd({ score }: GameEndModalProp) {
               {score}
             </Typography>
             <Typography weight="bold" color="#C69953" size="2.5vw">
-              Level
+              {score > 0 ? "A" : "B"}
             </Typography>
           </FlexContent>
           <FlexContent px="15%" mt="3.5vw">
@@ -96,7 +96,7 @@ function GameEnd({ score }: GameEndModalProp) {
               w="15vw"
               h="50px"
               whileTap={{ scale: 1.2 }}
-              onTouchStart={() => setGameStarted(false)}
+              onTouchEnd={() => setGameStarted(false)}
             >
               Continue
             </Button>

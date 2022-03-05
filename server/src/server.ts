@@ -95,7 +95,7 @@ const redis = new Redis({
   password: process.env.REDIS_PASSWORD,
 });
 
-export const client = createClient({
+const client = createClient({
   socket: {
     port: 6379,
     host: process.env.REDIS_HOST,
@@ -104,7 +104,7 @@ export const client = createClient({
   password: process.env.REDIS_PASSWORD,
 });
 
-export const runRedis = async () => {
+const runRedis = async () => {
   redis.subscribe("matchMsg", (err, count) => {
     if (err) {
       console.error("Failed to subscribe: %s", err.message);
