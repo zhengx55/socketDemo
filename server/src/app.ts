@@ -3,7 +3,7 @@ var express = require("express");
 var path = require("path");
 var cookieParser = require("cookie-parser");
 var logger = require("morgan");
-import * as cors from "cors";
+import cors from "cors";
 import "reflect-metadata";
 
 var app = express();

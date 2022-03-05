@@ -5,6 +5,7 @@ var debug = require("debug")("socketio-server:server");
 import * as http from "http";
 import socketServer from "./socket";
 import { createClient } from "redis";
+import Redis from "ioredis";
 import "dotenv/config";
 import { Room } from "./utils/room";
 import { getUserbyUserid } from "./utils/user";
@@ -36,7 +37,7 @@ const io = socketServer(server);
  * Normalize a port into a number, string, or false.
  */
 
-function normalizePort(val) {
+function normalizePort(val: any) {
   var port = parseInt(val, 10);
 
   if (isNaN(port)) {
@@ -56,7 +57,7 @@ function normalizePort(val) {
  * Event listener for HTTP server "error" event.
  */
 
-function onError(error) {
+function onError(error: { syscall: string; code: any }) {
   if (error.syscall !== "listen") {
     throw error;
   }
@@ -88,6 +89,12 @@ function onListening() {
   console.log("Server Running on Port: ", port);
 }
 
+const redis = new Redis({
+  port: 6379,
+  host: process.env.REDIS_HOST,
+  password: process.env.REDIS_PASSWORD,
+});
+
 export const client = createClient({
   socket: {
     port: 6379,
@@ -98,17 +105,19 @@ export const client = createClient({
 });
 
 export const runRedis = async () => {
-  client.on("error", (error: Error) => console.error(error));
-  client.on("connect", () =>
-    console.log("Redis client connected and starting initiator")
-  );
-  client.on("ready", () => console.log("Redis client is ready"));
-  await client.connect();
-  const subscriber = client.duplicate();
-  await subscriber.connect();
-  subscriber.subscribe("matchMsg", (msg: any) => {
-    console.log(msg);
+  redis.subscribe("matchMsg", (err, count) => {
+    if (err) {
+      console.error("Failed to subscribe: %s", err.message);
+    } else {
+      console.log(
+        `Subscribed successfully! This client is currently subscribed to ${count} channels.`
+      );
+    }
+  });
+
+  redis.on("message", (channel, msg) => {
     if (msg) {
+      console.log(msg);
       JSON.parse(msg).map((item: Room) => {
         Object.keys(item.playerList).forEach((player: any) => {
           const user = getUserbyUserid(player);
@@ -120,5 +129,4 @@ export const runRedis = async () => {
       });
     }
   });
-  // Redis subscriber return info of matching information
 };

@@ -107,7 +107,6 @@ const Match = ({ isLogin }: MatchProps) => {
       if (match.status === "success") {
         setIsMatching(false);
         setIsMatch(true);
-
         // if message contains user's data, enter the specific room id
         let user, component: any;
         if (Object.keys(match.data.playerList).length > 0) {
@@ -135,22 +134,16 @@ const Match = ({ isLogin }: MatchProps) => {
         socketService.socket?.on("room_joined", (res) => {
           console.log(res.message);
         });
-      }
-    }
-  };
-
-  const enterGameHandler = async () => {
-    if (socketService.socket) {
-      try {
-        console.log(GameInfo);
-        const ready = await gameService.onStartGame(
-          socketService.socket,
-          GameInfo.room
-        );
-        if (ready.status === "success") setGameStarted(true);
-      } catch (error) {
-        console.error(error);
-        setGameStarted(false);
+        try {
+          const ready = await gameService.onStartGame(
+            socketService.socket,
+            match.data.room_id
+          );
+          if (ready.status === "success") setGameStarted(true);
+        } catch (error) {
+          console.error(error);
+          setGameStarted(false);
+        }
       }
     }
   };
@@ -172,12 +165,6 @@ const Match = ({ isLogin }: MatchProps) => {
               <li className="dot" />
             </Dot>
           </div>
-        ) : !isMatching && isMatch ? (
-          <>
-            <Typography weight="bold" color="#C69953">
-              Game Ready!
-            </Typography>
-          </>
         ) : (
           <>
             <Typography weight="bold" color="#C69953">
@@ -199,16 +186,6 @@ const Match = ({ isLogin }: MatchProps) => {
         {!isMatch && !isMatching && (
           <Button w="12vw" h="5vw" color="#C69953" onTouchStart={matchGame}>
             Match
-          </Button>
-        )}
-        {isMatch && !isMatching && (
-          <Button
-            w="12vw"
-            h="5vw"
-            color="#C69953"
-            onTouchStart={enterGameHandler}
-          >
-            Enter
           </Button>
         )}
         {!isMatch && isMatching && (
