@@ -10,6 +10,7 @@ export interface IGameContextProps {
     command_type: string;
     component: any;
     button: string;
+    reward: { fail: any; win: any };
   };
   setGameInfo: (info: any) => void;
   setGameStarted: (value: boolean) => void;
@@ -26,6 +27,7 @@ const defaultState: IGameContextProps = {
     component: {},
     command_type: "",
     button: "",
+    reward: { fail: {}, win: {} },
   },
   setGameInfo: () => {},
   setGameStarted: () => {},

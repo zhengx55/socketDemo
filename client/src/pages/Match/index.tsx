@@ -128,6 +128,7 @@ const Match = ({ isLogin }: MatchProps) => {
             component: component,
             button: match.data.hash,
             command_type: match.data.command,
+            reward: match.data.room_battle_reward,
           }));
         }
         socketService.socket?.emit("enter_room", match.data.room_id);

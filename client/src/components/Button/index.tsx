@@ -1,5 +1,5 @@
 import styled from "styled-components";
-
+import { motion } from "framer-motion";
 type ButtonProp = {
   bg?: string;
   color?: string;
@@ -7,7 +7,7 @@ type ButtonProp = {
   w?: string;
 };
 
-export const Button = styled.button<ButtonProp>`
+export const Button = styled(motion.button)<ButtonProp>`
   height: ${(props) => props.h};
   width: ${(props) => props.w};
   color: ${(props) => props.color};

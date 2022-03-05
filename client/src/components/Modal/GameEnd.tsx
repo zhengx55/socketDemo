@@ -1,8 +1,20 @@
-import React from "react";
+import React, { useContext } from "react";
 import styled from "styled-components";
 import Portal from "../Portal";
 import { motion } from "framer-motion";
 import { Typography } from "../../pages/Match";
+import { Button } from "../Button/index";
+import gameContext from "../../context/gameContext";
+
+type FlexProps = {
+  px?: string;
+  mt?: string;
+};
+
+interface GameEndModalProp {
+  score: number;
+  status: string;
+}
 
 const Backdrop = styled.div`
   position: fixed;
@@ -27,6 +39,7 @@ const ModalBody = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: center; ;
 `;
 
 const Close = styled(motion.img)`
@@ -37,18 +50,62 @@ const Close = styled(motion.img)`
   top: -5%;
 `;
 
-function GameEnd() {
+const FlexContent = styled.div<FlexProps>`
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
+  padding: ${(props) => (props.px ? `0 ${props.px}` : "0")};
+  margin-top: ${(props) => (props.mt ? `${props.mt}` : "0")};
+`;
+
+function GameEnd({ score }: GameEndModalProp) {
+  const { setGameStarted } = useContext(gameContext);
   return (
     <Portal id="game_end">
       <Backdrop>
         <ModalBody>
-          <Close alt="close" src="/img/button/button_close.png" />
-          <Typography weight="bold" color="#C69953">
-            Score
-          </Typography>
-          <Typography weight="bold" color="#C69953">
-            Level
-          </Typography>
+          <Close
+            alt="close"
+            src="/img/button/button_close.png"
+            whileTap={{ scale: 1.2 }}
+            onTouchStart={() => setGameStarted(false)}
+          />
+          <FlexContent px="25%">
+            <Typography weight="normal" color="#C69953">
+              Score
+            </Typography>
+            <Typography weight="normal" color="#C69953">
+              Level
+            </Typography>
+          </FlexContent>
+          <FlexContent px="25%" mt="3vw">
+            <Typography weight="bold" color="#C69953" size="2.5vw">
+              {score}
+            </Typography>
+            <Typography weight="bold" color="#C69953" size="2.5vw">
+              Level
+            </Typography>
+          </FlexContent>
+          <FlexContent px="15%" mt="3.5vw">
+            <Button
+              color="#C69953"
+              w="15vw"
+              h="50px"
+              whileTap={{ scale: 1.2 }}
+              onTouchStart={() => setGameStarted(false)}
+            >
+              Continue
+            </Button>
+            <Button
+              color="#fff"
+              w="15vw"
+              h="50px"
+              whileTap={{ scale: 1.2 }}
+              bg="url(/img/button_blue.png)"
+            >
+              Share
+            </Button>
+          </FlexContent>
         </ModalBody>
       </Backdrop>
     </Portal>

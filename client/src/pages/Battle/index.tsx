@@ -5,7 +5,7 @@ import React, {
   useRef,
   useState,
 } from "react";
-import styled, { keyframes } from "styled-components";
+import styled from "styled-components";
 import { LazyLoadImage } from "react-lazy-load-image-component";
 import "react-lazy-load-image-component/src/effects/blur.css";
 import { Typography } from "../Match";
@@ -82,12 +82,6 @@ const Direction = styled(motion.img)`
   aspect-ratio: 1;
   width: 6vw;
   touch-action: manipulation;
-`;
-
-const animate = keyframes`
- 0%{transform: translateY(0px)}
- 20%{transform: translateY(-10px)}
- 40%,100%{transform: translateY(0px)}
 `;
 
 const BattleContainer = styled.div`
@@ -236,10 +230,12 @@ function Battle() {
     rate: string;
     timer: number | undefined;
     over: boolean;
+    result: { score: number; status: string };
   }>({
     rate: "",
     timer: undefined,
     over: false,
+    result: { score: 0, status: "" },
   });
   const [texture, setTexture] = useState<{ your: string; component: string }>({
     your: "position",
@@ -290,10 +286,24 @@ function Battle() {
   useEffect(() => {
     if (playerInfo.hp === 0) {
       setTexture((prev) => ({ ...prev, your: "dead" }));
-      setBattleInfo((prev) => ({ ...prev, over: true }));
+      setBattleInfo((prev) => ({
+        ...prev,
+        over: true,
+        result: {
+          score: GameInfo.reward.fail.integral,
+          status: "lose",
+        },
+      }));
     } else if (GameInfo.component.hp === 0) {
       setTexture((prev) => ({ ...prev, component: "dead_reverse" }));
-      setBattleInfo((prev) => ({ ...prev, over: true }));
+      setBattleInfo((prev) => ({
+        ...prev,
+        over: true,
+        result: {
+          score: GameInfo.reward.win.integral,
+          status: "win",
+        },
+      }));
     } else {
       if (GameInfo.current_user === playerInfo.user_id) {
         let Instruction: any = Object.values(
@@ -371,6 +381,7 @@ function Battle() {
             current_user: msg.data.room_now_current_user,
             button: msg.data.hash,
             command_type: msg.data.command,
+            reward: msg.data.room_battle_reward,
           }));
         });
       socketService.socket
@@ -602,7 +613,12 @@ function Battle() {
 
   return (
     <Container>
-      {battleInfo.over && <GameEnd />}
+      {battleInfo.over && (
+        <GameEnd
+          score={battleInfo.result.score}
+          status={battleInfo.result.status}
+        />
+      )}
       <AvatarContainer>
         <AvatarInfo>
           <LazyLoadImage
