@@ -19,18 +19,20 @@ interface GameEndModalProp {
 const Backdrop = styled.div`
   position: fixed;
   width: 100%;
-  height: 100vh;
+  min-height: 100vh;
+  height: max-content;
   top: 0;
   background: rgba(0, 0, 0, 0.5);
   z-index: 999;
   display: flex;
   justify-content: center;
   align-items: center;
+  overflow-y: auto;
 `;
 
 const ModalBody = styled(motion.div)`
   width: 50%;
-  height: 30vw;
+  height: 25vw;
   background-image: url("/img/modal_bg.png");
   background-position: center;
   background-repeat: no-repeat;
@@ -39,7 +41,6 @@ const ModalBody = styled(motion.div)`
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center; ;
 `;
 
 const Close = styled(motion.img)`
@@ -56,6 +57,14 @@ const ModalTitle = styled.div`
   background-position: center;
   background-repeat: no-repeat;
   background-size: 100% 100%;
+  width: 50%;
+  aspect-ratio: 2;
+  top: -30%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-transform: capitalize;
+  padding-top: 8%;
 `;
 
 const FlexContent = styled.div<FlexProps>`
@@ -66,7 +75,7 @@ const FlexContent = styled.div<FlexProps>`
   margin-top: ${(props) => (props.mt ? `${props.mt}` : "0")};
 `;
 
-function GameEnd({ score }: GameEndModalProp) {
+function GameEnd({ score, status }: GameEndModalProp) {
   const { setGameStarted } = useContext(gameContext);
   return (
     <Portal id="game_end">
@@ -76,13 +85,18 @@ function GameEnd({ score }: GameEndModalProp) {
           animate={{ opacity: 1 }}
           transition={{ type: "spring", stiffness: 100, duration: 2 }}
         >
+          <ModalTitle>
+            <Typography weight="bold" color="#FCF4C3">
+              {status}
+            </Typography>
+          </ModalTitle>
           <Close
             alt="close"
             src="/img/button/button_close.png"
             whileTap={{ scale: 1.2 }}
             onTouchEnd={() => setGameStarted(false)}
           />
-          <FlexContent px="23%">
+          <FlexContent px="23%" mt="5vw">
             <Typography weight="normal" color="#C69953">
               Score
             </Typography>
@@ -102,7 +116,7 @@ function GameEnd({ score }: GameEndModalProp) {
             <Button
               color="#C69953"
               w="15vw"
-              h="50px"
+              h="6.5vw"
               whileTap={{ scale: 1.2 }}
               onTouchEnd={() => setGameStarted(false)}
             >
@@ -111,7 +125,7 @@ function GameEnd({ score }: GameEndModalProp) {
             <Button
               color="#fff"
               w="15vw"
-              h="50px"
+              h="6.5vw"
               whileTap={{ scale: 1.2 }}
               bg="url(/img/button_blue.png)"
             >
