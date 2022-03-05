@@ -50,6 +50,14 @@ const Close = styled(motion.img)`
   top: -5%;
 `;
 
+const ModalTitle = styled.div`
+  position: absolute;
+  background-image: url("/img/modal_title.png");
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+`;
+
 const FlexContent = styled.div<FlexProps>`
   display: flex;
   width: 100%;
