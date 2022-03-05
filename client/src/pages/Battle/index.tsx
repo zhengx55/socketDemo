@@ -344,16 +344,29 @@ function Battle() {
         .off("texture_update")
         .on("texture_update", (res: { user_id: string }) => {
           if (res.user_id === playerInfo.user_id) {
-            setTexture((prev) => ({ ...prev, your: "attack" }));
+            setTexture((prev) => ({
+              ...prev,
+              your: "attack",
+              component: "hurt_reverse",
+            }));
             TimerRef.current.textureTimer = setTimeout(() => {
-              setTexture((prev) => ({ ...prev, your: "position" }));
+              setTexture((prev) => ({
+                ...prev,
+                your: "position",
+                component: "position_reverse",
+              }));
             }, 1000);
           } else {
-            setTexture((prev) => ({ ...prev, component: "attack_reverse" }));
+            setTexture((prev) => ({
+              ...prev,
+              component: "attack_reverse",
+              your: "hurt",
+            }));
             TimerRef.current.textureTimer = setTimeout(() => {
               setTexture((prev) => ({
                 ...prev,
                 component: "position_reverse",
+                your: "position",
               }));
             }, 1500);
           }

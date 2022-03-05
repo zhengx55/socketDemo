@@ -8,6 +8,8 @@ const deadSheet = "knight/die.json";
 const positionReverseSheet = "knight/position_reverse.json";
 const attackReverseSheet = "knight/attack_reverse.json";
 const deadReverseSheet = "knight/die_reverse.json";
+const hurtSheet = "knight/hurt.json";
+const hurtReverseSheet = "knight/hurt_reverse.json";
 interface KnightProps {
   texture: string;
 }
@@ -25,6 +27,8 @@ function Knight({ texture }: KnightProps) {
       .add(positionReverseSheet)
       .add(attackReverseSheet)
       .add(deadReverseSheet)
+      .add(hurtSheet)
+      .add(hurtReverseSheet)
       .load((_, resource) => {
         const attackFrame = Object.keys(resource[attackSheet].data.frames).map(
           (frame) => Texture.from(frame)
@@ -47,6 +51,15 @@ function Knight({ texture }: KnightProps) {
         const deadReverseFrame = Object.keys(
           resource[deadReverseSheet].data.frames
         ).map((frame) => Texture.from(frame));
+
+        const hurtFrame = Object.keys(resource[hurtSheet].data.frames).map(
+          (frame) => Texture.from(frame)
+        );
+
+        const hurtReverseFrame = Object.keys(
+          resource[hurtReverseSheet].data.frames
+        ).map((frame) => Texture.from(frame));
+
         setFrames({
           attack: attackFrame,
           position: positioFrame,
@@ -54,6 +67,8 @@ function Knight({ texture }: KnightProps) {
           position_reverse: positionReverseFrame,
           attack_reverse: attackReverseFrame,
           dead_reverse: deadReverseFrame,
+          hurt: hurtFrame,
+          hurt_reverse: hurtReverseFrame,
         });
       });
 
