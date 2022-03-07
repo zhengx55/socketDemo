@@ -118,17 +118,18 @@ function App() {
     } else {
       userId = cookies.userid;
     }
-    socketService.socket?.emit("request_login", {
-      connection_id: random,
-      user_id: userId,
-    });
-    socketService.socket?.on("login_status", (res) => {
-      if (res.status === "success" || res.status.includes("already")) {
-        setIsLogin(true);
-      } else {
-        setIsLogin(false);
+    try {
+      if (socketService.socket) {
+        const res = await gameService.loginInGame(
+          socketService.socket,
+          random,
+          userId
+        );
+        if (res) setIsLogin(true);
       }
-    });
+    } catch (error) {
+      setIsLogin(false);
+    }
   };
 
   const gameContextValue: IGameContextProps = {

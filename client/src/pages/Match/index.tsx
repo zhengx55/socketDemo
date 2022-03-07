@@ -91,7 +91,6 @@ const TitleContainer = styled.div`
 
 const Match = ({ isLogin }: MatchProps) => {
   const [isMatching, setIsMatching] = useState(false);
-  const [isMatch, setIsMatch] = useState(false);
   const [cookies] = useCookies(["userid", "userConnection"]);
   const { setPlayerInfo, setGameInfo, setGameStarted, GameInfo } =
     useContext(gameContext);
@@ -106,7 +105,6 @@ const Match = ({ isLogin }: MatchProps) => {
       );
       if (match.status === "success") {
         setIsMatching(false);
-        setIsMatch(true);
         // if message contains user's data, enter the specific room id
         let user, component: any;
         if (Object.keys(match.data.playerList).length > 0) {
@@ -153,7 +151,7 @@ const Match = ({ isLogin }: MatchProps) => {
     <AppContainer>
       <MainContainer>
         <TitleContainer>Competition</TitleContainer>
-        {!isMatch && isMatching ? (
+        {isMatching ? (
           <div style={{ display: "flex", alignItems: "center" }}>
             <Typography weight="bold" color="#C69953">
               Matching
@@ -184,12 +182,12 @@ const Match = ({ isLogin }: MatchProps) => {
             </Typography>
           </div>
         </MatchContainer>
-        {!isMatch && !isMatching && (
+        {!isMatching && (
           <Button w="12vw" h="5vw" color="#C69953" onTouchStart={matchGame}>
             Match
           </Button>
         )}
-        {!isMatch && isMatching && (
+        {isMatching && (
           <Button w="12vw" h="5vw" color="#C69953" disabled>
             Matching
           </Button>

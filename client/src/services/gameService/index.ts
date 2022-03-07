@@ -1,6 +1,26 @@
 import { Socket } from "socket.io-client";
 
 class GameService {
+  public loginInGame = (
+    socket: Socket,
+    connection_id: string,
+    user_id: string
+  ) => {
+    return new Promise((resolve, reject) => {
+      socket.emit("request_login", {
+        connection_id,
+        user_id,
+      });
+      socket.on("login_status", (res) => {
+        if (res.status === "success") {
+          resolve(true);
+        } else {
+          reject(false);
+        }
+      });
+    });
+  };
+
   public async joinGameRoom(socket: Socket, roomId: string): Promise<boolean> {
     return new Promise((rs, rj) => {
       socket.emit("join_game", { roomId });
