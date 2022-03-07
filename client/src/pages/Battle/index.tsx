@@ -246,8 +246,8 @@ function Battle() {
     result: { score: 0, status: "" },
   });
   const [texture, setTexture] = useState<{ your: string; component: string }>({
-    your: "",
-    component: "",
+    your: "position",
+    component: "position_reverse",
   });
   const [barLength, setBarLength] = useState<number>(0);
   const clickRef = useRef<{
@@ -278,11 +278,6 @@ function Battle() {
   };
 
   useEffect(() => {
-    setTexture((prev) => ({
-      ...prev,
-      your: "position",
-      component: "position_reverse",
-    }));
     return () => {
       clearTimeout(TimerRef.current.rateTimer);
       clearTimeout(TimerRef.current.textureTimer);
