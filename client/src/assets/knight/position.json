@@ -367,8 +367,8 @@
 		"image": "position.png",
 		"format": "RGBA8888",
 		"size": {
-			"w": 4520,
-			"h": 3616
+			"w": 2048,
+			"h": 2048
 		},
 		"scale": "1"
 	}

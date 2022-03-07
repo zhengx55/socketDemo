@@ -247,8 +247,8 @@
 		"image": "hurt_reverse.png",
 		"format": "RGBA8888",
 		"size": {
-			"w": 3616,
-			"h": 2712
+			"w": 2048,
+			"h": 2048
 		},
 		"scale": "1"
 	}
