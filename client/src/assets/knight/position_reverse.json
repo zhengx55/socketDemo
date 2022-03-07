@@ -367,8 +367,8 @@
 		"image": "position_reverse.png",
 		"format": "RGBA8888",
 		"size": {
-			"w": 2048,
-			"h": 2048
+			"w": 4520,
+			"h": 3616
 		},
 		"scale": "1"
 	}

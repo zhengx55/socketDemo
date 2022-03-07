@@ -247,8 +247,8 @@
 		"image": "attack_reverse.png",
 		"format": "RGBA8888",
 		"size": {
-			"w": 2048,
-			"h": 2048
+			"w": 3616,
+			"h": 2712
 		},
 		"scale": "1"
 	}
