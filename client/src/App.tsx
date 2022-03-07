@@ -79,6 +79,7 @@ function App() {
   useEffect(() => {
     connectSocket();
     gameProgressCheck();
+    console.log(navigator.userAgent.indexOf("Safari"));
     window.addEventListener("beforeunload", () => {
       disconnectSocket();
     });

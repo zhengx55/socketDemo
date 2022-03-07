@@ -72,21 +72,19 @@ export const Typography = styled.p<TypoProps>`
   margin: ${(props) => (props.mt ? `${props.mt} 0 0 0` : "0")};
 `;
 
-const TitleContainer = styled.div`
+const AbsoluteFont = styled.p`
+  position: absolute;
+  font-size: 2vw;
+  font-weight: 600;
+  color: #b09c7a;
+  top: -8%;
+`;
+
+const TitleContainer = styled.img`
   position: absolute;
   top: -8%;
   width: 40%;
   height: 25%;
-  padding-top: 2.5%;
-  background-image: url("/img/Ribbon.png");
-  background-position: center;
-  background-repeat: no-repeat;
-  background-size: 100% 100%;
-  display: flex;
-  justify-content: center;
-  font-size: 2vw;
-  font-weight: 600;
-  color: #b09c7a;
 `;
 
 const Match = ({ isLogin }: MatchProps) => {
@@ -150,7 +148,8 @@ const Match = ({ isLogin }: MatchProps) => {
   return (
     <AppContainer>
       <MainContainer>
-        <TitleContainer>Competition</TitleContainer>
+        <TitleContainer alt="" src="/img/Ribbon.png" />
+        <AbsoluteFont>Competition</AbsoluteFont>
         {isMatching ? (
           <div style={{ display: "flex", alignItems: "center" }}>
             <Typography weight="bold" color="#C69953">
