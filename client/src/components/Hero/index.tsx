@@ -88,7 +88,7 @@ function Knight({ texture }: KnightProps) {
         isPlaying={true}
         textures={frames[texture]}
         anchor={[0.2, 0.15]}
-        scale={0.7}
+        scale={1}
         loop={["position", "position_reverse"].includes(texture) ? true : false}
         initialFrame={1}
       />

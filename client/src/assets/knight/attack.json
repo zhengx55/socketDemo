@@ -2,242 +2,242 @@
 	"frames": {
 		"Attacking_000.png": {
 			"frame": {
-				"x": 2,
-				"y": 2,
-				"w": 900,
-				"h": 900
+				"x": 1,
+				"y": 1,
+				"w": 584,
+				"h": 584
 			},
 			"rotated": false,
 			"trimmed": false,
 			"spriteSourceSize": {
 				"x": 0,
 				"y": 0,
-				"w": 900,
-				"h": 900
+				"w": 584,
+				"h": 584
 			},
 			"sourceSize": {
-				"w": 900,
-				"h": 900
+				"w": 584,
+				"h": 584
 			}
 		},
 		"Attacking_001.png": {
 			"frame": {
-				"x": 906,
-				"y": 2,
-				"w": 900,
-				"h": 900
+				"x": 587,
+				"y": 1,
+				"w": 584,
+				"h": 584
 			},
 			"rotated": false,
 			"trimmed": false,
 			"spriteSourceSize": {
 				"x": 0,
 				"y": 0,
-				"w": 900,
-				"h": 900
+				"w": 584,
+				"h": 584
 			},
 			"sourceSize": {
-				"w": 900,
-				"h": 900
+				"w": 584,
+				"h": 584
 			}
 		},
 		"Attacking_002.png": {
 			"frame": {
-				"x": 1810,
-				"y": 2,
-				"w": 900,
-				"h": 900
+				"x": 1173,
+				"y": 1,
+				"w": 584,
+				"h": 584
 			},
 			"rotated": false,
 			"trimmed": false,
 			"spriteSourceSize": {
 				"x": 0,
 				"y": 0,
-				"w": 900,
-				"h": 900
+				"w": 584,
+				"h": 584
 			},
 			"sourceSize": {
-				"w": 900,
-				"h": 900
+				"w": 584,
+				"h": 584
 			}
 		},
 		"Attacking_003.png": {
 			"frame": {
-				"x": 2,
-				"y": 906,
-				"w": 900,
-				"h": 900
+				"x": 1,
+				"y": 587,
+				"w": 584,
+				"h": 584
 			},
 			"rotated": false,
 			"trimmed": false,
 			"spriteSourceSize": {
 				"x": 0,
 				"y": 0,
-				"w": 900,
-				"h": 900
+				"w": 584,
+				"h": 584
 			},
 			"sourceSize": {
-				"w": 900,
-				"h": 900
+				"w": 584,
+				"h": 584
 			}
 		},
 		"Attacking_004.png": {
 			"frame": {
-				"x": 906,
-				"y": 906,
-				"w": 900,
-				"h": 900
+				"x": 587,
+				"y": 587,
+				"w": 584,
+				"h": 584
 			},
 			"rotated": false,
 			"trimmed": false,
 			"spriteSourceSize": {
 				"x": 0,
 				"y": 0,
-				"w": 900,
-				"h": 900
+				"w": 584,
+				"h": 584
 			},
 			"sourceSize": {
-				"w": 900,
-				"h": 900
+				"w": 584,
+				"h": 584
 			}
 		},
 		"Attacking_005.png": {
 			"frame": {
-				"x": 1810,
-				"y": 906,
-				"w": 900,
-				"h": 900
+				"x": 1173,
+				"y": 587,
+				"w": 586,
+				"h": 584
 			},
 			"rotated": false,
 			"trimmed": false,
 			"spriteSourceSize": {
 				"x": 0,
 				"y": 0,
-				"w": 900,
-				"h": 900
+				"w": 586,
+				"h": 584
 			},
 			"sourceSize": {
-				"w": 900,
-				"h": 900
+				"w": 586,
+				"h": 584
 			}
 		},
 		"Attacking_006.png": {
 			"frame": {
-				"x": 2,
-				"y": 1810,
-				"w": 900,
-				"h": 900
+				"x": 1,
+				"y": 1173,
+				"w": 584,
+				"h": 584
 			},
 			"rotated": false,
 			"trimmed": false,
 			"spriteSourceSize": {
 				"x": 0,
 				"y": 0,
-				"w": 900,
-				"h": 900
+				"w": 584,
+				"h": 584
 			},
 			"sourceSize": {
-				"w": 900,
-				"h": 900
+				"w": 584,
+				"h": 584
 			}
 		},
 		"Attacking_007.png": {
 			"frame": {
-				"x": 906,
-				"y": 1810,
-				"w": 900,
-				"h": 900
+				"x": 587,
+				"y": 1173,
+				"w": 584,
+				"h": 584
 			},
 			"rotated": false,
 			"trimmed": false,
 			"spriteSourceSize": {
 				"x": 0,
 				"y": 0,
-				"w": 900,
-				"h": 900
+				"w": 584,
+				"h": 584
 			},
 			"sourceSize": {
-				"w": 900,
-				"h": 900
+				"w": 584,
+				"h": 584
 			}
 		},
 		"Attacking_008.png": {
 			"frame": {
-				"x": 1810,
-				"y": 1810,
-				"w": 900,
-				"h": 900
+				"x": 1173,
+				"y": 1173,
+				"w": 584,
+				"h": 584
 			},
 			"rotated": false,
 			"trimmed": false,
 			"spriteSourceSize": {
 				"x": 0,
 				"y": 0,
-				"w": 900,
-				"h": 900
+				"w": 584,
+				"h": 584
 			},
 			"sourceSize": {
-				"w": 900,
-				"h": 900
+				"w": 584,
+				"h": 584
 			}
 		},
 		"Attacking_009.png": {
 			"frame": {
-				"x": 2714,
-				"y": 2,
-				"w": 900,
-				"h": 900
+				"x": 1759,
+				"y": 1,
+				"w": 584,
+				"h": 584
 			},
 			"rotated": false,
 			"trimmed": false,
 			"spriteSourceSize": {
 				"x": 0,
 				"y": 0,
-				"w": 900,
-				"h": 900
+				"w": 584,
+				"h": 584
 			},
 			"sourceSize": {
-				"w": 900,
-				"h": 900
+				"w": 584,
+				"h": 584
 			}
 		},
 		"Attacking_010.png": {
 			"frame": {
-				"x": 2714,
-				"y": 906,
-				"w": 900,
-				"h": 900
+				"x": 1761,
+				"y": 587,
+				"w": 586,
+				"h": 584
 			},
 			"rotated": false,
 			"trimmed": false,
 			"spriteSourceSize": {
 				"x": 0,
 				"y": 0,
-				"w": 900,
-				"h": 900
+				"w": 586,
+				"h": 584
 			},
 			"sourceSize": {
-				"w": 900,
-				"h": 900
+				"w": 586,
+				"h": 584
 			}
 		},
 		"Attacking_011.png": {
 			"frame": {
-				"x": 2714,
-				"y": 1810,
-				"w": 900,
-				"h": 900
+				"x": 1759,
+				"y": 1173,
+				"w": 584,
+				"h": 584
 			},
 			"rotated": false,
 			"trimmed": false,
 			"spriteSourceSize": {
 				"x": 0,
 				"y": 0,
-				"w": 900,
-				"h": 900
+				"w": 584,
+				"h": 584
 			},
 			"sourceSize": {
-				"w": 900,
-				"h": 900
+				"w": 584,
+				"h": 584
 			}
 		}
 	},
@@ -247,8 +247,8 @@
 		"image": "attack.png",
 		"format": "RGBA8888",
 		"size": {
-			"w": 3616,
-			"h": 2712
+			"w": 2348,
+			"h": 1758
 		},
 		"scale": "1"
 	}
