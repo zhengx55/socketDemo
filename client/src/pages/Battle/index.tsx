@@ -355,26 +355,22 @@ function Battle() {
             setTexture((prev) => ({
               ...prev,
               your: "attack",
-              component: "hurt_reverse",
             }));
             TimerRef.current.textureTimer = setTimeout(() => {
               setTexture((prev) => ({
                 ...prev,
                 your: "position",
-                component: "position_reverse",
               }));
             }, 1000);
           } else {
             setTexture((prev) => ({
               ...prev,
               component: "attack_reverse",
-              your: "hurt",
             }));
             TimerRef.current.textureTimer = setTimeout(() => {
               setTexture((prev) => ({
                 ...prev,
                 component: "position_reverse",
-                your: "position",
               }));
             }, 1500);
           }
@@ -384,6 +380,7 @@ function Battle() {
         .on("game_update_success", (msg) => {
           let user, component: any;
           if (msg.data) {
+            console.log(msg.data);
             if (Object.keys(msg.data.playerList).length > 0) {
               for (const player in msg.data.playerList) {
                 if (
@@ -391,8 +388,32 @@ function Battle() {
                   Number(playerInfo.user_id)
                 ) {
                   user = msg.data.playerList[player];
+                  if (user.hp < playerInfo.hp) {
+                    setTexture((prev) => ({
+                      ...prev,
+                      your: "hurt",
+                    }));
+                    TimerRef.current.textureTimer = setTimeout(() => {
+                      setTexture((prev) => ({
+                        ...prev,
+                        your: "position",
+                      }));
+                    }, 1000);
+                  }
                 } else {
                   component = msg.data.playerList[player];
+                  if (component.hp < GameInfo.component.hp) {
+                    setTexture((prev) => ({
+                      ...prev,
+                      component: "hurt_reverse",
+                    }));
+                    TimerRef.current.textureTimer = setTimeout(() => {
+                      setTexture((prev) => ({
+                        ...prev,
+                        component: "position_reverse",
+                      }));
+                    }, 1500);
+                  }
                 }
               }
             }
