@@ -246,8 +246,8 @@ function Battle() {
     result: { score: 0, status: "" },
   });
   const [texture, setTexture] = useState<{ your: string; component: string }>({
-    your: "position",
-    component: "position_reverse",
+    your: "",
+    component: "",
   });
   const [barLength, setBarLength] = useState<number>(0);
   const clickRef = useRef<{
@@ -278,6 +278,11 @@ function Battle() {
   };
 
   useEffect(() => {
+    setTexture((prev) => ({
+      ...prev,
+      your: "position",
+      component: "position_reverse",
+    }));
     return () => {
       clearTimeout(TimerRef.current.rateTimer);
       clearTimeout(TimerRef.current.textureTimer);
@@ -293,7 +298,6 @@ function Battle() {
 
   useEffect(() => {
     if (playerInfo.hp === 0) {
-      console.log(GameInfo);
       setTexture((prev) => ({ ...prev, your: "dead" }));
       setBattleInfo((prev) => ({
         ...prev,
@@ -304,7 +308,6 @@ function Battle() {
         },
       }));
     } else if (GameInfo.component.hp === 0) {
-      console.log(GameInfo);
       setTexture((prev) => ({ ...prev, component: "dead_reverse" }));
       setBattleInfo((prev) => ({
         ...prev,
@@ -380,7 +383,6 @@ function Battle() {
         .on("game_update_success", (msg) => {
           let user, component: any;
           if (msg.data) {
-            console.log(msg.data);
             if (Object.keys(msg.data.playerList).length > 0) {
               for (const player in msg.data.playerList) {
                 if (
