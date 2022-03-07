@@ -149,7 +149,7 @@ const Match = ({ isLogin }: MatchProps) => {
     <AppContainer>
       <MainContainer>
         <TitleContainer alt="" src="/img/Ribbon.png" />
-        <AbsoluteFont>Competition</AbsoluteFont>
+        <AbsoluteFont>Competition {cookies.userid}</AbsoluteFont>
         {isMatching ? (
           <div style={{ display: "flex", alignItems: "center" }}>
             <Typography weight="bold" color="#C69953">
