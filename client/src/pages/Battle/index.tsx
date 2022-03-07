@@ -5,7 +5,7 @@ import React, {
   useRef,
   useState,
 } from "react";
-import styled from "styled-components";
+import styled, { keyframes } from "styled-components";
 import { LazyLoadImage } from "react-lazy-load-image-component";
 import "react-lazy-load-image-component/src/effects/blur.css";
 import { Typography } from "../Match";
@@ -84,6 +84,11 @@ const Direction = styled(motion.img)`
   touch-action: manipulation;
 `;
 
+const buttonEnlarge = keyframes`
+0% { transform: scale(1) };
+50% { transform: scale(1.5) };
+100% { transform: scale(1) }`;
+
 const BattleContainer = styled.div`
   display: grid;
   width: 100%;
@@ -149,10 +154,13 @@ const BattleContainer = styled.div`
       overflow: hidden;
       justify-content: center;
       img {
-        width: 3.2vw;
+        width: 3vw;
         max-height: 100%;
         aspect-ratio: 1;
-        margin: 0 0.2vw;
+        margin: 0 0.3vw;
+      }
+      .button_active {
+        animation: ${buttonEnlarge} 0.5s forwards ease;
       }
     }
   }
@@ -806,6 +814,7 @@ function Battle() {
                     <motion.img
                       custom={i}
                       key={item.id}
+                      className={item.status !== 0 ? "button_active" : ""}
                       alt=""
                       src={`/img/button/${button_map[item.button]}${
                         item.status === 0
@@ -840,4 +849,4 @@ function Battle() {
   );
 }
 
-export default React.memo(Battle);
+export default Battle;
