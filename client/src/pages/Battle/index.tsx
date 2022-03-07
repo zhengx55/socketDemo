@@ -375,29 +375,31 @@ function Battle() {
         .off("game_update_success")
         .on("game_update_success", (msg) => {
           let user, component: any;
-          if (Object.keys(msg.data.playerList).length > 0) {
-            for (const player in msg.data.playerList) {
-              if (
-                msg.data.playerList[player].user_id ===
-                Number(playerInfo.user_id)
-              ) {
-                user = msg.data.playerList[player];
-              } else {
-                component = msg.data.playerList[player];
+          if (msg.data) {
+            if (Object.keys(msg.data.playerList).length > 0) {
+              for (const player in msg.data.playerList) {
+                if (
+                  msg.data.playerList[player].user_id ===
+                  Number(playerInfo.user_id)
+                ) {
+                  user = msg.data.playerList[player];
+                } else {
+                  component = msg.data.playerList[player];
+                }
               }
             }
+            setGameInfo((prev: any) => ({
+              ...prev,
+              room: msg.data.room_id,
+              type: msg.data.room_type,
+              component: component,
+              current_user: msg.data.room_now_current_user,
+              button: msg.data.hash,
+              command_type: msg.data.command,
+              reward: msg.data.room_battle_reward,
+            }));
+            setPlayerInfo(user);
           }
-          setGameInfo((prev: any) => ({
-            ...prev,
-            room: msg.data.room_id,
-            type: msg.data.room_type,
-            component: component,
-            current_user: msg.data.room_now_current_user,
-            button: msg.data.hash,
-            command_type: msg.data.command,
-            reward: msg.data.room_battle_reward,
-          }));
-          setPlayerInfo(user);
         });
     }
   });
