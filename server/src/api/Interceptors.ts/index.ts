@@ -16,7 +16,7 @@ const onRequestError = (error: AxiosError): Promise<AxiosError> => {
 };
 
 const onResponse = (response: AxiosResponse): AxiosResponse => {
-  console.log('[Reponse body]',response.data);
+  // console.log('[Reponse body]',response.data);
   return response;
 };
 

@@ -20,7 +20,7 @@ import {
 export class MessageController {
   @OnConnect()
   public onConnection(@ConnectedSocket() socket: Socket) {
-    console.log("Socket connected:", socket.id);
+    // console.log("Socket connected:", socket.id);
   }
 
   @OnMessage("update_user")
@@ -83,21 +83,28 @@ export class MessageController {
     removeUser(socket.id);
     if (removed_user) {
       setTimeout(async () => {
+        console.log(`检查玩家 ${removed_user.user_id}是否重连...`);
         const check = getUserbyUserid(removed_user.user_id);
         if (check === undefined) {
+          console.log(` 玩家 ${removed_user.user_id} 30秒内无应答.`);
           const res = await myAxios.post("/enforceQuit", {
             token: removed_user.token,
             room_type: "pvp-auto",
           });
           if (res.data.code === "200") {
+            console.log(`强制退出玩家 ${removed_user.user_id} 成功`);
             socket
               .to(res.data.data.room_id)
               .emit("game_update_success", res.data);
           }
+        } else {
+          console.log(
+            `玩家 ${removed_user.user_id} 已经成功重连, 不需要执行强制退出`
+          );
         }
-      }, 30000);
+      }, 3000);
     }
 
-    console.log("Socket disconnected:", socket.id);
+    // console.log("Socket disconnected:", socket.id);
   }
 }

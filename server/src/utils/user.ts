@@ -12,18 +12,12 @@ const users: User[] = [];
  */
 export const addUser = (user: User): void => {
   const { user_id } = user;
+  console.log(`添加玩家${user_id}成功, 玩家socket-id为: ${user.socket_id}`);
   const existing = users.find((user: User) => {
     return user.user_id === user_id;
   });
   if (!existing) {
     users.push(user);
-  } else {
-    // if remove has bug then update the user's socket_id
-    users.map((item: User) => {
-      if (user.user_id === item.user_id && user.token === item.token) {
-        item.socket_id = user.socket_id;
-      }
-    });
   }
 };
 
@@ -33,6 +27,7 @@ export const addUser = (user: User): void => {
  * @returns
  */
 export const removeUser = (id: string): void => {
+  console.log(`玩家已被移除, 玩家socket-id: ${id}`);
   const index = users.findIndex((user) => user.socket_id === id);
   if (index !== -1) {
     users.splice(index, 1)[0];
@@ -49,5 +44,6 @@ export const getUser = (id: string): User => {
 };
 
 export const getUserbyUserid = (id: number): User => {
+  console.log("当前玩家:", users);
   return users.find((user) => user.user_id === id);
 };
