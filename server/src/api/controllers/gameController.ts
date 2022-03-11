@@ -12,15 +12,6 @@ import { getRoom } from "../../utils/room";
 
 @SocketController()
 export class GameController {
-  // 获取room信息
-  // private getSocketGameRoom(socket: Socket): string {
-  //   const socketRooms = Array.from(socket.rooms.values()).filter(
-  //     (room) => room !== socket.id
-  //   );
-  //   const gameRoom = socketRooms && socketRooms[0];
-  //   return gameRoom;
-  // }
-
   @OnMessage("game_progress_check")
   public async gamecheck(
     @ConnectedSocket() socket: Socket,
@@ -35,9 +26,7 @@ export class GameController {
 
     const res: AxiosResponse = await myAxios.post("/getRoomData", {
       data: {
-        coon_id: message.connection_id,
-        user_id: message.user_id,
-        room_type: "pvp-auto",
+        token: message.token,
       },
     });
     if (res.data.code === "200") {
@@ -64,8 +53,7 @@ export class GameController {
     try {
       const res: AxiosResponse = await myAxios.post("/matching", {
         data: {
-          coon_id: message.connection_id,
-          user_id: message.user_id,
+          token: message.token,
           room_type: "pvp-auto",
         },
       });
@@ -78,9 +66,7 @@ export class GameController {
         try {
           const res: AxiosResponse = await myAxios.post("/getRoomData", {
             data: {
-              coon_id: message.connection_id,
-              user_id: message.user_id,
-              room_type: "pvp-auto",
+              token: message.token,
             },
           });
           if (res.data.code === "200") {
@@ -130,9 +116,7 @@ export class GameController {
     try {
       const res = await myAxios.post("/battle", {
         data: {
-          coon_id: message.connection_id,
-          room_id: message.room_id,
-          user_id: message.user_id,
+          token: message.token,
           room_type: message.battle_type,
           command: message.command,
           hash: message.button,

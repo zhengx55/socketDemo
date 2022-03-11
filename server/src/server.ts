@@ -14,7 +14,7 @@ import { getUserbyUserid } from "./utils/user";
  * Get port from environment and store in Express.
  */
 
-var port = normalizePort(process.env.PORT || "9001");
+var port = normalizePort(process.env.PORT || "9000");
 app.set("port", port);
 
 /**
@@ -92,15 +92,6 @@ function onListening() {
 const redis = new Redis({
   port: 6379,
   host: process.env.REDIS_HOST,
-  password: process.env.REDIS_PASSWORD,
-});
-
-const client = createClient({
-  socket: {
-    port: 6379,
-    host: process.env.REDIS_HOST,
-    connectTimeout: 1000,
-  },
   password: process.env.REDIS_PASSWORD,
 });
 

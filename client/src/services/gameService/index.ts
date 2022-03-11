@@ -4,16 +4,18 @@ class GameService {
   public loginInGame = (
     socket: Socket,
     connection_id: string,
-    user_id: string
+    user_id: string,
+    user_address: string
   ) => {
     return new Promise((resolve, reject) => {
       socket.emit("request_login", {
         connection_id,
         user_id,
+        user_address,
       });
       socket.on("login_status", (res) => {
         if (res.status === "success") {
-          resolve(true);
+          resolve(res);
         } else {
           reject(false);
         }
@@ -42,15 +44,10 @@ class GameService {
     // socket.on("start_game", listener);
   }
 
-  public async matchGame(
-    socket: Socket,
-    userConnection: string,
-    userId: string
-  ): Promise<any> {
+  public async matchGame(socket: Socket, token: string): Promise<any> {
     return new Promise((rs, rj) => {
       socket?.emit("match_room", {
-        connection_id: userConnection,
-        user_id: userId,
+        token,
       });
       socket.on("match_info", (res) => rs(res));
       socket.on("match_error", ({ error }) => rj(error));
@@ -59,13 +56,12 @@ class GameService {
 
   public async gameUpdate(
     socket: Socket,
-    userConnection: string,
+    token: string,
     data: any
   ): Promise<any> {
     return new Promise((rs, rj) => {
       socket?.emit("update_game", {
-        connection_id: userConnection,
-        room_id: data.room_id,
+        token: token,
         user_id: data.user_id,
         battle_type: data.battle_type,
         command: data.command,
@@ -80,15 +76,10 @@ class GameService {
     });
   }
 
-  public async gameInProgress(
-    socket: Socket,
-    userConnection: string,
-    userId: string
-  ): Promise<any> {
+  public async gameInProgress(socket: Socket, token: string): Promise<any> {
     return new Promise<any>((resolve, reject) => {
       socket?.emit("game_progress_check", {
-        connection_id: userConnection,
-        user_id: userId,
+        token,
       });
       socket
         .off("game_status")

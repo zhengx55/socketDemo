@@ -12,16 +12,19 @@ function App() {
   const [playerInfo, setPlayerInfo] = useState<any>(null);
   const [GameInfo, setGameInfo] = useState<any>({ room: "", component: {} });
   const [isGameStarted, setGameStarted] = useState<boolean>(false);
-  const [isLogin, setIsLogin] = useState<boolean>(false);
   const [orientation] = useOrientation();
-  const [cookies, setCookie] = useCookies(["userid", "userConnection"]);
+  const [cookies, setCookie] = useCookies([
+    "userid",
+    "userConnection",
+    "token",
+  ]);
 
   const connectSocket = async (): Promise<void> => {
     try {
-      const connect = await socketService.connect("wss://oin.finance");
+      const connect = await socketService.connect("http://localhost:9000");
       if (connect.connected) {
         console.log("ws connection established successfully");
-        await loginGame();
+        // await loginGame();
       }
     } catch (error) {
       console.error(error);
@@ -29,11 +32,10 @@ function App() {
   };
 
   const gameProgressCheck = async (): Promise<void> => {
-    if (socketService.socket) {
+    if (socketService.socket && cookies.token) {
       const isInGame = await gameService.gameInProgress(
         socketService.socket,
-        cookies.userConnection,
-        cookies.userid
+        cookies.token
       );
       if (isInGame.status) {
         let user, component: any;
@@ -79,7 +81,6 @@ function App() {
   useEffect(() => {
     connectSocket();
     gameProgressCheck();
-    console.log(navigator.userAgent.indexOf("Safari"));
     window.addEventListener("beforeunload", () => {
       disconnectSocket();
     });
@@ -100,39 +101,6 @@ function App() {
     }
   });
 
-  const loginGame = async (): Promise<void> => {
-    let random = "";
-    if (!cookies.userConnection) {
-      for (let i = 0; i < 4; i++) {
-        random += Math.floor(Math.random() * 9 + 1);
-      }
-      setCookie("userConnection", random, { path: "/" });
-    } else {
-      random = cookies.userConnection;
-    }
-    let userId = "";
-    if (!cookies.userid) {
-      for (let i = 0; i < 1; i++) {
-        userId += Math.floor(Math.random() * 9 + 1);
-      }
-      setCookie("userid", userId, { path: "/" });
-    } else {
-      userId = cookies.userid;
-    }
-    try {
-      if (socketService.socket) {
-        const res = await gameService.loginInGame(
-          socketService.socket,
-          random,
-          userId
-        );
-        if (res) setIsLogin(true);
-      }
-    } catch (error) {
-      setIsLogin(false);
-    }
-  };
-
   const gameContextValue: IGameContextProps = {
     playerInfo,
     setPlayerInfo,
@@ -145,7 +113,7 @@ function App() {
   return (
     <GameContext.Provider value={gameContextValue}>
       {isGameStarted && <Battle />}
-      {!isGameStarted && <Match isLogin={isLogin} />}
+      {!isGameStarted && <Match />}
     </GameContext.Provider>
   );
 }

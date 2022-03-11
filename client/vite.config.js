@@ -21,4 +21,12 @@ export default defineConfig({
       },
     },
   },
+  css: {
+    preprocessorOptions: {
+      scss: {
+        additonalData: `
+        @import "./components/Modal/index.scss";`,
+      },
+    },
+  },
 });

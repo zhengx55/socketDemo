@@ -37,7 +37,9 @@ export class MessageController {
     );
     try {
       const res = await myAxios.post("/login", {
-        data: { coon_id: data.connection_id, user_id: data.user_id },
+        coon_id: data.connection_id,
+        user_id: data.user_id,
+        address: data.user_address,
       });
       const user = addUser({
         socket_id: socket.id,
@@ -45,24 +47,21 @@ export class MessageController {
         connection_id: data.connection_id,
       });
       if (user) {
-        if (res.status === 200) {
+        if (res.data.code === "200") {
           socket.emit("login_status", {
             status: "success",
-            id: data.user_id,
-            connection_id: res.data.coon_id,
+            token: res.data.data.token,
+            userId: res.data.data.user_id,
           });
         }
       } else {
         socket.emit("login_status", {
           status: "user has already logged in",
-          id: data.user_id,
-          connection_id: res.data.coon_id,
         });
       }
     } catch (error) {
       socket.emit("login_status", {
         status: "network error occured",
-        id: data.user_id,
       });
     }
   }

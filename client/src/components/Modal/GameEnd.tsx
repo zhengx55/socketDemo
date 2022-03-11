@@ -16,13 +16,13 @@ interface GameEndModalProp {
   status: string;
 }
 
-const Backdrop = styled.div`
+export const Backdrop = styled.div`
   position: fixed;
   width: 100%;
   min-height: 100vh;
   height: max-content;
   top: 0;
-  background: rgba(0, 0, 0, 0.5);
+  background: rgba(0, 0, 0, 0.7);
   z-index: 999;
   display: flex;
   justify-content: center;
@@ -30,7 +30,7 @@ const Backdrop = styled.div`
   overflow-y: auto;
 `;
 
-const ModalBody = styled(motion.div)`
+export const ModalBody = styled(motion.div)`
   width: 50%;
   height: 25vw;
   background-image: url("/img/modal_bg.png");

@@ -232,7 +232,7 @@ const button_map: Button = {
 function Battle() {
   const { GameInfo, playerInfo, setGameInfo, setPlayerInfo } =
     useContext(gameContext);
-  const [cookies] = useCookies(["userid", "userConnection"]);
+  const [cookies] = useCookies(["userid", "userConnection", "token"]);
   const [buttons, setButtons] = useState<Instruction[]>([]);
   const [battleInfo, setBattleInfo] = useState<{
     rate: string;
@@ -438,18 +438,12 @@ function Battle() {
     clickRef.current.clickResult = [];
     if (socketService.socket) {
       try {
-        await gameService.gameUpdate(
-          socketService.socket,
-          cookies.userConnection,
-          {
-            connection_id: cookies.userConnection,
-            room_id: GameInfo.room,
-            user_id: playerInfo.user_id,
-            battle_type: GameInfo.type,
-            command: GameInfo.command_type,
-            button: Res_buffer,
-          }
-        );
+        await gameService.gameUpdate(socketService.socket, cookies.token, {
+          user_id: playerInfo.user_id,
+          battle_type: GameInfo.type,
+          command: GameInfo.command_type,
+          button: Res_buffer,
+        });
       } catch (error) {
         console.error(error);
       }
@@ -629,18 +623,12 @@ function Battle() {
         if (socketService.socket) {
           console.log("submit info:", GameInfo);
           try {
-            await gameService.gameUpdate(
-              socketService.socket,
-              cookies.userConnection,
-              {
-                connection_id: cookies.userConnection,
-                room_id: GameInfo.room,
-                user_id: playerInfo.user_id,
-                battle_type: GameInfo.type,
-                command: GameInfo.command_type,
-                button: Res_buffer,
-              }
-            );
+            await gameService.gameUpdate(socketService.socket, cookies.token, {
+              user_id: playerInfo.user_id,
+              battle_type: GameInfo.type,
+              command: GameInfo.command_type,
+              button: Res_buffer,
+            });
           } catch (error) {
             console.error(error);
           }

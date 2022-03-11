@@ -6,6 +6,7 @@ import socketService from "../../services/socketService";
 import gameContext from "../../context/gameContext";
 import { Button } from "../../components/Button";
 import { useCookies } from "react-cookie";
+import Login from "../../components/Modal/Login";
 
 type TypoProps = {
   weight?: string;
@@ -13,10 +14,6 @@ type TypoProps = {
   size?: string;
   mt?: string;
 };
-
-interface MatchProps {
-  isLogin: boolean;
-}
 
 const AppContainer = styled.div`
   width: 100%;
@@ -87,19 +84,19 @@ const TitleContainer = styled.img`
   height: 25%;
 `;
 
-const Match = ({ isLogin }: MatchProps) => {
+const Match = () => {
   const [isMatching, setIsMatching] = useState(false);
-  const [cookies] = useCookies(["userid", "userConnection"]);
+  const [cookies] = useCookies(["userid", "userConnection", "token"]);
   const { setPlayerInfo, setGameInfo, setGameStarted, GameInfo } =
     useContext(gameContext);
+  const [isLogin, setIsLogin] = useState<boolean>(false);
 
   const matchGame = async () => {
     setIsMatching(true);
     if (isLogin && socketService.socket) {
       const match = await gameService.matchGame(
         socketService.socket,
-        cookies.userConnection,
-        cookies.userid
+        cookies.token
       );
       if (match.status === "success") {
         setIsMatching(false);
@@ -148,6 +145,7 @@ const Match = ({ isLogin }: MatchProps) => {
   return (
     <AppContainer>
       <MainContainer>
+        {!isLogin && <Login setIsLogin={setIsLogin} />}
         <TitleContainer alt="" src="/img/Ribbon.png" />
         <AbsoluteFont>Competition {cookies.userid}</AbsoluteFont>
         {isMatching ? (
