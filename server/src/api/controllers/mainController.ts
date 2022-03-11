@@ -7,7 +7,7 @@ import {
   OnMessage,
 } from "socket-controllers";
 import axios from "axios";
-import { Socket, Server } from "socket.io";
+import { Socket } from "socket.io";
 import { setupInterceptorsTo } from "../Interceptors.ts";
 import {
   addUser,
@@ -81,20 +81,22 @@ export class MessageController {
     );
     const removed_user = getUser(socket.id);
     removeUser(socket.id);
-    setTimeout(async () => {
-      const check = getUserbyUserid(removed_user.user_id);
-      if (check === undefined) {
-        const res = await myAxios.post("/enforceQuit", {
-          token: removed_user.token,
-          room_type: "pvp-auto",
-        });
-        if (res.data.code === "200") {
-          socket
-            .to(res.data.data.room_id)
-            .emit("game_update_success", res.data);
+    if (removed_user) {
+      setTimeout(async () => {
+        const check = getUserbyUserid(removed_user.user_id);
+        if (check === undefined) {
+          const res = await myAxios.post("/enforceQuit", {
+            token: removed_user.token,
+            room_type: "pvp-auto",
+          });
+          if (res.data.code === "200") {
+            socket
+              .to(res.data.data.room_id)
+              .emit("game_update_success", res.data);
+          }
         }
-      }
-    }, 30000);
+      }, 30000);
+    }
 
     console.log("Socket disconnected:", socket.id);
   }

@@ -4,7 +4,6 @@ import app from "./app";
 var debug = require("debug")("socketio-server:server");
 import * as http from "http";
 import socketServer from "./socket";
-import { createClient } from "redis";
 import Redis from "ioredis";
 import "dotenv/config";
 import { Room } from "./utils/room";
@@ -14,7 +13,7 @@ import { getUserbyUserid } from "./utils/user";
  * Get port from environment and store in Express.
  */
 
-var port = normalizePort(process.env.PORT || "9000");
+var port = normalizePort(process.env.PORT || "9001");
 app.set("port", port);
 
 /**
@@ -111,7 +110,7 @@ const runRedis = async () => {
     if (match_query) {
       match_query.map((item: Room) => {
         Object.keys(item.playerList).forEach((player: any) => {
-          const user = getUserbyUserid(player);
+          const user = getUserbyUserid(Number(player));
           if (user) {
             io.to(user.socket_id).emit("match_info", {
               data: item,
