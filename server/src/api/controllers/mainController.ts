@@ -5,7 +5,6 @@ import {
   OnDisconnect,
   MessageBody,
   OnMessage,
-  EmitOnSuccess,
 } from "socket-controllers";
 import axios from "axios";
 import { Socket, Server } from "socket.io";
@@ -22,6 +21,18 @@ export class MessageController {
   @OnConnect()
   public onConnection(@ConnectedSocket() socket: Socket) {
     console.log("Socket connected:", socket.id);
+  }
+
+  @OnMessage("update_user")
+  public updateUser(
+    @ConnectedSocket() socket: Socket,
+    @MessageBody() data: { user_id: string; token: string }
+  ) {
+    addUser({
+      socket_id: socket.id,
+      user_id: Number(data.user_id),
+      token: data.token,
+    });
   }
 
   @OnMessage("request_login")
@@ -42,22 +53,16 @@ export class MessageController {
         address: data.user_address,
       });
       if (res.data.code === "200") {
-        const user = addUser({
+        addUser({
           socket_id: socket.id,
           user_id: res.data.data.user_id,
           token: res.data.data.token,
         });
-        if (user) {
-          socket.emit("login_status", {
-            status: "success",
-            token: res.data.data.token,
-            userId: res.data.data.user_id,
-          });
-        } else {
-          socket.emit("login_status", {
-            status: "user has already logged in",
-          });
-        }
+        socket.emit("login_status", {
+          status: "success",
+          token: res.data.data.token,
+          userId: res.data.data.user_id,
+        });
       }
     } catch (error) {
       socket.emit("login_status", {
@@ -74,13 +79,13 @@ export class MessageController {
         timeout: 5000,
       })
     );
-    const { user_id, token } = getUser(socket.id);
+    const removed_user = getUser(socket.id);
     removeUser(socket.id);
     setTimeout(async () => {
-      const check = getUserbyUserid(user_id);
+      const check = getUserbyUserid(removed_user.user_id);
       if (check === undefined) {
         const res = await myAxios.post("/enforceQuit", {
-          token,
+          token: removed_user.token,
           room_type: "pvp-auto",
         });
         if (res.data.code === "200") {
@@ -90,6 +95,7 @@ export class MessageController {
         }
       }
     }, 30000);
+
     console.log("Socket disconnected:", socket.id);
   }
 }

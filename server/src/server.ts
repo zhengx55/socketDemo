@@ -107,7 +107,6 @@ const runRedis = async () => {
   });
 
   redis.on("message", (channel, msg) => {
-    console.log(msg);
     let match_query = JSON.parse(msg);
     if (match_query) {
       match_query.map((item: Room) => {

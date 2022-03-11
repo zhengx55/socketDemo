@@ -24,6 +24,12 @@ function App() {
       const connect = await socketService.connect("http://localhost:9000");
       if (connect.connected) {
         console.log("ws connection established successfully");
+        if (cookies.token && cookies.userid) {
+          socketService.socket?.emit("update_user", {
+            user_id: cookies.userid,
+            token: cookies.token,
+          });
+        }
       }
     } catch (error) {
       console.error(error);

@@ -48,7 +48,6 @@ export class GameController {
       })
     );
     try {
-      console.log(message.token);
       const res: AxiosResponse = await myAxios.post("/matching", {
         token: message.token,
         room_type: "pvp-auto",

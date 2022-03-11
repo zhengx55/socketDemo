@@ -1,6 +1,6 @@
 interface User {
   socket_id: string;
-  user_id: string;
+  user_id: number;
   token: string;
 }
 const users: User[] = [];
@@ -10,27 +10,32 @@ const users: User[] = [];
  * @param user
  * @returns
  */
-export const addUser = (user: User): boolean => {
+export const addUser = (user: User): void => {
   const { user_id } = user;
   const existing = users.find((user: User) => {
     return user.user_id === user_id;
   });
-  if (existing) {
-    return false;
+  if (!existing) {
+    users.push(user);
+  } else {
+    // if remove has bug then update the user's socket_id
+    users.map((item: User) => {
+      if (user.user_id === item.user_id && user.token === item.token) {
+        item.socket_id = user.socket_id;
+      }
+    });
   }
-  users.push(user);
-  return true;
 };
 
 /**
- * Remove user when disconnect
+ * Remove user when disconnect with socket_id
  * @param id
  * @returns
  */
-export const removeUser = (id: string) => {
+export const removeUser = (id: string): void => {
   const index = users.findIndex((user) => user.socket_id === id);
   if (index !== -1) {
-    return users.splice(index, 1)[0];
+    users.splice(index, 1)[0];
   }
 };
 
@@ -43,6 +48,6 @@ export const getUser = (id: string): User => {
   return users.find((user) => user.socket_id === id);
 };
 
-export const getUserbyUserid = (id: string): User => {
+export const getUserbyUserid = (id: number): User => {
   return users.find((user) => user.user_id === id);
 };
