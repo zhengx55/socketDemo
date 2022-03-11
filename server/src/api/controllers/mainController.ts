@@ -83,10 +83,10 @@ export class MessageController {
     removeUser(socket.id);
     if (removed_user) {
       setTimeout(async () => {
-        console.log(`检查玩家 ${removed_user.user_id}是否重连...`);
+        console.log(`检查玩家${removed_user.user_id}是否重连...`);
         const check = getUserbyUserid(removed_user.user_id);
         if (check === undefined) {
-          console.log(` 玩家 ${removed_user.user_id} 30秒内无应答.`);
+          console.log(` 玩家${removed_user.user_id}30秒内无应答.`);
           const res = await myAxios.post("/enforceQuit", {
             token: removed_user.token,
             room_type: "pvp-auto",

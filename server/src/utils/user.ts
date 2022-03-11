@@ -44,6 +44,6 @@ export const getUser = (id: string): User => {
 };
 
 export const getUserbyUserid = (id: number): User => {
-  console.log("当前玩家:", users);
+  console.log("当前在线玩家列表:", users);
   return users.find((user) => user.user_id === id);
 };
