@@ -41,23 +41,23 @@ export class MessageController {
         user_id: data.user_id,
         address: data.user_address,
       });
-      const user = addUser({
-        socket_id: socket.id,
-        user_id: data.user_id,
-        connection_id: data.connection_id,
-      });
-      if (user) {
-        if (res.data.code === "200") {
+      if (res.data.code === "200") {
+        const user = addUser({
+          socket_id: socket.id,
+          user_id: res.data.data.user_id,
+          token: res.data.data.token,
+        });
+        if (user) {
           socket.emit("login_status", {
             status: "success",
             token: res.data.data.token,
             userId: res.data.data.user_id,
           });
+        } else {
+          socket.emit("login_status", {
+            status: "user has already logged in",
+          });
         }
-      } else {
-        socket.emit("login_status", {
-          status: "user has already logged in",
-        });
       }
     } catch (error) {
       socket.emit("login_status", {
@@ -74,17 +74,14 @@ export class MessageController {
         timeout: 5000,
       })
     );
-    const { user_id, connection_id } = getUser(socket.id);
+    const { user_id, token } = getUser(socket.id);
     removeUser(socket.id);
     setTimeout(async () => {
       const check = getUserbyUserid(user_id);
       if (check === undefined) {
         const res = await myAxios.post("/enforceQuit", {
-          data: {
-            user_id: user_id,
-            coon_id: connection_id,
-            room_type: "pvp-auto",
-          },
+          token,
+          room_type: "pvp-auto",
         });
         if (res.data.code === "200") {
           socket

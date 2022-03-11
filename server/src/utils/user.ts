@@ -1,7 +1,7 @@
 interface User {
   socket_id: string;
   user_id: string;
-  connection_id: string;
+  token: string;
 }
 const users: User[] = [];
 

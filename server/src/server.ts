@@ -107,15 +107,18 @@ const runRedis = async () => {
   });
 
   redis.on("message", (channel, msg) => {
+    console.log(msg);
     let match_query = JSON.parse(msg);
     if (match_query) {
       match_query.map((item: Room) => {
         Object.keys(item.playerList).forEach((player: any) => {
           const user = getUserbyUserid(player);
-          io.to(user.socket_id).emit("match_info", {
-            data: item,
-            status: "success",
-          });
+          if (user) {
+            io.to(user.socket_id).emit("match_info", {
+              data: item,
+              status: "success",
+            });
+          }
         });
       });
     }

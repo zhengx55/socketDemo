@@ -24,7 +24,6 @@ function App() {
       const connect = await socketService.connect("http://localhost:9000");
       if (connect.connected) {
         console.log("ws connection established successfully");
-        // await loginGame();
       }
     } catch (error) {
       console.error(error);

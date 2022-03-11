@@ -91,6 +91,12 @@ const Match = () => {
     useContext(gameContext);
   const [isLogin, setIsLogin] = useState<boolean>(false);
 
+  useEffect(() => {
+    if (cookies.token) {
+      setIsLogin(true);
+    }
+  }, []);
+
   const matchGame = async () => {
     setIsMatching(true);
     if (isLogin && socketService.socket) {

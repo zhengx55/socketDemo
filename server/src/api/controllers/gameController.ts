@@ -23,11 +23,8 @@ export class GameController {
         timeout: 5000,
       })
     );
-
     const res: AxiosResponse = await myAxios.post("/getRoomData", {
-      data: {
-        token: message.token,
-      },
+      token: message.token,
     });
     if (res.data.code === "200") {
       const matchInfo = res.data.data;
@@ -51,30 +48,15 @@ export class GameController {
       })
     );
     try {
+      console.log(message.token);
       const res: AxiosResponse = await myAxios.post("/matching", {
-        data: {
-          token: message.token,
-          room_type: "pvp-auto",
-        },
+        token: message.token,
+        room_type: "pvp-auto",
       });
       if (res.data.code === "200") {
         const roomInfo = getRoom(message.user_id);
         if (roomInfo) {
           socket.emit("match_info", { data: roomInfo, status: "success" });
-        }
-      } else if (res.data.code === "400") {
-        try {
-          const res: AxiosResponse = await myAxios.post("/getRoomData", {
-            data: {
-              token: message.token,
-            },
-          });
-          if (res.data.code === "200") {
-            const matchInfo = res.data.data;
-            socket.emit("match_info", { data: matchInfo, status: "success" });
-          }
-        } catch (error) {
-          console.log("get room data error", error);
         }
       }
     } catch (error) {
@@ -115,20 +97,18 @@ export class GameController {
     );
     try {
       const res = await myAxios.post("/battle", {
-        data: {
-          token: message.token,
-          room_type: message.battle_type,
-          command: message.command,
-          hash: message.button,
-        },
+        token: message.token,
+        room_type: message.battle_type,
+        command: message.command,
+        hash: message.button,
       });
       if (res.status === 200) {
         socket.emit("game_update_success", res.data);
-        socket.to(message.room_id).emit("game_update_success", res.data);
+        socket.to(res.data.data.room_id).emit("game_update_success", res.data);
         if (message.command === "attack") {
           socket.emit("texture_update", { user_id: message.user_id });
           socket
-            .to(message.room_id)
+            .to(res.data.data.room_id)
             .emit("texture_update", { user_id: message.user_id });
         }
       }

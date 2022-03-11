@@ -57,6 +57,7 @@ function Login({ setIsLogin }: LoginProps) {
           loginInfo.address
         );
         if (res) {
+          console.log(res);
           setCookie("token", res.token, {
             path: "/",
             secure: true,
