@@ -105,6 +105,7 @@ const BattleContainer = styled.div`
     canvas {
       width: 60% !important;
       height: 100% !important;
+      max-height: 150px !important;
     }
   }
   .character {
@@ -118,6 +119,8 @@ const BattleContainer = styled.div`
     align-items: center;
     padding-top: 0;
     overflow: hidden;
+    justify-content: center;
+    grid-row-gap: 20px;
   }
   .button {
     display: flex;
@@ -721,11 +724,11 @@ function Battle() {
               )}
             </>
           ) : null}
-          <Typography weight="bold" color="#B09C7A" size="4vw" mt="2vw">
+          <Typography weight="bold" color="#B09C7A" size="4vw">
             Vs
           </Typography>
           {GameInfo.current_user === playerInfo.user_id ? (
-            <Typography weight="normal" color="#B09C7A" size="2vw" mt="3vw">
+            <Typography weight="normal" color="#B09C7A" size="2vw">
               Time: {battleInfo.timer}
             </Typography>
           ) : null}
@@ -848,7 +851,10 @@ function Battle() {
         ) : (
           <>
             <section></section>
-            <FontLoading loadingText="Waiting..." />
+            <section className="score_panel">
+              <FontLoading loadingText="Waiting..." />
+            </section>
+
             <section></section>
           </>
         )}
