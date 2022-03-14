@@ -2,7 +2,7 @@
 
 * {
   box-sizing: border-box;
-  touch-action: pan-y;
+  -webkit-overflow-scrolling: touch;
 }
 
 html,

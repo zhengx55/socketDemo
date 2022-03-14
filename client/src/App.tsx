@@ -89,9 +89,22 @@ function App() {
     window.addEventListener("beforeunload", () => {
       disconnectSocket();
     });
+    window.addEventListener(
+      "touchmove",
+      function (e: TouchEvent) {
+        // 阻止默认事件
+        e.preventDefault();
+      },
+      {
+        passive: false,
+      }
+    );
     return () => {
       window.removeEventListener("beforeunload", () => {
         disconnectSocket();
+      });
+      window.removeEventListener("touchmove", function (e: TouchEvent) {
+        e.preventDefault();
       });
     };
   }, []);
