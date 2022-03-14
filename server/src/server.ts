@@ -111,14 +111,14 @@ const runRedis = async () => {
       console.log(match_query);
       match_query.map((item: Room) => {
         Object.keys(item.playerList).forEach((player: any) => {
-          console.log(`正在向玩家${player}发送匹配信息...`);
+          console.log(`正在向玩家 ${player} 发送匹配信息...`);
           const user = getUserbyUserid(Number(player));
           if (user) {
             io.to(user.socket_id).emit("match_info", {
               data: item,
               status: "success",
             });
-            console.log(`向玩家${user.user_id}发送匹配信息成功`);
+            console.log(`向玩家 ${user.user_id} 发送匹配信息成功`);
           }
         });
       });
