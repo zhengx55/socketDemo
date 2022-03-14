@@ -108,7 +108,6 @@ const runRedis = async () => {
   redis.on("message", (channel, msg) => {
     let match_query = JSON.parse(msg);
     if (match_query) {
-      console.log(match_query);
       match_query.map((item: Room) => {
         Object.keys(item.playerList).forEach((player: any) => {
           console.log(`正在向玩家 ${player} 发送匹配信息...`);
