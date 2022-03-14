@@ -80,8 +80,8 @@ const AvatarInfo = styled.div`
 `;
 
 const Direction = styled(motion.img)`
-  aspect-ratio: 1;
-  width: 4.5vw;
+  height: 40px;
+  width: 40px;
   touch-action: manipulation;
 `;
 
@@ -176,7 +176,7 @@ const BattleContainer = styled.div`
     position: relative;
     .launch_button {
       aspect-ratio: 1;
-      width: 6vw;
+      width: 7.5vw;
       touch-action: manipulation;
       transition: transform 0.2s cubic-bezier(0.075, 0.82, 0.165, 1);
       &:active {
@@ -239,6 +239,7 @@ function Battle() {
     useContext(gameContext);
   const [cookies] = useCookies(["userid", "userConnection", "token"]);
   const [buttons, setButtons] = useState<Instruction[]>([]);
+  const [defaultBtn, setDefault] = useState<Instruction[]>([]);
   const [battleInfo, setBattleInfo] = useState<{
     rate: string;
     timer: number | undefined;
@@ -337,6 +338,7 @@ function Battle() {
             status: 0,
           });
         }
+        setDefault(buttons);
         setButtons(buttons);
         const bar_length =
           document.getElementsByClassName("time_bar")[0].clientWidth -
@@ -458,8 +460,8 @@ function Battle() {
   const onButtonClick = useCallback(
     (type: string) => {
       if (
-        buttons.length > 0 &&
-        clickRef.current.clickCount <= buttons.length - 1
+        defaultBtn.length > 0 &&
+        clickRef.current.clickCount <= defaultBtn.length - 1
       ) {
         const clickTarget = buttons[clickRef.current.clickCount].button;
         switch (type) {
@@ -477,21 +479,13 @@ function Battle() {
                   }
                 })
               );
+              clickRef.current.clickCount++;
+              clickRef.current.clickResult.push(1);
             } else {
-              setButtons(
-                [...buttons].map((item: Instruction, index: number) => {
-                  if (index === clickRef.current.clickCount) {
-                    return {
-                      ...item,
-                      status: 2,
-                    };
-                  } else {
-                    return item;
-                  }
-                })
-              );
+              setButtons(defaultBtn);
+              clickRef.current.clickCount = 0;
+              clickRef.current.clickResult = [];
             }
-            clickRef.current.clickResult.push(1);
             break;
           case "right":
             if (Number(clickTarget) === 2) {
@@ -507,21 +501,13 @@ function Battle() {
                   }
                 })
               );
+              clickRef.current.clickResult.push(2);
+              clickRef.current.clickCount++;
             } else {
-              setButtons(
-                [...buttons].map((item: Instruction, index: number) => {
-                  if (index === clickRef.current.clickCount) {
-                    return {
-                      ...item,
-                      status: 2,
-                    };
-                  } else {
-                    return item;
-                  }
-                })
-              );
+              setButtons(defaultBtn);
+              clickRef.current.clickCount = 0;
+              clickRef.current.clickResult = [];
             }
-            clickRef.current.clickResult.push(2);
             break;
           case "bottom":
             if (Number(clickTarget) === 3) {
@@ -537,21 +523,13 @@ function Battle() {
                   }
                 })
               );
+              clickRef.current.clickResult.push(3);
+              clickRef.current.clickCount++;
             } else {
-              setButtons(
-                [...buttons].map((item: Instruction, index: number) => {
-                  if (index === clickRef.current.clickCount) {
-                    return {
-                      ...item,
-                      status: 2,
-                    };
-                  } else {
-                    return item;
-                  }
-                })
-              );
+              setButtons(defaultBtn);
+              clickRef.current.clickCount = 0;
+              clickRef.current.clickResult = [];
             }
-            clickRef.current.clickResult.push(3);
             break;
           case "left":
             if (Number(clickTarget) === 4) {
@@ -567,29 +545,18 @@ function Battle() {
                   }
                 })
               );
+              clickRef.current.clickResult.push(4);
+              clickRef.current.clickCount++;
             } else {
-              setButtons(
-                [...buttons].map((item: Instruction, index: number) => {
-                  if (index === clickRef.current.clickCount) {
-                    return {
-                      ...item,
-                      status: 2,
-                    };
-                  } else {
-                    return item;
-                  }
-                })
-              );
+              setButtons(defaultBtn);
+              clickRef.current.clickCount = 0;
+              clickRef.current.clickResult = [];
             }
-            clickRef.current.clickResult.push(4);
             break;
         }
-        clickRef.current.clickCount++;
-      } else {
-        return;
       }
     },
-    [buttons]
+    [buttons, GameInfo, defaultBtn]
   );
 
   const onLaunchHandler = useCallback(async (): Promise<void> => {
@@ -826,11 +793,7 @@ function Battle() {
                       className={item.status !== 0 ? "button_active" : ""}
                       alt=""
                       src={`/img/button/${button_map[item.button]}${
-                        item.status === 0
-                          ? "_unselected"
-                          : item.status === 1
-                          ? "_selected"
-                          : ""
+                        item.status === 0 ? "_unselected" : "_selected"
                       }.png`}
                     />
                   );
