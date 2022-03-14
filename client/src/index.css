@@ -22,11 +22,6 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   overflow-x: hidden;
-  /* padding: env(safe-area-inset-top, 20px) env(safe-area-inset-right, 20px)
-    env(safe-area-inset-bottom, 20px) env(safe-area-inset-left, 20px);
-  padding: constant(safe-area-inset-top, 20px)
-    constant(safe-area-inset-right, 20px) constant(safe-area-inset-bottom, 20px)
-    constant(safe-area-inset-left, 20px); */
   background-color: #3e382b;
   user-select: none;
 }
@@ -35,4 +30,23 @@ body {
   width: 0px;
   background: transparent; /* make scrollbar transparent */
   -webkit-appearance: none;
+}
+
+/* 适配 iPhone X 顶部填充*/
+@supports (top: env(safe-area-inset-top)) {
+  body,
+  .header {
+    padding-top: constant(safe-area-inset-top, 40px);
+    padding-top: env(safe-area-inset-top, 40px);
+    padding-top: var(safe-area-inset-top, 40px);
+  }
+}
+/* 判断iPhoneX 将 footer 的 padding-bottom 填充到最底部 */
+@supports (bottom: env(safe-area-inset-bottom)) {
+  body,
+  .footer {
+    padding-bottom: constant(safe-area-inset-bottom, 20px);
+    padding-bottom: env(safe-area-inset-bottom, 20px);
+    padding-top: var(safe-area-inset-bottom, 20px);
+  }
 }
