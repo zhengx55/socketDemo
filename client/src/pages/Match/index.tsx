@@ -53,7 +53,7 @@ export const MatchContainer = styled.div`
     background-position: center;
     background-repeat: no-repeat;
     background-size: 100% 100%;
-    aspect-ratio: 0.9;
+    aspect-ratio:1;
     display: flex;
     justify-content: center;
     align-items: center;

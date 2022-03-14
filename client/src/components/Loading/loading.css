@@ -18,8 +18,8 @@
 
 .text_loading span {
   position: relative;
-  font-size: 3vw;
-  margin: 0 2px;
+  font-size: 2.5vw;
+  margin: 5px 2px;
   color: #b09c7a;
   text-transform: uppercase;
   animation: animate 1s ease-in-out infinite;

@@ -22,13 +22,14 @@ import GameEnd from "../../components/Modal/GameEnd";
 
 const Container = styled.div`
   width: 100%;
-  min-height: 100vh;
+  height: 100vh;
   display: flex;
   background-image: url(/img/bg.png);
   background-position: center;
   background-repeat: no-repeat;
   background-size: 100% 100%;
   flex-direction: column;
+  overflow-y: hidden;
   .lazy-load-image-background {
     display: flex !important;
     align-items: center;
@@ -42,11 +43,12 @@ const AvatarContainer = styled.div`
   margin-top: 10px;
   justify-content: space-between;
   height: max-content;
-  min-height: 50px;
+  height: 20vh;
 `;
 
 const AvatarInfo = styled.div`
   display: flex;
+  flex-shrink: 0;
   .avatar {
     width: 7vw;
     aspect-ratio: 1;
@@ -65,7 +67,7 @@ const AvatarInfo = styled.div`
   }
   .health_bar_container {
     min-width: 25vw;
-    height: 2vw;
+    height: 1.5vw;
     background: #453f31;
     border-radius: 6px;
   }
@@ -80,7 +82,7 @@ const AvatarInfo = styled.div`
 
 const Direction = styled(motion.img)`
   aspect-ratio: 1;
-  width: 6vw;
+  width: 4.5vw;
   touch-action: manipulation;
 `;
 
@@ -92,17 +94,16 @@ const buttonEnlarge = keyframes`
 const BattleContainer = styled.div`
   display: grid;
   width: 100%;
+  height: 80vh;
   grid-template-columns: repeat(3, 33%);
+  grid-template-rows: repeat(2, 50%);
   margin-bottom: 2vw;
-  @media (max-width: 800px) {
-    margin-top: 3vw;
-    grid-row-gap: 3vw;
-  }
+
   .player {
     display: flex;
     justify-content: center;
     canvas {
-      width: 100% !important;
+      width: 60% !important;
       height: 100% !important;
     }
   }
@@ -115,7 +116,8 @@ const BattleContainer = styled.div`
     position: relative;
     flex-direction: column;
     align-items: center;
-    padding-top: 2vw;
+    padding-top: 0;
+    overflow: hidden;
   }
   .button {
     display: flex;
@@ -127,6 +129,7 @@ const BattleContainer = styled.div`
     display: flex;
     flex-direction: column;
     align-items: flex-end;
+    justify-content: center;
     .time_bar {
       width: 50%;
       height: 2vw;
@@ -171,7 +174,7 @@ const BattleContainer = styled.div`
     position: relative;
     .launch_button {
       aspect-ratio: 1;
-      width: 9vw;
+      width: 6vw;
       touch-action: manipulation;
       transition: transform 0.2s cubic-bezier(0.075, 0.82, 0.165, 1);
       &:active {
@@ -181,7 +184,7 @@ const BattleContainer = styled.div`
 
     p {
       color: #fff;
-      font-size: 2vw;
+      font-size: 1.5vw;
       position: absolute;
       margin: 0;
       padding: 0;
@@ -359,7 +362,7 @@ function Battle() {
                 ...prev,
                 your: "position",
               }));
-            }, 1000);
+            }, 1200);
           } else {
             setTexture((prev) => ({
               ...prev,
@@ -370,7 +373,7 @@ function Battle() {
                 ...prev,
                 component: "position_reverse",
               }));
-            }, 1500);
+            }, 1200);
           }
         });
       socketService.socket
@@ -395,7 +398,7 @@ function Battle() {
                         ...prev,
                         your: "position",
                       }));
-                    }, 1000);
+                    }, 1200);
                   }
                 } else {
                   component = msg.data.playerList[player];
@@ -409,7 +412,7 @@ function Battle() {
                         ...prev,
                         component: "position_reverse",
                       }));
-                    }, 1500);
+                    }, 1200);
                   }
                 }
               }
@@ -718,12 +721,11 @@ function Battle() {
               )}
             </>
           ) : null}
-
-          <Typography weight="bold" color="#B09C7A" size="6vw" mt="5vw">
+          <Typography weight="bold" color="#B09C7A" size="4vw" mt="2vw">
             Vs
           </Typography>
           {GameInfo.current_user === playerInfo.user_id ? (
-            <Typography weight="normal" color="#B09C7A" size="2vw" mt="5vw">
+            <Typography weight="normal" color="#B09C7A" size="2vw" mt="3vw">
               Time: {battleInfo.timer}
             </Typography>
           ) : null}
@@ -756,7 +758,7 @@ function Battle() {
                 style={{
                   display: "flex",
                   justifyContent: "space-between",
-                  width: "50%",
+                  width: "40%",
                   margin: "-10px 0",
                 }}
               >

@@ -84,7 +84,7 @@ function Knight({ texture }: KnightProps) {
     <Container position={[250, 100]}>
       <AnimatedSprite
         key={texture}
-        animationSpeed={0.3}
+        animationSpeed={0.25}
         isPlaying={true}
         textures={frames[texture]}
         anchor={[0.2, 0.15]}
