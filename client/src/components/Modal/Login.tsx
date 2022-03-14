@@ -107,7 +107,7 @@ function Login({ setIsLogin }: LoginProps) {
             <div className="control block-cube block-input">
               <input
                 name="address"
-                placeholder="adress"
+                placeholder="address"
                 type="text"
                 value={loginInfo.address}
                 onChange={handleChange}
