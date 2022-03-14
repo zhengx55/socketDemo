@@ -19,10 +19,12 @@ export const addUser = (user: User): void => {
   if (!existing) {
     users.push(user);
     console.log(`添加玩家 ${user_id} 成功, 玩家socket-id: ${user.socket_id}`);
+    console.log('------------------------------------------')
   } else if (existing) {
     console.log(
       `发现未清除用户 user_id:${user_id} socket_id: ${socket_id}, 更新用户信息`
     );
+    console.log('------------------------------------------')
     users.forEach((user) => {
       if (user.socket_id === socket_id && user.user_id !== user_id) {
         user.user_id = user_id;
@@ -41,6 +43,7 @@ export const removeUser = (id: string): void => {
   const index = users.findIndex((user) => user.socket_id === id);
   if (index !== -1) {
     console.log(`玩家已被移除, 玩家socket-id: ${id}`);
+    console.log('------------------------------------------')
     users.splice(index, 1)[0];
   }
 };

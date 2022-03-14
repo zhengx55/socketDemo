@@ -27,12 +27,15 @@ export class GameController {
       token: message.token,
     });
     console.log(`查询用户是否在游戏中 -socket_id: ${socket.id}`);
+    console.log("------------------------------------------");
     if (res.data.code === "200") {
       const matchInfo = res.data.data;
       console.log(`用户正在游戏中 -socket_id: ${socket.id}`);
+      console.log("------------------------------------------");
       socket.emit("game_status", { data: matchInfo, status: true });
     } else {
       console.log(`用户当前未进行游戏 -socket_id: ${socket.id}`);
+      console.log("------------------------------------------");
       socket.emit("game_status", { status: false });
     }
   }
