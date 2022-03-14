@@ -114,7 +114,6 @@ const BattleContainer = styled.div`
   }
   .score_panel {
     display: flex;
-    position: relative;
     flex-direction: column;
     align-items: center;
     padding-top: 0;
@@ -131,6 +130,7 @@ const BattleContainer = styled.div`
   .button_bar_container {
     display: flex;
     flex-direction: column;
+    position: relative;
     align-items: flex-end;
     justify-content: center;
     .time_bar {
@@ -202,7 +202,7 @@ const Swiper = styled(motion.img)`
 
 const ScoreFont = styled(motion.h2)`
   position: absolute;
-  bottom: 0;
+  top: -20px;
   right: 0;
   padding: 0;
   background-clip: text;
@@ -732,16 +732,6 @@ function Battle() {
               Time: {battleInfo.timer}
             </Typography>
           ) : null}
-
-          <AnimatePresence>
-            {battleInfo.rate !== "" && (
-              <ScoreFont
-                animate={{ opacity: 1, scale: 1.4, rotate: [2, -2, 0] }}
-              >
-                {battleInfo.rate}
-              </ScoreFont>
-            )}
-          </AnimatePresence>
         </section>
         <section className="player">
           <Stage options={{ backgroundAlpha: 0 }}>
@@ -786,6 +776,15 @@ function Battle() {
               />
             </section>
             <section className="button_bar_container">
+              <AnimatePresence>
+                {battleInfo.rate !== "" && (
+                  <ScoreFont
+                    animate={{ opacity: 1, scale: 1.4, rotate: [2, -2, 0] }}
+                  >
+                    {battleInfo.rate}
+                  </ScoreFont>
+                )}
+              </AnimatePresence>
               <div className="time_bar">
                 <motion.img
                   className="flash"
