@@ -17,7 +17,7 @@ type TypoProps = {
 
 const AppContainer = styled.div`
   width: 100%;
-  height: 100%;
+  height: 100vh;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -29,7 +29,7 @@ const AppContainer = styled.div`
 
 const MainContainer = styled.div`
   width: 85%;
-  height: 80%;
+  height: 80vh;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -48,12 +48,12 @@ export const MatchContainer = styled.div`
   padding: 0 10%;
   width: 100%;
   .frame {
-    width: 20%;
+    width: 120px;
+    height: 120px;
     background-image: url("/img/frame.png");
     background-position: center;
     background-repeat: no-repeat;
     background-size: 100% 100%;
-    aspect-ratio:1;
     display: flex;
     justify-content: center;
     align-items: center;
