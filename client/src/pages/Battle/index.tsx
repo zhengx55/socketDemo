@@ -42,7 +42,6 @@ const AvatarContainer = styled.div`
   padding: 0 5vw;
   margin-top: 10px;
   justify-content: space-between;
-  height: max-content;
   height: 20vh;
 `;
 
@@ -96,8 +95,8 @@ const BattleContainer = styled.div`
   width: 100%;
   height: 80vh;
   grid-template-columns: repeat(3, 33%);
-  grid-template-rows: repeat(2, 50%);
-  margin-bottom: 2vw;
+  grid-template-rows: 55% 45%;
+  padding-bottom: 10px;
 
   .player {
     display: flex;
