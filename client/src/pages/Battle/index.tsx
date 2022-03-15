@@ -90,6 +90,19 @@ const buttonEnlarge = keyframes`
 50% { transform: scale(1.5) };
 100% { transform: scale(1) }`;
 
+const buttonShake = keyframes` 
+0% { transform: translate(1px, 1px) rotate(0deg); }
+10% { transform: translate(-1px, -2px) rotate(-1deg); }
+20% { transform: translate(-3px, 0px) rotate(1deg); }
+30% { transform: translate(3px, 2px) rotate(0deg); }
+40% { transform: translate(1px, -1px) rotate(1deg); }
+50% { transform: translate(-1px, 2px) rotate(-1deg); }
+60% { transform: translate(-3px, 1px) rotate(0deg); }
+70% { transform: translate(3px, 1px) rotate(-1deg); }
+80% { transform: translate(-1px, -1px) rotate(1deg); }
+90% { transform: translate(1px, 2px) rotate(0deg); }
+100% { transform: translate(1px, -2px) rotate(-1deg); }`;
+
 const BattleContainer = styled.div`
   display: grid;
   width: 100%;
@@ -169,6 +182,9 @@ const BattleContainer = styled.div`
       }
       .button_active {
         animation: ${buttonEnlarge} 0.5s forwards ease;
+      }
+      .button_error {
+        animation: ${buttonShake} 0.5s forwards ease;
       }
     }
   }
@@ -779,10 +795,15 @@ function Battle() {
           <motion.div className="button_bar" animate="visible" initial="hidden">
             {buttons.map((item: Instruction, i: number) => {
               return (
-                <motion.img
-                  custom={i}
+                <LazyLoadImage
                   key={item.id}
-                  className={item.status !== 0 ? "button_active" : ""}
+                  className={
+                    item.status === 1
+                      ? "button_active"
+                      : item.status === 2
+                      ? "button_error"
+                      : ""
+                  }
                   alt=""
                   src={`/img/button/${button_map[item.button]}${
                     item.status === 0
