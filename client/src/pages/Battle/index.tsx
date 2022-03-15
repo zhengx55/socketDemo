@@ -285,13 +285,13 @@ const ScoreFont = styled(motion.h2)`
 
 const lazerAttack = keyframes`
   0%{opacity: 0; left: -20%}
-  95%{opacity: 1; left: 100%}
+  95%{opacity: 1; left: 90%}
   100%{opacity: 0}
 `;
 
 const lazerReverseAttack = keyframes`
   0%{opacity: 0; right: -20%}
-  95%{opacity: 1; right: 100%}
+  95%{opacity: 1; right: 90%}
   100%{opacity: 0}
 `;
 

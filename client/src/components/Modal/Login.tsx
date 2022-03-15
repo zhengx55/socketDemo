@@ -1,6 +1,7 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { useCookies } from "react-cookie";
 import styled from "styled-components";
+import gameContext from "../../context/gameContext";
 import gameService from "../../services/gameService";
 import socketService from "../../services/socketService";
 import Portal from "../Portal";
@@ -17,15 +18,13 @@ const ModalBody = styled.div`
   align-items: center;
 `;
 
-interface LoginProps {
-  setIsLogin: React.Dispatch<React.SetStateAction<boolean>>;
-}
-
-function Login({ setIsLogin }: LoginProps) {
+function Login() {
   const [loginInfo, setLoginInfo] = useState<{
     userId: string;
     address: string;
   }>({ userId: "", address: "" });
+
+  const { setIsLogin } = useContext(gameContext);
 
   const [cookies, setCookie] = useCookies([
     "userid",

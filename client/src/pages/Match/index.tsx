@@ -89,18 +89,11 @@ const TitleContainer = styled.img`
 const Match = () => {
   const [isMatching, setIsMatching] = useState(false);
   const [cookies] = useCookies(["userid", "userConnection", "token"]);
-  const { setPlayerInfo, setGameInfo, setGameStarted, GameInfo } =
+  const { setPlayerInfo, setGameInfo, setGameStarted, isLogin } =
     useContext(gameContext);
-  const [isLogin, setIsLogin] = useState<boolean>(false);
   const matchTimer = useRef<number | null>(null);
   const [time, setTime] = useState<number>(60);
   const [audio] = useAudio("/music/Forward-Assault.mp3");
-
-  useEffect(() => {
-    if (cookies.token) {
-      setIsLogin(true);
-    }
-  }, []);
 
   useEffect(() => {
     if (isMatching) {
@@ -122,8 +115,8 @@ const Match = () => {
 
   const matchGame = async () => {
     audio.play();
-    setIsMatching(true);
     if (isLogin && socketService.socket) {
+      setIsMatching(true);
       const match = await gameService.matchGame(
         socketService.socket,
         cookies.token,
@@ -153,9 +146,6 @@ const Match = () => {
           }));
         }
         socketService.socket?.emit("enter_room", match.data.room_id);
-        socketService.socket?.on("room_joined", (res) => {
-          console.log(res.message);
-        });
         try {
           const ready = await gameService.onStartGame(
             socketService.socket,
@@ -191,7 +181,7 @@ const Match = () => {
   return (
     <AppContainer>
       <MainContainer>
-        {!isLogin && <Login setIsLogin={setIsLogin} />}
+        {!isLogin && <Login />}
         <TitleContainer alt="" src="/img/Ribbon.png" />
         <AbsoluteFont>Competition {cookies.userid}</AbsoluteFont>
         {isMatching ? (

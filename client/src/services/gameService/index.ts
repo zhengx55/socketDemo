@@ -23,6 +23,21 @@ class GameService {
     });
   };
 
+  public async logInValidate(socket: Socket, user_id: string, token: string) {
+    return new Promise((resolve, reject) => {
+      socket.emit("account_validate", {
+        user_id,
+        token,
+      });
+      socket.on("validation_success", () => {
+        resolve(true);
+      });
+      socket.on("validation_fail", () => {
+        false;
+      });
+    });
+  }
+
   public async joinGameRoom(socket: Socket, roomId: string): Promise<boolean> {
     return new Promise((rs, rj) => {
       socket.emit("join_game", { roomId });

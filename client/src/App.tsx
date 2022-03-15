@@ -13,22 +13,29 @@ function App() {
   const [GameInfo, setGameInfo] = useState<any>({ room: "", component: {} });
   const [isGameStarted, setGameStarted] = useState<boolean>(false);
   const [orientation] = useOrientation();
-  const [cookies, setCookie] = useCookies([
-    "userid",
-    "userConnection",
-    "token",
-  ]);
+  const [cookies] = useCookies(["userid", "userConnection", "token"]);
+  const [isLogin, setIsLogin] = useState<boolean>(false);
 
   const connectSocket = async (): Promise<void> => {
     try {
       const connect = await socketService.connect("wss://oin.finance");
       if (connect.connected) {
         console.log("ws connection established successfully");
-        if (cookies.token && cookies.userid) {
-          socketService.socket?.emit("update_user", {
-            user_id: cookies.userid,
-            token: cookies.token,
-          });
+        if (cookies.token && cookies.userid && socketService.socket) {
+          const isValid = await gameService.logInValidate(
+            socketService.socket,
+            cookies.userid,
+            cookies.token
+          );
+          if (isValid) {
+            setIsLogin(true);
+            socketService.socket?.emit("update_user", {
+              user_id: cookies.userid,
+              token: cookies.token,
+            });
+          } else {
+            setIsLogin(false);
+          }
         }
       }
     } catch (error) {
@@ -65,11 +72,8 @@ function App() {
             command_type: isInGame.data.command,
           }));
           socketService.socket?.emit("enter_room", isInGame.data.room_id);
-          socketService.socket?.on("room_joined", (res) => {
-            console.log(res.message);
-          });
+          setGameStarted(true);
         }
-        setGameStarted(true);
       } else {
         return;
       }
@@ -125,6 +129,8 @@ function App() {
     setGameInfo,
     setGameStarted,
     isGameStarted,
+    isLogin,
+    setIsLogin,
   };
   if (orientation !== "landscape") return <Portrait />;
   return (

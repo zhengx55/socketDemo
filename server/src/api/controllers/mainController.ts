@@ -23,6 +23,39 @@ export class MessageController {
     // console.log("Socket connected:", socket.id);
   }
 
+  @OnMessage("account_validate")
+  public async Validation(
+    @ConnectedSocket() socket: Socket,
+    @MessageBody() data: { user_id: string; token: string }
+  ) {
+    const myAxios = setupInterceptorsTo(
+      axios.create({
+        baseURL: process.env.BASE_URL,
+        timeout: 5000,
+      })
+    );
+    try {
+      console.log(`检查用户 ${data.user_id} 账号是否可用`);
+      console.log("------------------------------------------");
+      const res = await myAxios.post("/isLogin", {
+        token: data.token,
+      });
+      if (res.data.code === "200") {
+        console.log(`用户 ${data.user_id} 账号可用`);
+        console.log("------------------------------------------");
+        socket.emit("validation_success");
+      } else {
+        console.log(`用户 ${data.user_id} 账号不可用`);
+        console.log("------------------------------------------");
+        socket.emit("validation_fail");
+      }
+    } catch (error) {
+      console.log(`用户 ${data.user_id} 账号不可用`);
+      console.log("------------------------------------------");
+      socket.emit("validation_fail");
+    }
+  }
+
   @OnMessage("update_user")
   public updateUser(
     @ConnectedSocket() socket: Socket,
@@ -99,10 +132,11 @@ export class MessageController {
             socket
               .to(res.data.data.room_id)
               .emit("game_update_success", res.data);
-          }else{
-            if( res.data.data.login === 1 ) {
-              socket.emit("isLogin", { status: false });return;
-             }
+          } else {
+            if (res.data.data.login === 1) {
+              socket.emit("isLogin", { status: false });
+              return;
+            }
           }
         } else {
           console.log(
