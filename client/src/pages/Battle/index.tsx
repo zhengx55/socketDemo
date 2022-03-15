@@ -80,8 +80,8 @@ const AvatarInfo = styled.div`
 `;
 
 const Direction = styled(motion.img)`
-  height: 40px;
-  width: 40px;
+  height: 6.35vw;
+  width: 6.35vw;
   touch-action: manipulation;
 `;
 
@@ -103,44 +103,17 @@ const buttonShake = keyframes`
 90% { transform: translate(1px, 2px) rotate(0deg); }
 100% { transform: translate(1px, -2px) rotate(-1deg); }`;
 
-const BattleContainer = styled.div`
+const OperationContainer = styled.div`
   display: grid;
   width: 100%;
-  height: 80vh;
-  grid-template-columns: repeat(3, 33%);
-  grid-template-rows: 55% 45%;
+  height: 40vh;
+  grid-template-columns: 30% 40% 30%;
   padding-bottom: 10px;
-
-  .player {
-    display: flex;
-    justify-content: center;
-    position: relative;
-    canvas {
-      width: 100% !important;
-      height: 100% !important;
-      z-index: 1;
-    }
-  }
-  .character {
-    width: 17vw;
-    height: auto;
-    position: absolute;
-    z-index: 99;
-  }
-  .score_panel {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding-top: 0;
-    overflow: hidden;
-    justify-content: center;
-    grid-row-gap: 20px;
-  }
   .button {
     display: flex;
-    justify-content: center;
     align-items: center;
     flex-direction: column;
+    z-index: 999;
   }
   .button_bar_container {
     display: flex;
@@ -150,7 +123,7 @@ const BattleContainer = styled.div`
     justify-content: center;
     .time_bar {
       width: 50%;
-      height: 2vw;
+      height: 2.5vw;
       margin-bottom: 10px;
       border-radius: 22px;
       border: 1px solid #6a6a6a;
@@ -167,7 +140,7 @@ const BattleContainer = styled.div`
     }
     .button_bar {
       width: 100%;
-      height: 4vw;
+      height: 5vw;
       border-radius: 22px;
       border: 1px solid #6a6a6a;
       display: flex;
@@ -175,10 +148,10 @@ const BattleContainer = styled.div`
       overflow: hidden;
       justify-content: center;
       img {
-        width: 3vw;
+        width: 3.5vw;
         max-height: 100%;
         aspect-ratio: 1;
-        margin: 0 0.3vw;
+        margin: 0 0.2vw;
       }
       .button_active {
         animation: ${buttonEnlarge} 0.5s forwards ease;
@@ -195,7 +168,7 @@ const BattleContainer = styled.div`
     position: relative;
     .launch_button {
       aspect-ratio: 1;
-      width: 7.5vw;
+      width: 8.5vw;
       touch-action: manipulation;
       transition: transform 0.2s cubic-bezier(0.075, 0.82, 0.165, 1);
       &:active {
@@ -209,6 +182,59 @@ const BattleContainer = styled.div`
       margin: 0;
       padding: 0;
     }
+  }
+`;
+
+const BattleContainer = styled.div`
+  display: grid;
+  width: 100%;
+  height: 40vh;
+  grid-template-columns: repeat(3, 1fr);
+  .player {
+    display: flex;
+    justify-content: center;
+    position: relative;
+    .canvas_left {
+      position: absolute;
+      width: 80% !important;
+      height: 80% !important;
+      z-index: 1;
+      bottom: -30%;
+      right: 0;
+    }
+    .canvas_right {
+      position: absolute;
+      width: 80% !important;
+      height: 80% !important;
+      z-index: 1;
+      bottom: -30%;
+      left: 0;
+    }
+  }
+  .character {
+    width: 20vw;
+    height: auto;
+    position: absolute;
+    z-index: 99;
+    right: 1%;
+  }
+
+  .character_component {
+    width: 20vw;
+    height: auto;
+    position: absolute;
+    z-index: 99;
+    left: 1%;
+  }
+
+  .score_panel {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-top: 0;
+    overflow: hidden;
+    justify-content: center;
+    grid-row-gap: 20px;
   }
 `;
 
@@ -690,8 +716,8 @@ function Battle() {
       </AvatarContainer>
       <BattleContainer>
         <section className="player">
-          <Stage options={{ backgroundAlpha: 0 }}>
-            <Skill texture="skill" />
+          <Stage options={{ backgroundAlpha: 0 }} className="canvas_left">
+            <Skill texture="skill" position="left" />
           </Stage>
           <LazyLoadImage
             className="character"
@@ -709,15 +735,17 @@ function Battle() {
           </Typography>
         </section>
         <section className="player">
-          <Stage options={{ backgroundAlpha: 0 }}>
-            <Skill texture="skill" />
+          <Stage options={{ backgroundAlpha: 0 }} className="canvas_right">
+            <Skill texture="skill" position="right" />
           </Stage>
           <LazyLoadImage
-            className="character"
+            className="character_component"
             src="/character/Priest.png"
             alt="character"
           />
         </section>
+      </BattleContainer>
+      <OperationContainer>
         <section className="button">
           <Direction
             alt=""
@@ -728,9 +756,6 @@ function Battle() {
           <div
             style={{
               display: "flex",
-              justifyContent: "space-between",
-              width: "40%",
-              margin: "-10px 0",
             }}
           >
             <Direction
@@ -741,17 +766,18 @@ function Battle() {
             />
             <Direction
               alt=""
+              src="/img/button/bottom_btn.png"
+              whileTap={{ scale: 1.1 }}
+              onTouchStart={() => onButtonClick("bottom")}
+              style={{ margin: "15px 10px 0 10px" }}
+            />
+            <Direction
+              alt=""
               src="/img/button/right_selected.png"
               whileTap={{ scale: 1.1 }}
               onTouchStart={() => onButtonClick("right")}
             />
           </div>
-          <Direction
-            alt=""
-            src="/img/button/bottom_btn.png"
-            whileTap={{ scale: 1.1 }}
-            onTouchStart={() => onButtonClick("bottom")}
-          />
         </section>
         <section className="button_bar_container">
           <AnimatePresence>
@@ -825,7 +851,7 @@ function Battle() {
             onTouchStart={onLaunchHandler}
           />
         </section>
-      </BattleContainer>
+      </OperationContainer>
     </Container>
   );
 }

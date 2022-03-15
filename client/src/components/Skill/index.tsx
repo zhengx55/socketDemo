@@ -7,9 +7,10 @@ const skillSheet = "effects/effect.json";
 
 interface SkillProps {
   texture: string;
+  position: string;
 }
 
-function Skill({ texture }: SkillProps) {
+function Skill({ texture, position }: SkillProps) {
   const [frames, setFrames] = useState<any>({});
 
   useEffect(() => {
@@ -38,8 +39,8 @@ function Skill({ texture }: SkillProps) {
         animationSpeed={0.15}
         isPlaying={true}
         textures={frames[texture]}
-        anchor={[0.1, -0.5]}
-        scale={2}
+        anchor={position === "left" ? [0, -0.2] : [0.3, -0.2]}
+        scale={2.5}
         loop={true}
         initialFrame={1}
       />
