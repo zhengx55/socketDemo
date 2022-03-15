@@ -75,6 +75,13 @@ const FlexContent = styled.div<FlexProps>`
   margin-top: ${(props) => (props.mt ? `${props.mt}` : "0")};
 `;
 
+const FlexCenter = styled.div<FlexProps>`
+  display: flex;
+  width: 100%;
+  justify-content: center;
+  margin-top: ${(props) => (props.mt ? `${props.mt}` : "0")};
+`;
+
 function GameEnd({ score, status }: GameEndModalProp) {
   const { setGameStarted } = useContext(gameContext);
   return (
@@ -112,7 +119,7 @@ function GameEnd({ score, status }: GameEndModalProp) {
               {score > 0 ? "A" : "B"}
             </Typography>
           </FlexContent>
-          <FlexContent px="15%" mt="3.5vw">
+          <FlexCenter mt="3.5vw">
             <Button
               color="#C69953"
               w="15vw"
@@ -122,7 +129,7 @@ function GameEnd({ score, status }: GameEndModalProp) {
             >
               Continue
             </Button>
-          </FlexContent>
+          </FlexCenter>
         </ModalBody>
       </Backdrop>
     </Portal>
