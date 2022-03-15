@@ -42,7 +42,7 @@ export class MessageController {
   ) {
     const myAxios = setupInterceptorsTo(
       axios.create({
-        baseURL: "https://dao.oin.finance/index/game",
+        baseURL: process.env.BASE_URL,
         timeout: 5000,
       })
     );
@@ -75,7 +75,7 @@ export class MessageController {
   public onDisconnection(@ConnectedSocket() socket: Socket) {
     const myAxios = setupInterceptorsTo(
       axios.create({
-        baseURL: "https://dao.oin.finance/index/game",
+        baseURL: process.env.BASE_URL,
         timeout: 5000,
       })
     );
@@ -106,7 +106,7 @@ export class MessageController {
           );
           console.log("------------------------------------------");
         }
-      }, 30000);
+      }, 3000);
     }
 
     // console.log("Socket disconnected:", socket.id);

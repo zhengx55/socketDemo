@@ -19,7 +19,7 @@ export class GameController {
   ) {
     const myAxios = setupInterceptorsTo(
       axios.create({
-        baseURL: "https://dao.oin.finance/index/game",
+        baseURL: process.env.BASE_URL,
         timeout: 5000,
       })
     );
@@ -55,7 +55,7 @@ export class GameController {
   ) {
     const myAxios = setupInterceptorsTo(
       axios.create({
-        baseURL: "https://dao.oin.finance/index/game",
+        baseURL: process.env.BASE_URL,
         timeout: 5000,
       })
     );
@@ -86,7 +86,7 @@ export class GameController {
   ) {
     const myAxios = setupInterceptorsTo(
       axios.create({
-        baseURL: "https://dao.oin.finance/index/game",
+        baseURL: process.env.BASE_URL,
         timeout: 5000,
       })
     );
@@ -135,7 +135,7 @@ export class GameController {
   ) {
     const myAxios = setupInterceptorsTo(
       axios.create({
-        baseURL: "https://dao.oin.finance/index/game",
+        baseURL: process.env.BASE_URL,
         timeout: 5000,
       })
     );
