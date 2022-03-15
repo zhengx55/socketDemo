@@ -122,15 +122,6 @@ function GameEnd({ score, status }: GameEndModalProp) {
             >
               Continue
             </Button>
-            <Button
-              color="#fff"
-              w="15vw"
-              h="6.5vw"
-              whileTap={{ scale: 1.2 }}
-              bg="url(/img/button_blue.png)"
-            >
-              Share
-            </Button>
           </FlexContent>
         </ModalBody>
       </Backdrop>

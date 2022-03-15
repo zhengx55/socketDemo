@@ -4,7 +4,7 @@ import * as PIXI from "pixi.js";
 import { Container, AnimatedSprite } from "@inlet/react-pixi";
 
 const skillSheet = "effects/effect.json";
-
+const blowSheet = "effects/effect_2.json";
 interface SkillProps {
   texture: string;
   position: string;
@@ -16,20 +16,27 @@ function Skill({ texture, position }: SkillProps) {
   useEffect(() => {
     const pixiLoader = PIXI.Loader.shared;
     pixiLoader.reset();
-    pixiLoader.add(skillSheet).load((_, resource) => {
-      const skillFrame = Object.keys(resource[skillSheet].data.frames).map(
-        (frame) => Texture.from(frame)
-      );
-      setFrames({
-        skill: skillFrame,
+    pixiLoader
+      .add(skillSheet)
+      .add(blowSheet)
+      .load((_, resource) => {
+        const skillFrame = Object.keys(resource[skillSheet].data.frames).map(
+          (frame) => Texture.from(frame)
+        );
+        const blowFrame = Object.keys(resource[blowSheet].data.frames).map(
+          (frame) => Texture.from(frame)
+        );
+        setFrames({
+          skill: skillFrame,
+          blow: blowFrame,
+        });
       });
-    });
     return () => {
       PIXI.utils.clearTextureCache();
     };
   }, []);
 
-  if (!frames.skill) {
+  if (!frames.skill || !frames.blow) {
     return null;
   }
   return (

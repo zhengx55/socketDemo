@@ -74,6 +74,7 @@ const AvatarInfo = styled.div`
     height: 100%;
     background: #de712e;
     border-radius: 6px;
+    box-shadow: -1px -1px 0 #D34A1D;
     transition: width 0.5s ease;
     width: 0;
   }
@@ -102,6 +103,19 @@ const buttonShake = keyframes`
 80% { transform: translate(-1px, -1px) rotate(1deg); }
 90% { transform: translate(1px, 2px) rotate(0deg); }
 100% { transform: translate(1px, -2px) rotate(-1deg); }`;
+
+const characterShake = keyframes`
+0% { transform: translate(1px, 1px) rotate(0deg); }
+10% { transform: translate(-1px, -2px) rotate(-2deg); }
+20% { transform: translate(-3px, 0px) rotate(2deg); }
+30% { transform: translate(3px, 2px) rotate(0deg); }
+40% { transform: translate(1px, -1px) rotate(2deg); }
+50% { transform: translate(-1px, 2px) rotate(-2deg); }
+60% { transform: translate(-3px, 1px) rotate(0deg); }
+70% { transform: translate(3px, 1px) rotate(-2deg); }
+80% { transform: translate(-1px, -1px) rotate(2deg); }
+90% { transform: translate(1px, 2px) rotate(0deg); }
+100% { transform: translate(1px, -2px) rotate(-2deg); }`;
 
 const OperationContainer = styled.div`
   display: grid;
@@ -217,6 +231,9 @@ const BattleContainer = styled.div`
     position: absolute;
     z-index: 99;
     right: 1%;
+    &.shake {
+      animation: ${characterShake} 1s forwards ease;
+    }
   }
 
   .character_component {
@@ -225,6 +242,9 @@ const BattleContainer = styled.div`
     position: absolute;
     z-index: 99;
     left: 1%;
+    &.shake {
+      animation: ${characterShake} 1s forwards ease;
+    }
   }
 
   .score_panel {
@@ -288,11 +308,15 @@ function Battle() {
     timer: number | undefined;
     over: boolean;
     result: { score: number; status: string };
+    attack: boolean;
+    hurt: boolean;
   }>({
     rate: "",
     timer: undefined,
     over: false,
     result: { score: 0, status: "" },
+    attack: false,
+    hurt: false,
   });
   const [texture, setTexture] = useState<{ your: string; component: string }>({
     your: "position",
@@ -400,6 +424,7 @@ function Battle() {
         .on("game_update_success", (msg) => {
           let user, component: any;
           if (msg.data) {
+            setBattleInfo((prev) => ({ ...prev, hurt: false }));
             if (Object.keys(msg.data.playerList).length > 0) {
               for (const player in msg.data.playerList) {
                 if (
@@ -411,6 +436,9 @@ function Battle() {
                   component = msg.data.playerList[player];
                 }
               }
+            }
+            if (user.hp < playerInfo.hp) {
+              setBattleInfo((prev) => ({ ...prev, hurt: true }));
             }
             setGameInfo((prev: any) => ({
               ...prev,
@@ -618,23 +646,26 @@ function Battle() {
         );
 
         if (Math.abs(swiper_x - flash_x) <= 10) {
-          setBattleInfo((prev) => ({ ...prev, rate: "Execllent" }));
+          setBattleInfo((prev) => ({
+            ...prev,
+            rate: "Execllent",
+            attack: true,
+          }));
           Res_buffer.gather = 2;
         } else if (Math.abs(swiper_x - flash_x) <= 20) {
-          setBattleInfo((prev) => ({ ...prev, rate: "Good" }));
+          setBattleInfo((prev) => ({ ...prev, rate: "Good", attack: true }));
           Res_buffer.gather = 1;
         } else {
           setBattleInfo((prev) => ({ ...prev, rate: "Miss" }));
           Res_buffer.gather = 0;
         }
         TimerRef.current.rateTimer = setTimeout(() => {
-          setBattleInfo((prev) => ({ ...prev, rate: "" }));
+          setBattleInfo((prev) => ({ ...prev, rate: "", attack: false }));
         }, 1000);
         Res_buffer = Encrypt(JSON.stringify(Res_buffer));
         clickRef.current.clickCount = 0;
         clickRef.current.clickResult = [];
         if (socketService.socket) {
-          console.log("submit info:", GameInfo);
           try {
             await gameService.gameUpdate(socketService.socket, cookies.token, {
               user_id: playerInfo.user_id,
@@ -719,7 +750,7 @@ function Battle() {
             <Skill texture="skill" position="left" />
           </Stage>
           <LazyLoadImage
-            className="character"
+            className={`character ${battleInfo.hurt ? "shake" : ""}`}
             src="/character/Druid.png"
             alt="character"
           />
@@ -738,7 +769,9 @@ function Battle() {
             <Skill texture="skill" position="right" />
           </Stage>
           <LazyLoadImage
-            className="character_component"
+            className={`character_component ${
+              battleInfo.attack ? "shake" : ""
+            }`}
             src="/character/Priest.png"
             alt="character"
           />
