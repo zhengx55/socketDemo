@@ -12,6 +12,7 @@ body,
   min-height: 100vh;
   height: 100vh;
   padding: 0;
+  min-height: -webkit-fill-available;
 }
 
 body {
