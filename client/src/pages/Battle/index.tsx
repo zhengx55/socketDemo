@@ -264,11 +264,11 @@ const Swiper = styled(motion.img)`
 
 const ScoreFont = styled(motion.h2)`
   position: absolute;
-  top: -20px;
-  right: 0;
+  top: -50px;
+  left: 50%;
   padding: 0;
   background-clip: text;
-  font-size: 2vw;
+  font-size: 3vw;
   -webkit-text-stroke: 1px #f2f2f2;
   background: linear-gradient(
     180deg,
