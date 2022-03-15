@@ -756,6 +756,7 @@ function Battle() {
           <div
             style={{
               display: "flex",
+              marginTop: "10px"
             }}
           >
             <Direction
@@ -769,7 +770,7 @@ function Battle() {
               src="/img/button/bottom_btn.png"
               whileTap={{ scale: 1.1 }}
               onTouchStart={() => onButtonClick("bottom")}
-              style={{ margin: "15px 10px 0 10px" }}
+              style={{ margin: "0 10px 0 10px" }}
             />
             <Direction
               alt=""
