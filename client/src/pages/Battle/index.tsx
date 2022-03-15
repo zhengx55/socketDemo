@@ -271,10 +271,12 @@ function Battle() {
     rateTimer: number | undefined;
     textureTimer: number | undefined;
     CountdownTimer: number | undefined;
+    buttonTimer: number | undefined;
   }>({
     rateTimer: undefined,
     textureTimer: undefined,
     CountdownTimer: undefined,
+    buttonTimer: undefined,
   });
   const time_bar_variant = {
     activate: { x: barLength },
@@ -289,6 +291,7 @@ function Battle() {
     return () => {
       clearTimeout(TimerRef.current.rateTimer);
       clearTimeout(TimerRef.current.textureTimer);
+      clearTimeout(TimerRef.current.buttonTimer);
     };
   }, []);
 
@@ -424,9 +427,23 @@ function Battle() {
               clickRef.current.clickCount++;
               clickRef.current.clickResult.push(1);
             } else {
-              setButtons(defaultBtn);
-              clickRef.current.clickCount = 0;
-              clickRef.current.clickResult = [];
+              setButtons(
+                [...buttons].map((item: Instruction, index: number) => {
+                  if (index === clickRef.current.clickCount) {
+                    return {
+                      ...item,
+                      status: 2,
+                    };
+                  } else {
+                    return item;
+                  }
+                })
+              );
+              TimerRef.current.buttonTimer = setTimeout(() => {
+                setButtons(defaultBtn);
+                clickRef.current.clickCount = 0;
+                clickRef.current.clickResult = [];
+              }, 500);
             }
             break;
           case "right":
@@ -446,9 +463,23 @@ function Battle() {
               clickRef.current.clickResult.push(2);
               clickRef.current.clickCount++;
             } else {
-              setButtons(defaultBtn);
-              clickRef.current.clickCount = 0;
-              clickRef.current.clickResult = [];
+              setButtons(
+                [...buttons].map((item: Instruction, index: number) => {
+                  if (index === clickRef.current.clickCount) {
+                    return {
+                      ...item,
+                      status: 2,
+                    };
+                  } else {
+                    return item;
+                  }
+                })
+              );
+              TimerRef.current.buttonTimer = setTimeout(() => {
+                setButtons(defaultBtn);
+                clickRef.current.clickCount = 0;
+                clickRef.current.clickResult = [];
+              }, 500);
             }
             break;
           case "bottom":
@@ -468,9 +499,23 @@ function Battle() {
               clickRef.current.clickResult.push(3);
               clickRef.current.clickCount++;
             } else {
-              setButtons(defaultBtn);
-              clickRef.current.clickCount = 0;
-              clickRef.current.clickResult = [];
+              setButtons(
+                [...buttons].map((item: Instruction, index: number) => {
+                  if (index === clickRef.current.clickCount) {
+                    return {
+                      ...item,
+                      status: 2,
+                    };
+                  } else {
+                    return item;
+                  }
+                })
+              );
+              TimerRef.current.buttonTimer = setTimeout(() => {
+                setButtons(defaultBtn);
+                clickRef.current.clickCount = 0;
+                clickRef.current.clickResult = [];
+              }, 500);
             }
             break;
           case "left":
@@ -490,9 +535,23 @@ function Battle() {
               clickRef.current.clickResult.push(4);
               clickRef.current.clickCount++;
             } else {
-              setButtons(defaultBtn);
-              clickRef.current.clickCount = 0;
-              clickRef.current.clickResult = [];
+              setButtons(
+                [...buttons].map((item: Instruction, index: number) => {
+                  if (index === clickRef.current.clickCount) {
+                    return {
+                      ...item,
+                      status: 2,
+                    };
+                  } else {
+                    return item;
+                  }
+                })
+              );
+              TimerRef.current.buttonTimer = setTimeout(() => {
+                setButtons(defaultBtn);
+                clickRef.current.clickCount = 0;
+                clickRef.current.clickResult = [];
+              }, 500);
             }
             break;
         }
@@ -726,7 +785,11 @@ function Battle() {
                   className={item.status !== 0 ? "button_active" : ""}
                   alt=""
                   src={`/img/button/${button_map[item.button]}${
-                    item.status === 0 ? "_unselected" : "_selected"
+                    item.status === 0
+                      ? "_unselected"
+                      : item.status === 1
+                      ? "_selected"
+                      : ""
                   }.png`}
                 />
               );

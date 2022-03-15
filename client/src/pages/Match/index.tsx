@@ -132,7 +132,6 @@ const Match = () => {
         let user, component: any;
         if (Object.keys(match.data.playerList).length > 0) {
           for (const player in match.data.playerList) {
-            console.log(player);
             if (
               match.data.playerList[player].user_id === Number(cookies.userid)
             ) {
