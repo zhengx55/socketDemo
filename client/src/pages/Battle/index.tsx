@@ -232,7 +232,8 @@ const BattleContainer = styled.div`
     z-index: 99;
     right: 1%;
     &.shake {
-      animation: ${characterShake} 1s forwards ease;
+      animation: ${characterShake} 0.5s forwards ease;
+      animation-delay: 1s;
     }
   }
 
@@ -243,7 +244,8 @@ const BattleContainer = styled.div`
     z-index: 99;
     left: 1%;
     &.shake {
-      animation: ${characterShake} 1s forwards ease;
+      animation: ${characterShake} 0.5s forwards ease;
+      animation-delay: 1s;
     }
   }
 
@@ -252,8 +254,8 @@ const BattleContainer = styled.div`
     flex-direction: column;
     align-items: center;
     padding-top: 0;
-    overflow: hidden;
     grid-row-gap: 20px;
+    position: relative;
   }
 `;
 
@@ -279,6 +281,40 @@ const ScoreFont = styled(motion.h2)`
   );
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
+`;
+
+const lazerAttack = keyframes`
+  0%{opacity: 0; left: -20%}
+  95%{opacity: 1; left: 100%}
+  100%{opacity: 0}
+`;
+
+const lazerReverseAttack = keyframes`
+  0%{opacity: 0; right: -20%}
+  95%{opacity: 1; right: 100%}
+  100%{opacity: 0}
+`;
+
+const Lazer = styled(LazyLoadImage)`
+  width: 10vw;
+  position: absolute;
+  height: auto;
+  top: 20%;
+  opacity: 0;
+  &.active {
+    animation: ${lazerAttack} 1s forwards ease-out;
+  }
+`;
+
+const LazerReverse = styled(LazyLoadImage)`
+  width: 10vw;
+  position: absolute;
+  height: auto;
+  top: 20%;
+  opacity: 0;
+  &.active {
+    animation: ${lazerReverseAttack} 1s forwards ease-out;
+  }
 `;
 
 type Button = {
@@ -442,7 +478,7 @@ function Battle() {
             }
             TimerRef.current.textureTimer = setTimeout(() => {
               setBattleInfo((prev) => ({ ...prev, hurt: false }));
-            }, 500);
+            }, 1500);
             setGameInfo((prev: any) => ({
               ...prev,
               room: msg.data.room_id,
@@ -664,7 +700,7 @@ function Battle() {
         }
         TimerRef.current.rateTimer = setTimeout(() => {
           setBattleInfo((prev) => ({ ...prev, rate: "", attack: false }));
-        }, 1000);
+        }, 1500);
         Res_buffer = Encrypt(JSON.stringify(Res_buffer));
         clickRef.current.clickCount = 0;
         clickRef.current.clickResult = [];
@@ -759,6 +795,16 @@ function Battle() {
           />
         </section>
         <section className="score_panel">
+          <Lazer
+            alt="lazer"
+            src="/effects/lazer.png"
+            className={`character ${battleInfo.attack ? "active" : ""}`}
+          />
+          <LazerReverse
+            alt="lazer_reverse"
+            src="/effects/lazer_reverse.png"
+            className={`character ${battleInfo.hurt ? "active" : ""}`}
+          />
           <FontLoading loadingText="Attacking..." />
           <Typography weight="bold" color="#B09C7A" size="4vw">
             Vs
