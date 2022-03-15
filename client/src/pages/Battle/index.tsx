@@ -116,11 +116,11 @@ const OperationContainer = styled.div`
     z-index: 999;
   }
   .button_bar_container {
+    padding-top: 2vw;
     display: flex;
     flex-direction: column;
     position: relative;
     align-items: flex-end;
-    justify-content: center;
     .time_bar {
       width: 50%;
       height: 2.5vw;
@@ -164,10 +164,10 @@ const OperationContainer = styled.div`
   .launch {
     display: flex;
     justify-content: center;
-    align-items: center;
     position: relative;
     .launch_button {
-      aspect-ratio: 1;
+      margin-top: 4vw;
+      height: 8.5vw;
       width: 8.5vw;
       touch-action: manipulation;
       transition: transform 0.2s cubic-bezier(0.075, 0.82, 0.165, 1);
@@ -233,7 +233,6 @@ const BattleContainer = styled.div`
     align-items: center;
     padding-top: 0;
     overflow: hidden;
-    justify-content: center;
     grid-row-gap: 20px;
   }
 `;
