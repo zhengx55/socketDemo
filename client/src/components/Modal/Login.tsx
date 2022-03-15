@@ -24,7 +24,8 @@ function Login() {
     address: string;
   }>({ userId: "", address: "" });
 
-  const { setIsLogin } = useContext(gameContext);
+  const { setIsLogin, setPlayerInfo, setGameInfo, setGameStarted } =
+    useContext(gameContext);
 
   const [cookies, setCookie] = useCookies([
     "userid",
@@ -49,12 +50,13 @@ function Login() {
     }
     try {
       if (socketService.socket) {
-        const res: any = await gameService.loginInGame(
-          socketService.socket,
-          random,
-          loginInfo.userId,
-          loginInfo.address
-        );
+        const res: { token: string; userId: any } =
+          await gameService.loginInGame(
+            socketService.socket,
+            random,
+            loginInfo.userId,
+            loginInfo.address
+          );
         if (res) {
           setCookie("token", res.token, {
             path: "/",
@@ -66,7 +68,39 @@ function Login() {
             secure: true,
             sameSite: "none",
           });
-          setIsLogin(true);
+          const isInGame = await gameService.gameInProgress(
+            socketService.socket,
+            res.token,
+            res.userId
+          );
+          if (isInGame.status) {
+            let user, component: any;
+            if (Object.keys(isInGame.data.playerList).length > 0) {
+              for (const player in isInGame.data.playerList) {
+                if (
+                  isInGame.data.playerList[player].user_id ===
+                  Number(cookies.userid)
+                ) {
+                  user = isInGame.data.playerList[player];
+                } else {
+                  component = isInGame.data.playerList[player];
+                }
+              }
+              setPlayerInfo(user);
+              setGameInfo((prev: any) => ({
+                ...prev,
+                room: isInGame.data.room_id,
+                type: isInGame.data.room_type,
+                component: component,
+                command_type: isInGame.data.command,
+              }));
+              socketService.socket?.emit("enter_room", isInGame.data.room_id);
+              setIsLogin(true);
+              setGameStarted(true);
+            }
+          } else {
+            setIsLogin(true);
+          }
         }
       }
     } catch (error) {

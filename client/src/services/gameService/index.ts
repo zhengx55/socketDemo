@@ -6,7 +6,7 @@ class GameService {
     connection_id: string,
     user_id: string,
     user_address: string
-  ) => {
+  ): Promise<any> => {
     return new Promise((resolve, reject) => {
       socket.emit("request_login", {
         connection_id,

@@ -89,8 +89,14 @@ const TitleContainer = styled.img`
 const Match = () => {
   const [isMatching, setIsMatching] = useState(false);
   const [cookies] = useCookies(["userid", "userConnection", "token"]);
-  const { setPlayerInfo, setGameInfo, setGameStarted, isLogin } =
-    useContext(gameContext);
+  const {
+    setPlayerInfo,
+    setGameInfo,
+    setGameStarted,
+    isLogin,
+    setIsLogin,
+    isGameStarted,
+  } = useContext(gameContext);
   const matchTimer = useRef<number | null>(null);
   const [time, setTime] = useState<number>(60);
   const [audio] = useAudio("/music/Forward-Assault.mp3");

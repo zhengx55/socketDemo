@@ -45,19 +45,6 @@ function App() {
     }
   };
 
-  const multiLoginCheck = async (): Promise<void> => {
-    if (socketService.socket && isLogin) {
-      socketService.socket
-        .off("isLogin")
-        .on("isLogin", (msg: { status: boolean }) => {
-          if (!msg.status) {
-            setIsLogin(false);
-            isGameStarted && setGameStarted(false);
-          }
-        });
-    }
-  };
-
   const gameProgressCheck = async (): Promise<void> => {
     if (socketService.socket && cookies.token) {
       const isInGame = await gameService.gameInProgress(
@@ -89,8 +76,6 @@ function App() {
           socketService.socket?.emit("enter_room", isInGame.data.room_id);
           setGameStarted(true);
         }
-      } else {
-        return;
       }
     }
   };
@@ -102,8 +87,20 @@ function App() {
   };
 
   useEffect(() => {
+    if (socketService.socket) {
+      socketService.socket
+        .off("isLogin")
+        .on("isLogin", (msg: { status: boolean }) => {
+          if (!msg.status) {
+            setIsLogin(false);
+            isGameStarted && setGameStarted(false);
+          }
+        });
+    }
+  });
+
+  useEffect(() => {
     connectSocket();
-    multiLoginCheck();
     gameProgressCheck();
     window.addEventListener("beforeunload", () => {
       disconnectSocket();

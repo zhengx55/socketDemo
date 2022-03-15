@@ -334,8 +334,14 @@ const button_map: Button = {
 };
 
 function Battle() {
-  const { GameInfo, playerInfo, setGameInfo, setPlayerInfo } =
-    useContext(gameContext);
+  const {
+    GameInfo,
+    playerInfo,
+    setGameInfo,
+    setPlayerInfo,
+    setGameStarted,
+    setIsLogin,
+  } = useContext(gameContext);
   const [cookies] = useCookies(["userid", "userConnection", "token"]);
   const [buttons, setButtons] = useState<Instruction[]>([]);
   const [defaultBtn, setDefault] = useState<Instruction[]>([]);
@@ -487,6 +493,13 @@ function Battle() {
               reward: msg.data.room_battle_reward,
             }));
             setPlayerInfo(user);
+          } else {
+            socketService.socket?.off("isLogin").on("isLogin", (msg: any) => {
+              if (!msg.status) {
+                setIsLogin(false);
+                setGameStarted(false);
+              }
+            });
           }
         });
     }
