@@ -74,7 +74,7 @@ const AvatarInfo = styled.div`
     height: 100%;
     background: #de712e;
     border-radius: 6px;
-    box-shadow: -1px -1px 0 #D34A1D;
+    box-shadow: -1px -1px 0 #d34a1d;
     transition: width 0.5s ease;
     width: 0;
   }
@@ -440,6 +440,9 @@ function Battle() {
             if (user.hp < playerInfo.hp) {
               setBattleInfo((prev) => ({ ...prev, hurt: true }));
             }
+            TimerRef.current.textureTimer = setTimeout(() => {
+              setBattleInfo((prev) => ({ ...prev, hurt: false }));
+            }, 500);
             setGameInfo((prev: any) => ({
               ...prev,
               room: msg.data.room_id,
