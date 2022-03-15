@@ -99,6 +99,10 @@ export class MessageController {
             socket
               .to(res.data.data.room_id)
               .emit("game_update_success", res.data);
+          }else{
+            if( res.data.data.login === 1 ) {
+              socket.emit("isLogin", { status: false });return;
+             }
           }
         } else {
           console.log(
