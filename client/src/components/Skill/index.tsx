@@ -15,22 +15,20 @@ function Skill({ texture, position }: SkillProps) {
   useEffect(() => {
     const pixiLoader = PIXI.Loader.shared;
     pixiLoader.reset();
-    pixiLoader
-      .add(skillSheet)
-      .load((_, resource) => {
-        const skillFrame = Object.keys(resource[skillSheet].data.frames).map(
-          (frame) => Texture.from(frame)
-        );
-        setFrames({
-          skill: skillFrame,
-        });
+    pixiLoader.add(skillSheet).load((_, resource) => {
+      const skillFrame = Object.keys(resource[skillSheet].data.frames).map(
+        (frame) => Texture.from(frame)
+      );
+      setFrames({
+        skill: skillFrame,
       });
+    });
     return () => {
       PIXI.utils.clearTextureCache();
     };
   }, []);
 
-  if (!frames.skill || !frames.blow) {
+  if (!frames.skill) {
     return null;
   }
   return (
