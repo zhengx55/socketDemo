@@ -160,7 +160,7 @@ export class GameController {
         token: message.token,
         hash: message.button,
       });
-      console.log("当前请求返回值"+res.data);
+      console.log(res.data);
       if (res.data.code === 200) {
         socket.emit("game_update_success", res.data);
         socket.to(res.data.data.room_id).emit("game_update_success", res.data);
