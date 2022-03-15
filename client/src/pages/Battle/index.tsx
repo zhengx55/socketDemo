@@ -107,7 +107,7 @@ const OperationContainer = styled.div`
   display: grid;
   width: 100%;
   height: 40vh;
-  grid-template-columns: 30% 40% 30%;
+  grid-template-columns: 27% 46% 27%;
   padding-bottom: 10px;
   .button {
     display: flex;
@@ -148,7 +148,7 @@ const OperationContainer = styled.div`
       overflow: hidden;
       justify-content: center;
       img {
-        width: 3.7vw;
+        width: 4vw;
         max-height: 100%;
         aspect-ratio: 1;
         margin: 0 0.2vw;
@@ -668,7 +668,7 @@ function Battle() {
           <div className="battle_info">
             <div>
               <Typography weight="bold" color="#C69953">
-                Druid
+                {playerInfo.nick_name}
               </Typography>
               <Typography weight="normal" color="#C69953">
                 {playerInfo.hp}
@@ -694,7 +694,7 @@ function Battle() {
           <div className="battle_info">
             <div>
               <Typography weight="bold" color="#C69953">
-                Priest
+                {GameInfo.component.nick_name}
               </Typography>
               <Typography weight="normal" color="#C69953">
                 {GameInfo.component.hp}
@@ -756,7 +756,7 @@ function Battle() {
           <div
             style={{
               display: "flex",
-              marginTop: "10px"
+              marginTop: "10px",
             }}
           >
             <Direction

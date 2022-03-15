@@ -4,7 +4,7 @@ const useAudio = (url: string | undefined) => {
   const audio = useRef<HTMLAudioElement>(new Audio(url));
 
   useEffect(() => {
-    audio.current.autoplay = false;
+    audio.current.muted = false;
     audio.current.addEventListener("ended", () => audio.current.pause());
     return () => {
       audio.current.removeEventListener("ended", () => audio.current.pause());
