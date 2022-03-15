@@ -38,6 +38,10 @@ export class GameController {
       console.log("------------------------------------------");
       socket.emit("game_status", { data: matchInfo, status: true });
     } else {
+      if( res.data.data.login === 1 ) {
+        console.log(`用户 ${message.user_id} 登录失效`);
+        socket.emit("isLogin", { status: false });return;
+      }
       console.log(
         `用户 ${message.user_id} 当前未进行游戏 -socket_id: ${socket.id}`
       );
@@ -71,6 +75,10 @@ export class GameController {
           socket.emit("match_info", { data: roomInfo, status: "success" });
         }
       } else {
+        if( res.data.data.login === 1 ) {
+          console.log(`用户 ${message.user_id} 登录失效`);
+          socket.emit("isLogin", { status: false });return;
+         }
         console.log(`用户 ${message.user_id} 进入匹配队列失败`);
       }
     } catch (error) {
@@ -99,6 +107,10 @@ export class GameController {
         console.log(`用户 ${message.user_id} 取消匹配成功`);
         socket.emit("quit_success");
       } else {
+        if( res.data.data.login === 1 ) {
+          console.log(`用户 ${message.user_id} 登录失效`);
+          socket.emit("isLogin", { status: false });return;
+         }
         console.log(`用户 ${message.user_id} 取消匹配失败`);
         socket.emit("quit_error");
       }
@@ -147,6 +159,11 @@ export class GameController {
       if (res.status === 200) {
         socket.emit("game_update_success", res.data);
         socket.to(res.data.data.room_id).emit("game_update_success", res.data);
+      }else{
+        if( res.data.data.login === 1 ) {
+          console.log(`用户 ${message.user_id} 登录失效`);
+          socket.emit("isLogin", { status: false });return;
+         }
       }
     } catch (error) {
       console.error(error);
