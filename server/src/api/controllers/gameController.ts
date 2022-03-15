@@ -160,8 +160,8 @@ export class GameController {
         token: message.token,
         hash: message.button,
       });
-      console.log(res.data);
-      if (res.data.code === 200) {
+  
+      if (res.data.code === "200") {
         socket.emit("game_update_success", res.data);
         socket.to(res.data.data.room_id).emit("game_update_success", res.data);
       } else {
