@@ -148,7 +148,7 @@ const OperationContainer = styled.div`
       overflow: hidden;
       justify-content: center;
       img {
-        width: 3.5vw;
+        width: 3.7vw;
         max-height: 100%;
         aspect-ratio: 1;
         margin: 0 0.2vw;
