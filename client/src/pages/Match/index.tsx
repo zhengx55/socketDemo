@@ -123,7 +123,8 @@ const Match = () => {
     if (isLogin && socketService.socket) {
       const match = await gameService.matchGame(
         socketService.socket,
-        cookies.token
+        cookies.token,
+        cookies.userid
       );
       if (match.status === "success") {
         setIsMatching(false);
@@ -131,6 +132,7 @@ const Match = () => {
         let user, component: any;
         if (Object.keys(match.data.playerList).length > 0) {
           for (const player in match.data.playerList) {
+            console.log(player);
             if (
               match.data.playerList[player].user_id === Number(cookies.userid)
             ) {
@@ -144,10 +146,7 @@ const Match = () => {
             ...prev,
             room: match.data.room_id,
             type: match.data.room_type,
-            current_user: match.data.room_now_current_user,
             component: component,
-            button: match.data.hash,
-            command_type: match.data.command,
             reward: match.data.room_battle_reward,
           }));
         }

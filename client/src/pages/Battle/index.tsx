@@ -17,6 +17,8 @@ import gameService from "../../services/gameService";
 import { useCookies } from "react-cookie";
 import FontLoading from "../../components/Loading/FontLoading";
 import GameEnd from "../../components/Modal/GameEnd";
+import { Stage } from "@inlet/react-pixi";
+import Skill from "../../components/Skill";
 
 const Container = styled.div`
   width: 100%;
@@ -99,10 +101,18 @@ const BattleContainer = styled.div`
   .player {
     display: flex;
     justify-content: center;
+    position: relative;
+    canvas {
+      width: 100% !important;
+      height: 100% !important;
+      z-index: 1;
+    }
   }
   .character {
     width: 17vw;
     height: auto;
+    position: absolute;
+    z-index: 99;
   }
   .score_panel {
     display: flex;
@@ -308,38 +318,36 @@ function Battle() {
           status: "win",
         },
       }));
-    } else {
-      if (GameInfo.current_user === playerInfo.user_id) {
-        let Instruction: any = Object.values(
-          JSON.parse(Decrypt(GameInfo.button))
-        );
-        setBattleInfo((prev) => ({ ...prev, timer: Instruction[1] }));
-        TimerRef.current.CountdownTimer = setInterval(() => {
-          setBattleInfo((prev) => ({
-            ...prev,
-            timer: prev.timer && prev.timer - 1,
-          }));
-        }, 1000);
-        let buttons: Instruction[] = [];
-        for (let i = 0; i < Instruction[0].length; i++) {
-          buttons.push({
-            id: `button-${i}`,
-            button: Instruction[0][i].toString(),
-            status: 0,
-          });
-        }
-        setDefault(buttons);
-        setButtons(buttons);
-        const bar_length =
-          document.getElementsByClassName("time_bar")[0].clientWidth -
-          document.getElementsByClassName("prgressive_dot")[0].clientWidth;
-        setBarLength(bar_length);
-      }
     }
+  }, [GameInfo, playerInfo]);
+
+  useEffect(() => {
+    let Instruction: any = Object.values(JSON.parse(Decrypt(playerInfo.hash)));
+    setBattleInfo((prev) => ({ ...prev, timer: Instruction[1] }));
+    TimerRef.current.CountdownTimer = setInterval(() => {
+      setBattleInfo((prev) => ({
+        ...prev,
+        timer: prev.timer && prev.timer - 1,
+      }));
+    }, 1000);
+    let buttons: Instruction[] = [];
+    for (let i = 0; i < Instruction[0].length; i++) {
+      buttons.push({
+        id: `button-${i}`,
+        button: Instruction[0][i].toString(),
+        status: 0,
+      });
+    }
+    setDefault(buttons);
+    setButtons(buttons);
+    const bar_length =
+      document.getElementsByClassName("time_bar")[0].clientWidth -
+      document.getElementsByClassName("prgressive_dot")[0].clientWidth;
+    setBarLength(bar_length);
     return () => {
       clearTimeout(TimerRef.current.CountdownTimer);
     };
-  }, [GameInfo, playerInfo]);
+  }, [playerInfo.hash]);
 
   useEffect(() => {
     if (socketService.socket) {
@@ -365,9 +373,6 @@ function Battle() {
               room: msg.data.room_id,
               type: msg.data.room_type,
               component: component,
-              current_user: msg.data.room_now_current_user,
-              button: msg.data.hash,
-              command_type: msg.data.command,
               reward: msg.data.room_battle_reward,
             }));
             setPlayerInfo(user);
@@ -377,19 +382,17 @@ function Battle() {
   });
 
   const autoSubmit = async (): Promise<void> => {
-    let Res_buffer: any = JSON.parse(Decrypt(GameInfo.button));
+    let Res_buffer: any = JSON.parse(Decrypt(playerInfo.hash));
     Res_buffer.submitButton = new Array(buttons.length).fill(0);
     Res_buffer = Encrypt(JSON.stringify(Res_buffer));
-    clickRef.current.clickCount = 0;
-    clickRef.current.clickResult = [];
     if (socketService.socket) {
       try {
         await gameService.gameUpdate(socketService.socket, cookies.token, {
           user_id: playerInfo.user_id,
-          battle_type: GameInfo.type,
-          command: GameInfo.command_type,
           button: Res_buffer,
         });
+        clickRef.current.clickCount = 0;
+        clickRef.current.clickResult = [];
       } catch (error) {
         console.error(error);
       }
@@ -502,7 +505,7 @@ function Battle() {
     if (clickRef.current.clickCount !== buttons.length) {
       return;
     } else {
-      let Res_buffer: any = JSON.parse(Decrypt(GameInfo.button));
+      let Res_buffer: any = JSON.parse(Decrypt(playerInfo.hash));
       Res_buffer.submitButton = clickRef.current.clickResult;
       if (FlashRef.current && SwiperRef.current) {
         const flash_x = Math.floor(
@@ -527,7 +530,6 @@ function Battle() {
         TimerRef.current.rateTimer = setTimeout(() => {
           setBattleInfo((prev) => ({ ...prev, rate: "" }));
         }, 1000);
-
         Res_buffer = Encrypt(JSON.stringify(Res_buffer));
         clickRef.current.clickCount = 0;
         clickRef.current.clickResult = [];
@@ -536,8 +538,6 @@ function Battle() {
           try {
             await gameService.gameUpdate(socketService.socket, cookies.token, {
               user_id: playerInfo.user_id,
-              battle_type: GameInfo.type,
-              command: GameInfo.command_type,
               button: Res_buffer,
             });
           } catch (error) {
@@ -615,155 +615,132 @@ function Battle() {
       </AvatarContainer>
       <BattleContainer>
         <section className="player">
+          <Stage options={{ backgroundAlpha: 0 }}>
+            <Skill texture="skill" />
+          </Stage>
           <LazyLoadImage
             className="character"
-            effect="blur"
             src="/character/Druid.png"
             alt="character"
           />
         </section>
         <section className="score_panel">
-          {GameInfo.current_user === playerInfo.user_id ? (
-            <>
-              {GameInfo.command_type === "attack" ? (
-                <FontLoading loadingText="Attacking..." />
-              ) : (
-                <FontLoading loadingText="Defending..." />
-              )}
-            </>
-          ) : null}
+          <FontLoading loadingText="Attacking..." />
           <Typography weight="bold" color="#B09C7A" size="4vw">
             Vs
           </Typography>
-          {GameInfo.current_user === playerInfo.user_id ? (
-            <Typography weight="normal" color="#B09C7A" size="2vw">
-              Time: {battleInfo.timer}
-            </Typography>
-          ) : null}
+          <Typography weight="normal" color="#B09C7A" size="2vw">
+            Time: {battleInfo.timer}
+          </Typography>
         </section>
         <section className="player">
+          <Stage options={{ backgroundAlpha: 0 }}>
+            <Skill texture="skill" />
+          </Stage>
           <LazyLoadImage
             className="character"
-            effect="blur"
             src="/character/Priest.png"
             alt="character"
           />
         </section>
-        {GameInfo.current_user === playerInfo.user_id ? (
-          <>
-            <section className="button">
-              <Direction
-                alt=""
-                src="/img/button/top.png"
-                whileTap={{ scale: 1.1 }}
-                onTouchStart={() => onButtonClick("top")}
-              />
-              <div
-                style={{
-                  display: "flex",
-                  justifyContent: "space-between",
-                  width: "40%",
-                  margin: "-10px 0",
-                }}
+        <section className="button">
+          <Direction
+            alt=""
+            src="/img/button/top.png"
+            whileTap={{ scale: 1.1 }}
+            onTouchStart={() => onButtonClick("top")}
+          />
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+              width: "40%",
+              margin: "-10px 0",
+            }}
+          >
+            <Direction
+              alt=""
+              src="/img/button/left_unselected.png"
+              whileTap={{ scale: 1.1 }}
+              onTouchStart={() => onButtonClick("left")}
+            />
+            <Direction
+              alt=""
+              src="/img/button/right_selected.png"
+              whileTap={{ scale: 1.1 }}
+              onTouchStart={() => onButtonClick("right")}
+            />
+          </div>
+          <Direction
+            alt=""
+            src="/img/button/bottom_btn.png"
+            whileTap={{ scale: 1.1 }}
+            onTouchStart={() => onButtonClick("bottom")}
+          />
+        </section>
+        <section className="button_bar_container">
+          <AnimatePresence>
+            {battleInfo.rate !== "" && (
+              <ScoreFont
+                animate={{ opacity: 1, scale: 1.4, rotate: [2, -2, 0] }}
               >
-                <Direction
-                  alt=""
-                  src="/img/button/left_unselected.png"
-                  whileTap={{ scale: 1.1 }}
-                  onTouchStart={() => onButtonClick("left")}
-                />
-                <Direction
-                  alt=""
-                  src="/img/button/right_selected.png"
-                  whileTap={{ scale: 1.1 }}
-                  onTouchStart={() => onButtonClick("right")}
-                />
-              </div>
-              <Direction
-                alt=""
-                src="/img/button/bottom_btn.png"
-                whileTap={{ scale: 1.1 }}
-                onTouchStart={() => onButtonClick("bottom")}
-              />
-            </section>
-            <section className="button_bar_container">
-              <AnimatePresence>
-                {battleInfo.rate !== "" && (
-                  <ScoreFont
-                    animate={{ opacity: 1, scale: 1.4, rotate: [2, -2, 0] }}
-                  >
-                    {battleInfo.rate}
-                  </ScoreFont>
-                )}
-              </AnimatePresence>
-              <div className="time_bar">
+                {battleInfo.rate}
+              </ScoreFont>
+            )}
+          </AnimatePresence>
+          <div className="time_bar">
+            <motion.img
+              className="flash"
+              ref={FlashRef}
+              src="/img/bar/progressive_light.png"
+              alt=""
+              animate={"activate"}
+              variants={flash_variant}
+              transition={{
+                repeat: Infinity,
+                ease: "easeInOut",
+                duration: 0.5,
+              }}
+            />
+            <Swiper
+              animate={"activate"}
+              ref={SwiperRef}
+              variants={time_bar_variant}
+              transition={{
+                repeat: Infinity,
+                repeatType: "reverse",
+                ease: "linear",
+                duration: 1,
+              }}
+              alt=""
+              src="/img/bar/progressive.png"
+              className="prgressive_dot"
+            />
+          </div>
+          <motion.div className="button_bar" animate="visible" initial="hidden">
+            {buttons.map((item: Instruction, i: number) => {
+              return (
                 <motion.img
-                  className="flash"
-                  ref={FlashRef}
-                  src="/img/bar/progressive_light.png"
+                  custom={i}
+                  key={item.id}
+                  className={item.status !== 0 ? "button_active" : ""}
                   alt=""
-                  animate={"activate"}
-                  variants={flash_variant}
-                  transition={{
-                    repeat: Infinity,
-                    ease: "easeInOut",
-                    duration: 0.5,
-                  }}
+                  src={`/img/button/${button_map[item.button]}${
+                    item.status === 0 ? "_unselected" : "_selected"
+                  }.png`}
                 />
-                <Swiper
-                  animate={"activate"}
-                  ref={SwiperRef}
-                  variants={time_bar_variant}
-                  transition={{
-                    repeat: Infinity,
-                    repeatType: "reverse",
-                    ease: "linear",
-                    duration: 1,
-                  }}
-                  alt=""
-                  src="/img/bar/progressive.png"
-                  className="prgressive_dot"
-                />
-              </div>
-              <motion.div
-                className="button_bar"
-                animate="visible"
-                initial="hidden"
-              >
-                {buttons.map((item: Instruction, i: number) => {
-                  return (
-                    <motion.img
-                      custom={i}
-                      key={item.id}
-                      className={item.status !== 0 ? "button_active" : ""}
-                      alt=""
-                      src={`/img/button/${button_map[item.button]}${
-                        item.status === 0 ? "_unselected" : "_selected"
-                      }.png`}
-                    />
-                  );
-                })}
-              </motion.div>
-            </section>
-            <section className="launch">
-              <LazyLoadImage
-                alt=""
-                className="launch_button"
-                src="/img/button/launch.png"
-                onTouchStart={onLaunchHandler}
-              />
-            </section>
-          </>
-        ) : (
-          <>
-            <section></section>
-            <section className="score_panel">
-              <FontLoading loadingText="Waiting..." />
-            </section>
-
-            <section></section>
-          </>
-        )}
+              );
+            })}
+          </motion.div>
+        </section>
+        <section className="launch">
+          <LazyLoadImage
+            alt=""
+            className="launch_button"
+            src="/img/button/launch.png"
+            onTouchStart={onLaunchHandler}
+          />
+        </section>
       </BattleContainer>
     </Container>
   );

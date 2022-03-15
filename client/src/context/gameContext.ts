@@ -4,12 +4,9 @@ export interface IGameContextProps {
   playerInfo: null | any;
   setPlayerInfo: ({}) => void;
   GameInfo: {
-    current_user: string;
     room: string;
     type: string;
-    command_type: string;
     component: any;
-    button: string;
     reward: { fail: any; win: any };
   };
   setGameInfo: (info: any) => void;
@@ -21,12 +18,9 @@ const defaultState: IGameContextProps = {
   playerInfo: {},
   setPlayerInfo: () => {},
   GameInfo: {
-    current_user: "",
     room: "",
     type: "",
     component: {},
-    command_type: "",
-    button: "",
     reward: { fail: {}, win: {} },
   },
   setGameInfo: () => {},

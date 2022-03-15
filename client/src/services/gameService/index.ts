@@ -44,10 +44,15 @@ class GameService {
     // socket.on("start_game", listener);
   }
 
-  public async matchGame(socket: Socket, token: string): Promise<any> {
+  public async matchGame(
+    socket: Socket,
+    token: string,
+    user_id: string
+  ): Promise<any> {
     return new Promise((rs, rj) => {
       socket?.emit("match_room", {
         token,
+        user_id,
       });
       socket.on("match_info", (res) => rs(res));
       socket.on("match_error", ({ error }) => rj(error));
@@ -78,8 +83,6 @@ class GameService {
       socket?.emit("update_game", {
         token: token,
         user_id: data.user_id,
-        battle_type: data.battle_type,
-        command: data.command,
         button: data.button,
       });
       socket
@@ -91,10 +94,15 @@ class GameService {
     });
   }
 
-  public async gameInProgress(socket: Socket, token: string): Promise<any> {
+  public async gameInProgress(
+    socket: Socket,
+    token: string,
+    user_id: string
+  ): Promise<any> {
     return new Promise<any>((resolve, reject) => {
       socket?.emit("game_progress_check", {
         token,
+        user_id,
       });
       socket
         .off("game_status")

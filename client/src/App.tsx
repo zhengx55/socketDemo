@@ -21,7 +21,7 @@ function App() {
 
   const connectSocket = async (): Promise<void> => {
     try {
-      const connect = await socketService.connect("wss://oin.finance");
+      const connect = await socketService.connect("http://localhost:9000");
       if (connect.connected) {
         console.log("ws connection established successfully");
         if (cookies.token && cookies.userid) {
@@ -40,7 +40,8 @@ function App() {
     if (socketService.socket && cookies.token) {
       const isInGame = await gameService.gameInProgress(
         socketService.socket,
-        cookies.token
+        cookies.token,
+        cookies.userid
       );
       if (isInGame.status) {
         let user, component: any;
@@ -60,9 +61,7 @@ function App() {
             ...prev,
             room: isInGame.data.room_id,
             type: isInGame.data.room_type,
-            current_user: isInGame.data.room_now_current_user,
             component: component,
-            button: isInGame.data.hash,
             command_type: isInGame.data.command,
           }));
           socketService.socket?.emit("enter_room", isInGame.data.room_id);

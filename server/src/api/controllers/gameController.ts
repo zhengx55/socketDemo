@@ -15,7 +15,7 @@ export class GameController {
   @OnMessage("game_progress_check")
   public async gamecheck(
     @ConnectedSocket() socket: Socket,
-    @MessageBody() message: any
+    @MessageBody() message: { token: string; user_id: string }
   ) {
     const myAxios = setupInterceptorsTo(
       axios.create({
@@ -26,15 +26,21 @@ export class GameController {
     const res: AxiosResponse = await myAxios.post("/getRoomData", {
       token: message.token,
     });
-    console.log(`查询用户是否在游戏中 -socket_id: ${socket.id}`);
+    console.log(
+      `查询用户 ${message.user_id} 是否在游戏中 -socket_id: ${socket.id}`
+    );
     console.log("------------------------------------------");
     if (res.data.code === "200") {
       const matchInfo = res.data.data;
-      console.log(`用户正在游戏中 -socket_id: ${socket.id}`);
+      console.log(
+        `用户 ${message.user_id} 正在游戏中 -socket_id: ${socket.id}`
+      );
       console.log("------------------------------------------");
       socket.emit("game_status", { data: matchInfo, status: true });
     } else {
-      console.log(`用户当前未进行游戏 -socket_id: ${socket.id}`);
+      console.log(
+        `用户 ${message.user_id} 当前未进行游戏 -socket_id: ${socket.id}`
+      );
       console.log("------------------------------------------");
       socket.emit("game_status", { status: false });
     }
@@ -45,7 +51,7 @@ export class GameController {
   @OnMessage("match_room")
   public async matchRoom(
     @ConnectedSocket() socket: Socket,
-    @MessageBody() message: any
+    @MessageBody() message: { user_id: string; token: string }
   ) {
     const myAxios = setupInterceptorsTo(
       axios.create({
@@ -59,13 +65,46 @@ export class GameController {
         room_type: "pvp-auto",
       });
       if (res.data.code === "200") {
+        console.log(`用户 ${message.user_id} 进入匹配队列成功`);
         const roomInfo = getRoom(message.user_id);
         if (roomInfo) {
           socket.emit("match_info", { data: roomInfo, status: "success" });
         }
+      } else {
+        console.log(`用户 ${message.user_id} 进入匹配队列失败`);
       }
     } catch (error) {
       console.error("Match Room", error);
+      console.log(`用户 ${message.user_id} 进入匹配队列失败`);
+    }
+  }
+
+  @OnMessage("quit_match")
+  public async quitMatch(
+    @ConnectedSocket() socket: Socket,
+    @MessageBody() message: { user_id: string; token: string }
+  ) {
+    const myAxios = setupInterceptorsTo(
+      axios.create({
+        baseURL: "https://dao.oin.finance/index/game",
+        timeout: 5000,
+      })
+    );
+    try {
+      const res = await myAxios.post("/enforceQuit", {
+        token: message.token,
+        room_type: "pvp-auto",
+      });
+      if (res.data.code === "200") {
+        console.log(`用户 ${message.user_id} 取消匹配成功`);
+        socket.emit("quit_success");
+      } else {
+        console.log(`用户 ${message.user_id} 取消匹配失败`);
+        socket.emit("quit_error");
+      }
+    } catch (error) {
+      console.log(`用户 ${message.user_id} 取消匹配失败`);
+      socket.emit("quit_error", error);
     }
   }
 
@@ -103,19 +142,11 @@ export class GameController {
     try {
       const res = await myAxios.post("/battle", {
         token: message.token,
-        room_type: message.battle_type,
-        command: message.command,
         hash: message.button,
       });
       if (res.status === 200) {
         socket.emit("game_update_success", res.data);
         socket.to(res.data.data.room_id).emit("game_update_success", res.data);
-        if (message.command === "attack") {
-          socket.emit("texture_update", { user_id: message.user_id });
-          socket
-            .to(res.data.data.room_id)
-            .emit("texture_update", { user_id: message.user_id });
-        }
       }
     } catch (error) {
       console.error(error);
