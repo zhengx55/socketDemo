@@ -89,7 +89,7 @@ function App() {
     window.addEventListener("beforeunload", () => {
       disconnectSocket();
     });
-    window.addEventListener(
+    document.body.addEventListener(
       "touchmove",
       function (e: TouchEvent) {
         // 阻止默认事件
@@ -103,7 +103,7 @@ function App() {
       window.removeEventListener("beforeunload", () => {
         disconnectSocket();
       });
-      window.removeEventListener("touchmove", function (e: TouchEvent) {
+      document.body.removeEventListener("touchmove", function (e: TouchEvent) {
         e.preventDefault();
       });
     };
