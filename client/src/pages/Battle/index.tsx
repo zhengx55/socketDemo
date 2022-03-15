@@ -10,8 +10,6 @@ import { LazyLoadImage } from "react-lazy-load-image-component";
 import "react-lazy-load-image-component/src/effects/blur.css";
 import { Typography } from "../Match";
 import { AnimatePresence, motion } from "framer-motion";
-import { Stage } from "@inlet/react-pixi";
-import Knight from "../../components/Hero";
 import gameContext from "../../context/gameContext";
 import { Decrypt, Encrypt } from "../../utils/crypto";
 import socketService from "../../services/socketService";
@@ -101,15 +99,10 @@ const BattleContainer = styled.div`
   .player {
     display: flex;
     justify-content: center;
-    canvas {
-      width: 60% !important;
-      height: 100% !important;
-      max-height: 150px !important;
-    }
   }
   .character {
-    width: 20vw;
-    aspect-ratio: 1;
+    width: 17vw;
+    height: auto;
   }
   .score_panel {
     display: flex;
@@ -183,7 +176,6 @@ const BattleContainer = styled.div`
         transform: scale(1.2);
       }
     }
-
     p {
       color: #fff;
       font-size: 1.5vw;
@@ -299,7 +291,6 @@ function Battle() {
 
   useEffect(() => {
     if (playerInfo.hp === 0) {
-      setTexture((prev) => ({ ...prev, your: "dead" }));
       setBattleInfo((prev) => ({
         ...prev,
         over: true,
@@ -309,7 +300,6 @@ function Battle() {
         },
       }));
     } else if (GameInfo.component.hp === 0) {
-      setTexture((prev) => ({ ...prev, component: "dead_reverse" }));
       setBattleInfo((prev) => ({
         ...prev,
         over: true,
@@ -354,33 +344,6 @@ function Battle() {
   useEffect(() => {
     if (socketService.socket) {
       socketService.socket
-        .off("texture_update")
-        .on("texture_update", (res: { user_id: string }) => {
-          if (res.user_id === playerInfo.user_id) {
-            setTexture((prev) => ({
-              ...prev,
-              your: "attack",
-            }));
-            TimerRef.current.textureTimer = setTimeout(() => {
-              setTexture((prev) => ({
-                ...prev,
-                your: "position",
-              }));
-            }, 1200);
-          } else {
-            setTexture((prev) => ({
-              ...prev,
-              component: "attack_reverse",
-            }));
-            TimerRef.current.textureTimer = setTimeout(() => {
-              setTexture((prev) => ({
-                ...prev,
-                component: "position_reverse",
-              }));
-            }, 1200);
-          }
-        });
-      socketService.socket
         .off("game_update_success")
         .on("game_update_success", (msg) => {
           let user, component: any;
@@ -392,32 +355,8 @@ function Battle() {
                   Number(playerInfo.user_id)
                 ) {
                   user = msg.data.playerList[player];
-                  if (user.hp < playerInfo.hp) {
-                    setTexture((prev) => ({
-                      ...prev,
-                      your: "hurt",
-                    }));
-                    TimerRef.current.textureTimer = setTimeout(() => {
-                      setTexture((prev) => ({
-                        ...prev,
-                        your: "position",
-                      }));
-                    }, 1200);
-                  }
                 } else {
                   component = msg.data.playerList[player];
-                  if (component.hp < GameInfo.component.hp) {
-                    setTexture((prev) => ({
-                      ...prev,
-                      component: "hurt_reverse",
-                    }));
-                    TimerRef.current.textureTimer = setTimeout(() => {
-                      setTexture((prev) => ({
-                        ...prev,
-                        component: "position_reverse",
-                      }));
-                    }, 1200);
-                  }
                 }
               }
             }
@@ -621,14 +560,14 @@ function Battle() {
         <AvatarInfo>
           <LazyLoadImage
             alt=""
-            src="/img/avatar/Knight.png"
+            src="/img/avatar/Druid.png"
             effect="blur"
             className="avatar"
           />
           <div className="battle_info">
             <div>
               <Typography weight="bold" color="#C69953">
-                Warrior
+                Druid
               </Typography>
               <Typography weight="normal" color="#C69953">
                 {playerInfo.hp}
@@ -647,14 +586,14 @@ function Battle() {
         <AvatarInfo>
           <LazyLoadImage
             alt=""
-            src="/img/avatar/Knight.png"
+            src="/img/avatar/Priest.png"
             effect="blur"
             className="avatar"
           />
           <div className="battle_info">
             <div>
               <Typography weight="bold" color="#C69953">
-                Warrior
+                Priest
               </Typography>
               <Typography weight="normal" color="#C69953">
                 {GameInfo.component.hp}
@@ -676,9 +615,12 @@ function Battle() {
       </AvatarContainer>
       <BattleContainer>
         <section className="player">
-          <Stage options={{ backgroundAlpha: 0 }}>
-            <Knight texture={texture.your} />
-          </Stage>
+          <LazyLoadImage
+            className="character"
+            effect="blur"
+            src="/character/Druid.png"
+            alt="character"
+          />
         </section>
         <section className="score_panel">
           {GameInfo.current_user === playerInfo.user_id ? (
@@ -700,9 +642,12 @@ function Battle() {
           ) : null}
         </section>
         <section className="player">
-          <Stage options={{ backgroundAlpha: 0 }}>
-            <Knight texture={texture.component} />
-          </Stage>
+          <LazyLoadImage
+            className="character"
+            effect="blur"
+            src="/character/Priest.png"
+            alt="character"
+          />
         </section>
         {GameInfo.current_user === playerInfo.user_id ? (
           <>

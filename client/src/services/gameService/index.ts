@@ -54,6 +54,21 @@ class GameService {
     });
   }
 
+  public async quitMatch(
+    socket: Socket,
+    userId: string,
+    token: string
+  ): Promise<any> {
+    return new Promise((rs, rj) => {
+      socket?.emit("quit_match", {
+        user_id: userId,
+        token,
+      });
+      socket.on("quit_success", () => rs(true));
+      socket.on("quit_error", () => rj(false));
+    });
+  }
+
   public async gameUpdate(
     socket: Socket,
     token: string,

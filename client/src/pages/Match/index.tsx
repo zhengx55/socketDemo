@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import styled from "styled-components";
 import gameService from "../../services/gameService";
 import { Dot } from "../../components/Loading/DotLoading";
@@ -48,8 +48,8 @@ export const MatchContainer = styled.div`
   padding: 0 10%;
   width: 100%;
   .frame {
-    width: 120px;
-    height: 120px;
+    width: 14vw;
+    height: 14vw;
     background-image: url("/img/frame.png");
     background-position: center;
     background-repeat: no-repeat;
@@ -75,6 +75,7 @@ const AbsoluteFont = styled.p`
   font-weight: 600;
   color: #b09c7a;
   top: -8%;
+  padding: 0;
 `;
 
 const TitleContainer = styled.img`
@@ -90,12 +91,32 @@ const Match = () => {
   const { setPlayerInfo, setGameInfo, setGameStarted, GameInfo } =
     useContext(gameContext);
   const [isLogin, setIsLogin] = useState<boolean>(false);
+  const matchTimer = useRef<number | null>(null);
+  const [time, setTime] = useState<number>(60);
 
   useEffect(() => {
     if (cookies.token) {
       setIsLogin(true);
     }
   }, []);
+
+  useEffect(() => {
+    if (isMatching) {
+      matchTimer.current = setInterval(() => {
+        setTime((prev) => prev - 1);
+      }, 1000);
+    }
+    return () => {
+      matchTimer.current && clearTimeout(matchTimer.current);
+    };
+  }, [isMatching]);
+
+  useEffect(() => {
+    if (time === 0) {
+      quitMatch();
+      matchTimer.current && clearTimeout(matchTimer.current);
+    }
+  }, [time]);
 
   const matchGame = async () => {
     setIsMatching(true);
@@ -148,6 +169,24 @@ const Match = () => {
     }
   };
 
+  const quitMatch = async (): Promise<void> => {
+    try {
+      if (socketService.socket) {
+        const quit = await gameService.quitMatch(
+          socketService.socket,
+          cookies.userid,
+          cookies.token
+        );
+        if (quit) {
+          setIsMatching(false);
+          setTime(60);
+        }
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   return (
     <AppContainer>
       <MainContainer>
@@ -185,14 +224,13 @@ const Match = () => {
             </Typography>
           </div>
         </MatchContainer>
-        {!isMatching && (
+        {!isMatching ? (
           <Button w="12vw" h="5vw" color="#C69953" onTouchStart={matchGame}>
             Match
           </Button>
-        )}
-        {isMatching && (
-          <Button w="12vw" h="5vw" color="#C69953" disabled>
-            Matching
+        ) : (
+          <Button w="12vw" h="5vw" color="#C69953" onTouchStart={quitMatch}>
+            Cancel: {time}
           </Button>
         )}
       </MainContainer>
