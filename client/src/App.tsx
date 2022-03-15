@@ -36,10 +36,25 @@ function App() {
           } else {
             setIsLogin(false);
           }
+        } else {
+          setIsLogin(false);
         }
       }
     } catch (error) {
       console.error(error);
+    }
+  };
+
+  const multiLoginCheck = async (): Promise<void> => {
+    if (socketService.socket && isLogin) {
+      socketService.socket
+        .off("isLogin")
+        .on("isLogin", (msg: { status: boolean }) => {
+          if (!msg.status) {
+            setIsLogin(false);
+            isGameStarted && setGameStarted(false);
+          }
+        });
     }
   };
 
@@ -88,6 +103,7 @@ function App() {
 
   useEffect(() => {
     connectSocket();
+    multiLoginCheck();
     gameProgressCheck();
     window.addEventListener("beforeunload", () => {
       disconnectSocket();
