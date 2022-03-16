@@ -407,7 +407,7 @@ function Battle() {
       clearTimeout(TimerRef.current.CountdownTimer);
       autoSubmit();
     }
-  }, [battleInfo]);
+  }, [battleInfo.timer]);
 
   useEffect(() => {
     if (playerInfo.hp === 0) {
@@ -506,7 +506,6 @@ function Battle() {
   });
 
   const autoSubmit = useCallback(async (): Promise<void> => {
-    console.log("hi");
     let Res_buffer: any = JSON.parse(Decrypt(playerInfo.hash));
     Res_buffer.submitButton = new Array(buttons.length).fill(0);
     Res_buffer = Encrypt(JSON.stringify(Res_buffer));
@@ -522,7 +521,7 @@ function Battle() {
     }
     clickRef.current.clickCount = 0;
     clickRef.current.clickResult = [];
-  }, []);
+  }, [playerInfo, buttons]);
 
   const onButtonClick = useCallback(
     (type: string) => {
