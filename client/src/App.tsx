@@ -18,7 +18,7 @@ function App() {
 
   const connectSocket = async (): Promise<void> => {
     try {
-      const connect = await socketService.connect("http://localhost:9000");
+      const connect = await socketService.connect("wss://oin.finance");
       if (connect.connected) {
         console.log("ws connection established successfully");
         if (cookies.token && cookies.userid && socketService.socket) {
