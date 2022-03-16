@@ -6,8 +6,8 @@ export default defineConfig({
   plugins: [react()],
   publicDir: "src/assets",
   base: "./",
-
   build: {
+    target: "es2015",
     outDir: "build",
     sourcemap: false,
     emptyOutDir: true,
@@ -23,6 +23,12 @@ export default defineConfig({
               .toString();
           }
         },
+      },
+    },
+    terserOptions: {
+      compress: {
+        drop_console: true,
+        drop_debugger: true,
       },
     },
   },

@@ -7,7 +7,6 @@ import gameContext from "../../context/gameContext";
 import { Button } from "../../components/Button";
 import { useCookies } from "react-cookie";
 import Login from "../../components/Modal/Login";
-import useAudio from "../../hooks/useAudio";
 
 type TypoProps = {
   weight?: string;
@@ -99,7 +98,6 @@ const Match = () => {
   } = useContext(gameContext);
   const matchTimer = useRef<number | null>(null);
   const [time, setTime] = useState<number>(60);
-  const [audio] = useAudio("/music/Forward-Assault.mp3");
 
   useEffect(() => {
     if (isMatching) {
@@ -120,7 +118,6 @@ const Match = () => {
   }, [time]);
 
   const matchGame = async () => {
-    audio.play();
     if (isLogin && socketService.socket) {
       setIsMatching(true);
       const match = await gameService.matchGame(
