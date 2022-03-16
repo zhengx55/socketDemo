@@ -46,6 +46,17 @@ class GameService {
     });
   }
 
+  public async MatchInProgress(
+    socket: Socket,
+    token: string
+  ): Promise<boolean> {
+    return new Promise((resolve, reject) => {
+      socket.emit("match_check", { token });
+      socket.on("is_matching", () => resolve(true));
+      socket.on("no_matching", () => reject(false));
+    });
+  }
+
   public async onStartGame(
     socket: Socket,
     roomId: string

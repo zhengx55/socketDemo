@@ -42,7 +42,7 @@ function Login() {
       }
       setCookie("userConnection", random, {
         path: "/",
-        secure: true,
+        secure: false,
         sameSite: "none",
       });
     } else {
@@ -60,12 +60,12 @@ function Login() {
         if (res) {
           setCookie("token", res.token, {
             path: "/",
-            secure: true,
+            secure: false,
             sameSite: "none",
           });
           setCookie("userid", res.userId, {
             path: "/",
-            secure: true,
+            secure: false,
             sameSite: "none",
           });
           const isInGame = await gameService.gameInProgress(

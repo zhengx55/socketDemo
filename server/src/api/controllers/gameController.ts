@@ -51,6 +51,31 @@ export class GameController {
     }
   }
 
+  @OnMessage("match_check")
+  public async matchCheck(
+    @ConnectedSocket() socket: Socket,
+    @MessageBody() message: { token: string }
+  ) {
+    const myAxios = setupInterceptorsTo(
+      axios.create({
+        baseURL: process.env.BASE_URL,
+        timeout: 5000,
+      })
+    );
+    try {
+      const res: AxiosResponse = await myAxios.post("/getMatch", {
+        token: message.token,
+      });
+      if (res.data.code === "200") {
+        socket.emit("is_matching");
+      } else {
+        socket.emit("no_matching");
+      }
+    } catch (error) {
+      socket.emit("no_matching");
+    }
+  }
+
   // User successfully Logined in
   // Match started, redis subscribe for room info
   @OnMessage("match_room")
@@ -69,7 +94,6 @@ export class GameController {
         token: message.token,
         room_type: "pvp-auto",
       });
-      console.log(res.data);
       if (res.data.code === "200") {
         console.log(`用户 ${message.user_id} 进入匹配队列成功`);
         const roomInfo = getRoom(message.user_id);
@@ -160,7 +184,7 @@ export class GameController {
         token: message.token,
         hash: message.button,
       });
-  
+
       if (res.data.code === "200") {
         socket.emit("game_update_success", res.data);
         socket.to(res.data.data.room_id).emit("game_update_success", res.data);

@@ -88,16 +88,26 @@ const TitleContainer = styled.img`
 const Match = () => {
   const [isMatching, setIsMatching] = useState(false);
   const [cookies] = useCookies(["userid", "userConnection", "token"]);
-  const {
-    setPlayerInfo,
-    setGameInfo,
-    setGameStarted,
-    isLogin,
-    setIsLogin,
-    isGameStarted,
-  } = useContext(gameContext);
+  const { setPlayerInfo, setGameInfo, setGameStarted, isLogin } =
+    useContext(gameContext);
   const matchTimer = useRef<number | null>(null);
   const [time, setTime] = useState<number>(60);
+
+  useEffect(() => {
+    matchProgressCheck();
+  }, []);
+
+  const matchProgressCheck = async (): Promise<void> => {
+    if (socketService.socket && cookies.token) {
+      const isInMatch = await gameService.MatchInProgress(
+        socketService.socket,
+        cookies.token
+      );
+      if (isInMatch) {
+        setIsMatching(true);
+      }
+    }
+  };
 
   useEffect(() => {
     if (isMatching) {
