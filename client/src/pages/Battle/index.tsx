@@ -515,12 +515,12 @@ function Battle() {
           user_id: playerInfo.user_id,
           button: Res_buffer,
         });
-        clickRef.current.clickCount = 0;
-        clickRef.current.clickResult = [];
       } catch (error) {
         console.error(error);
       }
     }
+    clickRef.current.clickCount = 0;
+    clickRef.current.clickResult = [];
   };
 
   const onButtonClick = useCallback(
