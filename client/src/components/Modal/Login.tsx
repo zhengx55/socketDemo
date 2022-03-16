@@ -60,12 +60,12 @@ function Login() {
         if (res) {
           setCookie("token", res.token, {
             path: "/",
-            secure: false,
+            secure: true,
             sameSite: "none",
           });
           setCookie("userid", res.userId, {
             path: "/",
-            secure: false,
+            secure: true,
             sameSite: "none",
           });
           const isInGame = await gameService.gameInProgress(
