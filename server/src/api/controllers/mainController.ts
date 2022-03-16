@@ -115,8 +115,8 @@ export class MessageController {
     const removed_user = getUser(socket.id);
     removeUser(socket.id);
     if (removed_user) {
+      console.log(`检查玩家 ${removed_user.user_id} 是否重连...`);
       setTimeout(async () => {
-        console.log(`检查玩家 ${removed_user.user_id} 是否重连...`);
         console.log("------------------------------------------");
         const check = getUserbyUserid(removed_user.user_id);
         if (check === undefined) {
