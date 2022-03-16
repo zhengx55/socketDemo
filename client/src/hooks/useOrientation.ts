@@ -6,6 +6,8 @@ function useOrientation(): (string | undefined)[] {
   const [orientation, setOrientation] = useState<string | undefined>(undefined);
   useEffect(() => {
     function handleResize(): void {
+      let vh = window.innerHeight * 0.01;
+      document.documentElement.style.setProperty("--vh", `${vh}px`);
       if (window.innerWidth > window.innerHeight) {
         setOrientation("landscape");
       } else {
