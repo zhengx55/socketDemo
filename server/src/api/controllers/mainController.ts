@@ -144,7 +144,7 @@ export class MessageController {
           );
           console.log("------------------------------------------");
         }
-      }, 3000);
+      }, 10000);
     }
 
     // console.log("Socket disconnected:", socket.id);
