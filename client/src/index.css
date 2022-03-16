@@ -2,7 +2,6 @@
 
 * {
   box-sizing: border-box;
-  -webkit-overflow-scrolling: touch;
 }
 
 html,
@@ -10,9 +9,11 @@ body,
 #root {
   width: 100vw;
   min-height: 100vh;
-  height: 100vh;
-  padding: 0;
   min-height: -webkit-fill-available;
+  height: 100vh;
+  height: calc(var(--vh, 1vh) * 100);
+  padding: 0;
+  overflow: hidden;
 }
 
 body {
@@ -22,7 +23,6 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  overflow-x: hidden;
   background-color: #3e382b;
   user-select: none;
 }
