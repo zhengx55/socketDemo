@@ -159,7 +159,6 @@ const OperationContainer = styled.div`
       border: 1px solid #6a6a6a;
       display: flex;
       align-items: center;
-      overflow: hidden;
       justify-content: center;
       img {
         width: 4vw;
@@ -801,7 +800,7 @@ function Battle() {
           <Stage options={{ backgroundAlpha: 0 }} className="canvas_left">
             <Skill texture="skill" position="left" />
           </Stage>
-          <LazyLoadImage
+          <img
             className={`character ${battleInfo.hurt ? "shake" : ""}`}
             src="/character/Druid.png"
             alt="character"
@@ -830,7 +829,7 @@ function Battle() {
           <Stage options={{ backgroundAlpha: 0 }} className="canvas_right">
             <Skill texture="skill" position="right" />
           </Stage>
-          <LazyLoadImage
+          <img
             className={`character_component ${
               battleInfo.attack ? "shake" : ""
             }`}
@@ -913,10 +912,10 @@ function Battle() {
               className="prgressive_dot"
             />
           </div>
-          <motion.div className="button_bar" animate="visible" initial="hidden">
+          <section className="button_bar">
             {buttons.map((item: Instruction, i: number) => {
               return (
-                <LazyLoadImage
+                <img
                   key={item.id}
                   className={
                     item.status === 1
@@ -936,7 +935,7 @@ function Battle() {
                 />
               );
             })}
-          </motion.div>
+          </section>
         </section>
         <section className="launch">
           <LazyLoadImage
