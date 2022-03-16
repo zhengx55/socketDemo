@@ -94,18 +94,12 @@ class GameService {
     token: string,
     data: any
   ): Promise<any> {
-    return new Promise((rs, rj) => {
+    return new Promise(() => {
       socket?.emit("update_game", {
         token: token,
         user_id: data.user_id,
         button: data.button,
       });
-      socket
-        .off("game_update_success")
-        .on("game_update_success", (res) => rs(res));
-      socket
-        .off("game_update_error")
-        .on("game_update_error", ({ error }) => rj(error));
     });
   }
 
