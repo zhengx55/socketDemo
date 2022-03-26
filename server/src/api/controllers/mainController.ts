@@ -16,11 +16,13 @@ import {
   removeUser,
 } from "../../utils/user";
 
+const log = console.log;
+
 @SocketController()
 export class MessageController {
   @OnConnect()
   public onConnection(@ConnectedSocket() socket: Socket) {
-    // console.log("Socket connected:", socket.id);
+    log("Socket connected:", socket.id);
   }
 
   @OnMessage("account_validate")
@@ -35,23 +37,23 @@ export class MessageController {
       })
     );
     try {
-      console.log(`检查用户 ${data.user_id} 账号是否可用`);
-      console.log("------------------------------------------");
+      log(`检查用户 ${data.user_id} 账号是否可用`);
+      log("------------------------------------------");
       const res = await myAxios.post("/isLogin", {
         token: data.token,
       });
       if (res.data.code === "200") {
-        console.log(`用户 ${data.user_id} 账号可用`);
-        console.log("------------------------------------------");
+        log(`用户 ${data.user_id} 账号可用`);
+        log("------------------------------------------");
         socket.emit("validation_success");
       } else {
-        console.log(`用户 ${data.user_id} 账号不可用`);
-        console.log("------------------------------------------");
+        log(`用户 ${data.user_id} 账号不可用`);
+        log("------------------------------------------");
         socket.emit("validation_fail");
       }
     } catch (error) {
-      console.log(`用户 ${data.user_id} 账号不可用`);
-      console.log("------------------------------------------");
+      log(`用户 ${data.user_id} 账号不可用`);
+      log("------------------------------------------");
       socket.emit("validation_fail");
     }
   }
@@ -106,6 +108,7 @@ export class MessageController {
 
   @OnDisconnect()
   public onDisconnection(@ConnectedSocket() socket: Socket) {
+    log("Disconnect", socket.id);
     const myAxios = setupInterceptorsTo(
       axios.create({
         baseURL: process.env.BASE_URL,
@@ -115,20 +118,20 @@ export class MessageController {
     const removed_user = getUser(socket.id);
     removeUser(socket.id);
     if (removed_user) {
-      console.log(`检查玩家 ${removed_user.user_id} 是否重连...`);
+      log(`检查玩家 ${removed_user.user_id} 是否重连...`);
       setTimeout(async () => {
-        console.log("------------------------------------------");
+        log("------------------------------------------");
         const check = getUserbyUserid(removed_user.user_id);
         if (check === undefined) {
-          console.log(` 玩家 ${removed_user.user_id} 30秒内无应答.`);
-          console.log("------------------------------------------");
+          log(` 玩家 ${removed_user.user_id} 30秒内无应答.`);
+          log("------------------------------------------");
           const res = await myAxios.post("/enforceQuit", {
             token: removed_user.token,
             room_type: "pvp-auto",
           });
           if (res.data.code === "200") {
-            console.log(`强制退出玩家 ${removed_user.user_id} 成功`);
-            console.log("------------------------------------------");
+            log(`强制退出玩家 ${removed_user.user_id} 成功`);
+            log("------------------------------------------");
             socket
               .to(res.data.data.room_id)
               .emit("game_update_success", res.data);
@@ -139,14 +142,12 @@ export class MessageController {
             }
           }
         } else {
-          console.log(
-            `玩家 ${removed_user.user_id} 已经成功重连, 不需要执行强制退出`
-          );
-          console.log("------------------------------------------");
+          log(`玩家 ${removed_user.user_id} 已经成功重连, 不需要执行强制退出`);
+          log("------------------------------------------");
         }
       }, 10000);
     }
 
-    // console.log("Socket disconnected:", socket.id);
+    // log("Socket disconnected:", socket.id);
   }
 }

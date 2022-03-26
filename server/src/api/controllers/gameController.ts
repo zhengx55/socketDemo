@@ -8,7 +8,6 @@ import {
 } from "socket-controllers";
 import { Socket, Server } from "socket.io";
 import { setupInterceptorsTo } from "../Interceptors.ts";
-import { getRoom } from "../../utils/room";
 
 @SocketController()
 export class GameController {
@@ -96,21 +95,19 @@ export class GameController {
       });
       if (res.data.code === "200") {
         console.log(`用户 ${message.user_id} 进入匹配队列成功`);
-        const roomInfo = getRoom(message.user_id);
-        if (roomInfo) {
-          socket.emit("match_info", { data: roomInfo, status: "success" });
-        }
+        socket.emit("match_success");
       } else {
         if (res.data.data.login === 1) {
           console.log(`用户 ${message.user_id} 登录失效`);
           socket.emit("isLogin", { status: false });
           return;
         }
+        socket.emit("match_error");
         console.log(`用户 ${message.user_id} 进入匹配队列失败`);
       }
     } catch (error) {
-      console.error("Match Room", error);
       console.log(`用户 ${message.user_id} 进入匹配队列失败`);
+      socket.emit("match_error");
     }
   }
 
@@ -187,7 +184,9 @@ export class GameController {
 
       if (res.data.code === "200") {
         socket.emit("game_update_success", res.data);
-        socket.to(res.data.data.room_id).emit("game_update_success", res.data);
+        socket
+          .to(res.data.data.room_id.toString())
+          .emit("game_update_success", res.data);
       } else {
         if (res.data.data.login === 1) {
           console.log(`用户 ${message.user_id} 登录失效`);

@@ -10,12 +10,12 @@ export class RoomController {
   @OnMessage("enter_room")
   public async joinGame(
     @ConnectedSocket() socket: Socket,
-    @MessageBody() message: string
+    @MessageBody() message: any
   ) {
-    await socket.join(message);
+    await socket.join(message.roomId);
     socket.emit("room_joined", { message: "Room entered successfully" });
     socket
-      .to(message)
+      .to(message.roomId)
       .emit("room_joined", { message: "Your component has entered ..." });
   }
 }
