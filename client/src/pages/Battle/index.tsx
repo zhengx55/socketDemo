@@ -386,6 +386,7 @@ function Battle() {
   });
   const time_bar_variant = {
     activate: { x: barLength },
+    
     deactivate: { x: 0 },
   };
   const flash_variant = {

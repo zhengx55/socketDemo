@@ -33,7 +33,7 @@ class GameService {
         resolve(true);
       });
       socket.on("validation_fail", () => {
-        false;
+        reject(false);
       });
     });
   }

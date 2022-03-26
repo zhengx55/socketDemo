@@ -4,6 +4,7 @@ import { useSocketServer } from "socket-controllers";
 export default (httpServer) => {
   const io = new Server(httpServer, {
     cors: {
+      credentials: true,
       origin: "*",
     },
     pingInterval: 5000,
